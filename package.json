@@ -6,10 +6,17 @@
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
     "concurrently": "^9.1.2",
+    "connect-mongo": "^5.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mongodb": "^6.15.0",
     "nodemon": "^3.1.9",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
     "request": "^2.88.2"
   }
 }
