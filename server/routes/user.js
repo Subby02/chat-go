@@ -6,15 +6,7 @@ const bcrypt = require('bcrypt')
 const { MongoClient, ObjectId } = require('mongodb')
 const MongoStore = require('connect-mongo')
 const path = require('path');
-
-let db
-const url = process.env.DB_URL
-new MongoClient(url).connect().then((client) => {
-    console.log('DB연결성공')
-    db = client.db(process.env.DB_NAME)
-}).catch((err) => {
-    console.log(err)
-})
+const { User } = require('../models/user');
 
 router.use(passport.initialize())
 router.use(session({
@@ -31,18 +23,20 @@ router.use(session({
 }))
 router.use(passport.session())
 
-passport.use(new LocalStrategy(async (id, password, cb) => {
-
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+}, async (email, password, cb) => {
     try {
         // 1. 아이디가 비어있는지 체크
-        if (!id || !password) {
-            return cb(null, false, { message: '아이디와 비밀번호는 필수입니다.' });
+        if (!email || !password) {
+            return cb(null, false, { message: '이메일과 비밀번호는 필수입니다.' });
         }
 
         // 2. 아이디가 DB에 존재하는지 확인
-        let result = await db.collection('user').findOne({ user_id: id });
+        let result = await User.findOne({ email: email });
         if (!result) {
-            return cb(null, false, { message: '아이디가 존재하지 않습니다.' });
+            return cb(null, false, { message: '이메일이 존재하지 않습니다.' });
         }
 
         // 3. 비밀번호 확인
@@ -50,7 +44,6 @@ passport.use(new LocalStrategy(async (id, password, cb) => {
         if (!isMatch) {
             return cb(null, false, { message: '비밀번호가 일치하지 않습니다.' });
         }
-
         // 로그인 성공: 사용자의 정보를 넘김
         return cb(null, result);
     } catch (error) {
@@ -61,12 +54,12 @@ passport.use(new LocalStrategy(async (id, password, cb) => {
 
 passport.serializeUser((user, done) => {
     process.nextTick(() => {
-        done(null, { id: user._id, username: user.user_id })
+        done(null, { id: user._id, email: user.email })
     })
 })
 
 passport.deserializeUser(async (user, done) => {
-    let result = await db.collection('user').findOne({ _id: new ObjectId(user.id) })
+    let result = await User.findOne({ _id: new ObjectId(user.id) })
     delete result.password
     process.nextTick(() => {
         return done(null, result)
@@ -83,40 +76,15 @@ router.get('/register', (req, res) => {
 
 router.post('/register', async (req, res) => {
     if(!req.isAuthenticated()){
-        const { username, password } = req.body;
+        const user = new User(req.body)
 
-        // 1. 필수 값 체크
-        if (!username || !password) {
-            return res.status(400).json({ message: '아이디와 비밀번호는 필수입니다.' });
+        try {
+            await user.save();
+            return res.redirect('/login');
+        } catch (err) {
+            return res.json({ message: err.message });
         }
     
-        // 2. 아이디 길이 체크 (예: 4자 이상)
-        if (username.length < 4) {
-            return res.status(400).json({ message: '아이디는 최소 4자 이상이어야 합니다.' });
-        }
-    
-        // 3. 비밀번호 길이 체크 (예: 6자 이상)
-        if (password.length < 6) {
-            return res.status(400).json({ message: '비밀번호는 최소 6자 이상이어야 합니다.' });
-        }
-    
-        // 4. 아이디 중복 체크
-        let existingUser = await db.collection('user').findOne({ user_id: username });
-        if (existingUser) {
-            return res.status(400).json({ message: '이미 사용 중인 아이디입니다.' });
-        }
-    
-        // 5. 비밀번호 해싱
-        let hash = await bcrypt.hash(password, 10);
-    
-        // 6. 사용자 정보 DB에 저장
-        await db.collection('user').insertOne({
-            user_id: username,
-            password: hash
-        });
-    
-        // 7. 회원가입 후 로그인 페이지로 리디렉션
-        res.redirect('/login');
     }
 })
 
@@ -141,13 +109,21 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
+router.get('/check-email', async (req, res) => {
+    const email = req.query.email;
+    if (!email) return res.status(400).json({ message: '이메일이 필요합니다.' });
+
+    const exists = await User.exists({ email });
+    return res.json({ exists: !!exists });
+})
+
 router.get('/status', (req, res) => {
     if (req.isAuthenticated()) {
-      res.json({ authenticated: true, username: req.user.user_id });
+      res.json({ authenticated: true, name: req.user.name });
     } else {
       res.json({ authenticated: false });
     }
-  });
+})
 
 router.post('/logout', async (req, res, next) => {
     if (req.isAuthenticated()) {
