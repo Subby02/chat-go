@@ -6,7 +6,15 @@ const bcrypt = require('bcrypt')
 const { MongoClient, ObjectId } = require('mongodb')
 const MongoStore = require('connect-mongo')
 const path = require('path');
+const coolsms = require('coolsms-node-sdk').default;
 const { User } = require('../models/user');
+const { AuthCode } = require('../models/authCodes');
+
+function generateAuthCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+const messageService = new coolsms(process.env.SMS_API_KEY, process.env.SMS_API_SECRET);
 
 router.use(passport.initialize())
 router.use(session({
@@ -96,7 +104,7 @@ router.get('/login', (req, res) => {
     }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', (req, res, next) => {
     if(!req.isAuthenticated()){
         passport.authenticate('local', (error, user, info) => {
             if (error) return res.status(500).json(error)
@@ -117,6 +125,58 @@ router.get('/check-email', async (req, res) => {
     return res.json({ exists: !!exists });
 })
 
+router.post('/send-code', async (req, res) => {
+    const to = req.query.phone_number;
+
+    let exists = await AuthCode.exists({});
+    
+    if(exists){
+        exists = await AuthCode.exists({ phoneNumber: to });
+
+        if (exists) {
+            return res.status(404).json({
+                message: '해당 전화번호에 대한 인증 코드가 존재',
+            });
+        }   
+    }
+
+    const code = generateAuthCode();
+
+    const authCode = new AuthCode({
+        phoneNumber: to,
+        code: code,
+        expiresAt: new Date(Date.now() + 3 * 60 * 1000), // 3분 후 만료
+    });
+    
+    const saved = await authCode.save();
+
+    messageService.sendOne({
+        to: to,
+        from: process.env.SMS_FROM,
+        text: 'ChatGO 인증번호는 [' + code + '] 입니다.',
+    }).catch(err => console.error(err));
+
+    res.status(200).json({ message: '인증 메일 발송'});
+})
+
+router.post('/verify-code', async (req, res) => {
+    const { to , code } = req.body;
+
+    const authCode = await AuthCode.findOne({ phoneNumber : to }).sort({ createdAt: -1 });
+    
+    if (!authCode) {
+        return res.status(400).json({ verified: false, message: '인증 코드가 존재하지 않거나 만료되었습니다.' });
+    }
+
+    if (authCode.code !== code) {
+        return res.status(400).json({ verified: false, message: '인증 코드가 일치하지 않습니다.' });
+    }
+
+    await AuthCode.deleteOne({ phoneNumber: to });
+
+    res.status(200).json({ verified: true, message: '인증 성공!' });
+})
+
 router.get('/status', (req, res) => {
     if (req.isAuthenticated()) {
       res.json({ authenticated: true, name: req.user.name });
@@ -125,7 +185,7 @@ router.get('/status', (req, res) => {
     }
 })
 
-router.post('/logout', async (req, res, next) => {
+router.post('/logout', (req, res, next) => {
     if (req.isAuthenticated()) {
         req.logout((err) => {
             if (err) return next(err);
