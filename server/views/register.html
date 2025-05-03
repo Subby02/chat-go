@@ -8,38 +8,54 @@
   <form id="registerForm">
     <input type="email" name="email" id="email" placeholder="이메일" required>
     <button type="button" id="checkEmailBtn">이메일 확인</button><br>
-    
+  
     <input type="password" name="password" placeholder="비밀번호" required><br>
     <input type="password" name="confirmPassword" placeholder="비밀번호 확인" required><br>
     <input type="text" name="name" placeholder="이름" required><br>
-    <input type="tel" name="phone_number" placeholder="전화번호 (예: 010-1234-5678)" required><br>
+  
+    <input type="tel" name="phone_number" id="phone_number" placeholder="전화번호 (예: 01012345678)" required>
+    <button type="button" id="sendCodeBtn">인증번호 보내기</button><br>
+  
+    <div id="codeVerifySection" style="display: none;">
+      <input type="text" id="authCodeInput" placeholder="인증번호 입력">
+      <button type="button" id="verifyCodeBtn">인증 확인</button>
+    </div>
+  
     <button type="submit" id="submitBtn" disabled>회원가입</button>
   </form>
 
   <script>
     let isEmailAvailable = false;
-
+    let isPhoneVerified = false;
+  
     const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone_number');
+    const sendCodeBtn = document.getElementById('sendCodeBtn');
+    const codeVerifySection = document.getElementById('codeVerifySection');
+    const verifyCodeBtn = document.getElementById('verifyCodeBtn');
+    const authCodeInput = document.getElementById('authCodeInput');
     const submitBtn = document.getElementById('submitBtn');
-
-    // 이메일 입력이 바뀌면 다시 중복 확인 필요
+  
     emailInput.addEventListener('input', () => {
       isEmailAvailable = false;
       submitBtn.disabled = true;
     });
-
-    // 이메일 중복 확인
+  
+    phoneInput.addEventListener('input', () => {
+      isPhoneVerified = false;
+      submitBtn.disabled = true;
+      sendCodeBtn.disabled = false;
+      codeVerifySection.style.display = 'none';
+    });
+  
     document.getElementById('checkEmailBtn').addEventListener('click', async () => {
       const email = emailInput.value.trim();
-
-      if (!/^\S+@\S+\.\S+$/.test(email)) {
-        return alert('유효한 이메일 주소를 입력하세요.');
-      }
-
+      if (!/^\S+@\S+\.\S+$/.test(email)) return alert('유효한 이메일 주소를 입력하세요.');
+  
       try {
         const res = await fetch(`http://localhost:5000/check-email?email=${encodeURIComponent(email)}`);
         const result = await res.json();
-
+  
         if (result.exists) {
           alert('이미 사용 중인 이메일입니다.');
           isEmailAvailable = false;
@@ -47,50 +63,89 @@
         } else {
           alert('사용 가능한 이메일입니다.');
           isEmailAvailable = true;
-          submitBtn.disabled = false;
+          if (isPhoneVerified) submitBtn.disabled = false;
         }
       } catch (err) {
         console.error(err);
         alert('이메일 확인 중 오류가 발생했습니다.');
       }
     });
-
-    // 회원가입
+  
+    sendCodeBtn.addEventListener('click', async () => {
+      const phone = phoneInput.value.trim();
+  
+      try {
+        sendCodeBtn.disabled = true;
+        codeVerifySection.style.display = 'block';
+  
+        const res = await fetch(`http://localhost:5000/send-code?phone_number=${encodeURIComponent(phone)}`, {
+          method: 'POST'
+        });
+  
+        const result = await res.json();
+        alert(result.message || '인증번호가 전송되었습니다.');
+      } catch (err) {
+        console.error(err);
+        alert('인증번호 전송 중 오류가 발생했습니다.');
+        sendCodeBtn.disabled = false;
+      }
+    });
+  
+    verifyCodeBtn.addEventListener('click', async () => {
+      const phone = phoneInput.value.trim();
+      const code = authCodeInput.value.trim();
+  
+      try {
+        const res = await fetch(`http://localhost:5000/verify-code`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: phone, code })
+        });
+  
+        const result = await res.json();
+        if (result.verified) {
+          alert('전화번호 인증 성공!');
+          isPhoneVerified = true;
+          sendCodeBtn.disabled = true;
+          authCodeInput.disabled = true;
+          verifyCodeBtn.disabled = true;
+          if (isEmailAvailable) submitBtn.disabled = false;
+        } else {
+          alert(result.message || '인증 실패. 다시 시도하세요.');
+          sendCodeBtn.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        alert('인증 확인 중 오류가 발생했습니다.');
+        sendCodeBtn.disabled = false;
+      }
+    });
+  
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      if (!isEmailAvailable) {
-        return alert('이메일 중복 확인을 먼저 해주세요.');
-      }
-
+  
+      if (!isEmailAvailable) return alert('이메일 중복 확인을 먼저 해주세요.');
+      if (!isPhoneVerified) return alert('전화번호 인증을 먼저 해주세요.');
+  
       const formData = new FormData(e.target);
       const name = formData.get('name');
       const password = formData.get('password');
       const confirmPassword = formData.get('confirmPassword');
       const email = formData.get('email');
       const phone_number = formData.get('phone_number');
-
-      if (password.length < 6) {
-        return alert('비밀번호는 최소 6자 이상이어야 합니다.');
-      }
-
-      if (password !== confirmPassword) {
-        return alert('비밀번호가 일치하지 않습니다.');
-      }
-
-      if (!/^01[016789]-\d{3,4}-\d{4}$/.test(phone_number)) {
-        return alert('전화번호 형식이 올바르지 않습니다. 예: 010-1234-5678');
-      }
-
+  
+      if (password.length < 6) return alert('비밀번호는 최소 6자 이상이어야 합니다.');
+      if (password !== confirmPassword) return alert('비밀번호가 일치하지 않습니다.');
+  
       const data = { email, password, name, phone_number };
-      
+  
       const res = await fetch('http://localhost:5000/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
         credentials: 'include'
       });
-
+  
       if (res.redirected) {
         window.location.href = res.url;
       }
@@ -99,5 +154,6 @@
       alert(result.message);
     });
   </script>
+  
 </body>
 </html>
