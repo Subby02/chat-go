@@ -10,7 +10,7 @@ const authCodeSchema = new mongoose.Schema({
     required: true,
   },
 }, {
-  timestamps: true, // createdAt, updatedAt 자동 생성
+  timestamps: true, versionKey: false // createdAt, updatedAt 자동 생성
 });
 
 // TTL 인덱스를 createdAt에 대해 설정: 3분 후 자동 삭제 (180초)

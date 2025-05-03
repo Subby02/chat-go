@@ -144,8 +144,7 @@ router.post('/send-code', async (req, res) => {
 
     const authCode = new AuthCode({
         phoneNumber: to,
-        code: code,
-        expiresAt: new Date(Date.now() + 3 * 60 * 1000), // 3분 후 만료
+        code: code
     });
     
     const saved = await authCode.save();
