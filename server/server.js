@@ -16,7 +16,8 @@ mongoose.connect(process.env.DB_URL)
     .catch(err => console.log('몽고디비 에러', err))
 
 app.use('/', require('./routes/user.js'))
-app.use('/animal', require('./routes/animal.js')) // 요청 주소가 /animal/* 일 때 이 라우터로 이동
+app.use('/api/animal', require('./routes/animal_get.js'));     // 보호 동물 라우터
+app.use('/api/animal', require('./routes/animal_lost.js'));    // 유실 동물 라우터
 app.use('/', require('./routes/object_get.js'))
 app.use('/', require('./routes/object_lost.js'))
 app.use('/', require('./routes/reward_object.js'))
@@ -93,6 +94,10 @@ app.get('/reward/object/detail/:id', (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 })
+
+app.get('/test/animal', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'animal.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`server running on PORT ${PORT}`);
