@@ -126,55 +126,67 @@ router.get('/check-email', async (req, res) => {
 })
 
 router.post('/send-code', async (req, res) => {
-    const to = req.query.phone_number;
+    const { phone_number: to } = req.query;
 
-    let exists = await AuthCode.exists({});
-    
-    if(exists){
-        exists = await AuthCode.exists({ phoneNumber: to });
+    // 이미 인증 코드가 존재하는지 확인
+    const existingAuthCode = await AuthCode.findOne({ phoneNumber: to });
 
-        if (exists) {
-            return res.status(404).json({
-                message: '해당 전화번호에 대한 인증 코드가 존재',
-            });
-        }   
+    if (existingAuthCode) {
+        return res.status(400).json({
+            message: '해당 전화번호에 대한 인증 코드가 이미 존재합니다.',
+        });
     }
 
     const code = generateAuthCode();
-
     const authCode = new AuthCode({
         phoneNumber: to,
         code: code
     });
-    
-    const saved = await authCode.save();
 
-    messageService.sendOne({
-        to: to,
-        from: process.env.SMS_FROM,
-        text: 'ChatGO 인증번호는 [' + code + '] 입니다.',
-    }).catch(err => console.error(err));
+    try {
+        // 인증 코드 저장
+        await authCode.save();
 
-    res.status(200).json({ message: '인증 메일 발송'});
-})
+        // 메시지 전송
+        await messageService.sendOne({
+            to: to,
+            from: process.env.SMS_FROM,
+            text: `ChatGO 인증번호는 [${code}] 입니다.`,
+        });
+
+        return res.status(200).json({ message: '인증번호가 발송되었습니다.' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: '인증 번호 발송 중 오류가 발생했습니다.' });
+    }
+});
 
 router.post('/verify-code', async (req, res) => {
-    const { to , code } = req.body;
+    const { to, code } = req.body;
 
-    const authCode = await AuthCode.findOne({ phoneNumber : to }).sort({ createdAt: -1 });
-    
-    if (!authCode) {
-        return res.status(400).json({ verified: false, message: '인증 코드가 존재하지 않거나 만료되었습니다.' });
+    try {
+        // 최신 인증 코드 찾기
+        const authCode = await AuthCode.findOne({ phoneNumber: to }).sort({ createdAt: -1 });
+
+        // 인증 코드가 존재하지 않거나 만료된 경우
+        if (!authCode) {
+            return res.status(400).json({ verified: false, message: '인증 코드가 존재하지 않거나 만료되었습니다.' });
+        }
+
+        // 인증 코드가 일치하지 않는 경우
+        if (authCode.code !== code) {
+            return res.status(400).json({ verified: false, message: '인증 코드가 일치하지 않습니다.' });
+        }
+
+        // 인증 코드 삭제
+        await AuthCode.deleteOne({ phoneNumber: to });
+
+        return res.status(200).json({ verified: true, message: '인증 성공!' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ verified: false, message: '인증 코드 검증 중 오류가 발생했습니다.' });
     }
-
-    if (authCode.code !== code) {
-        return res.status(400).json({ verified: false, message: '인증 코드가 일치하지 않습니다.' });
-    }
-
-    await AuthCode.deleteOne({ phoneNumber: to });
-
-    res.status(200).json({ verified: true, message: '인증 성공!' });
-})
+});
 
 router.get('/status', (req, res) => {
     if (req.isAuthenticated()) {
