@@ -4,6 +4,7 @@ const router = express.Router();
 const { AnimalGet } = require('../models/AnimalGet');
 
 // 보호 동물 글 등록
+// 1
 router.post('/get/write', async (req, res) => {
   try {
     const newAnimal = new AnimalGet(req.body);
