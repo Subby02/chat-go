@@ -16,7 +16,7 @@ const show_list = process.env.SHOW_LIST
 //글 목록 보여주기
 // 글 목록 JSON 데이터 응답, 데이터베이스를 사용하기 떄문에 /api사용
 //// 제보 목록 API
-router.get('/api/object/get/list/:num', async (req, res) => {
+router.get('/list/:num', async (req, res) => {
     try {
         const page = parseInt(req.params.num) || 1;
         const limit = parseInt(process.env.SHOW_LIST) || 10;
@@ -35,7 +35,7 @@ router.get('/api/object/get/list/:num', async (req, res) => {
 });
 
 //해당하는글 들어가기
-router.get('/api/object/get/detail/:id', async (req, res) => {
+router.get('/detail/:id', async (req, res) => {
     try {
         const post = await Object_get.findById(req.params.id);
         if (!post) return res.status(404).send("Not found");
@@ -47,9 +47,10 @@ router.get('/api/object/get/detail/:id', async (req, res) => {
 });
 
 //글 작성하기
-router.post('/api/object/get/write', async (req, res) => {
+router.post('/write', async (req, res) => {
     try {
         const {
+            id,
             user_id,
             date,
             atcId,
@@ -75,6 +76,7 @@ router.post('/api/object/get/write', async (req, res) => {
         }
 
         const newPost = new Object_get({
+            id,
             user_id,
             date: date || new Date(),
             atcId,
@@ -103,7 +105,7 @@ router.post('/api/object/get/write', async (req, res) => {
 });
 
 //해당하는 글 수정하기
-router.get('/api/object/get/edit/:id', async (req, res) => {
+router.get('/edit/:id', async (req, res) => {
     try {
         const post = await Object_get.findById(req.params.id);
         if (!post) return res.status(404).send('게시글을 찾을 수 없습니다.');
@@ -112,7 +114,7 @@ router.get('/api/object/get/edit/:id', async (req, res) => {
     }
 });
 
-router.put('/api/object/get/edit/:id', async (req, res) => {
+router.put('/edit/:id', async (req, res) => {
     try {
         const { uniq } = req.body;
         await Object_get.findByIdAndUpdate(req.params.id, { uniq });

@@ -13,7 +13,7 @@ const { Reward_object } = require('../models/reward_object');
 const show_list = process.env.SHOW_LIST
 
 //글 목록 보여주기
-router.get('/api/reward/object/list/:num', async (req, res) => {
+router.get('/list/:num', async (req, res) => {
     try {
         const page = parseInt(req.params.num) || 1;
         const limit = parseInt(process.env.SHOW_LIST) || 10;
@@ -32,7 +32,7 @@ router.get('/api/reward/object/list/:num', async (req, res) => {
 });
 
 //해당하는글 들어가기
-router.get('/api/reward/object/detail/:id', async (req, res) => {
+router.get('/detail/:id', async (req, res) => {
     try {
         const post = await Reward_object.findById(req.params.id);
         if (!post) return res.status(404).send("Not found");
@@ -44,7 +44,7 @@ router.get('/api/reward/object/detail/:id', async (req, res) => {
 });
 
 //글 작성하기
-router.post('/api/reward/object/write', async (req, res) => {
+router.post('/write', async (req, res) => {
     try {
         const {
             id,
@@ -58,14 +58,14 @@ router.post('/api/reward/object/write', async (req, res) => {
             lstSteNm,
             uniq,
             lstLctNm,
-            lstSbj,
+            lstSbjt,
             lstPlaceSeNm,
             lstFilePathImg,
             reward
         } = req.body;
 
         // 필수 항목 체크
-        if (!id || !user_id || !lstSbj) {
+        if (!id || !user_id || !lstSbjt) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다. (id, user_id, 제목)' });
         }
 
@@ -81,7 +81,7 @@ router.post('/api/reward/object/write', async (req, res) => {
             lstSteNm,
             uniq,
             lstLctNm,
-            lstSbj,
+            lstSbjt,
             lstPlaceSeNm,
             lstFilePathImg,
             reward
@@ -95,7 +95,7 @@ router.post('/api/reward/object/write', async (req, res) => {
 })
 
 //해당하는 글 수정하기
-router.get('/api/reward/object/edit/:id', async (req, res) => {
+router.get('/edit/:id', async (req, res) => {
     try {
         const post = await Reward_object.findById(req.params.id);
         if (!post) return res.status(404).send('게시글을 찾을 수 없습니다.');
@@ -104,7 +104,7 @@ router.get('/api/reward/object/edit/:id', async (req, res) => {
     }
 });
 
-router.put('/api/reward/object/edit/:id', async (req, res) => {
+router.put('/edit/:id', async (req, res) => {
     try {
         const { uniq } = req.body;
         await Reward_object.findByIdAndUpdate(req.params.id, { uniq });

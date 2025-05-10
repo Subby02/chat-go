@@ -14,7 +14,7 @@ const object_lost_schema = mongoose.Schema({
     lstSteNm: { type: String },
     uniq: { type: String },
     lstLctNm: { type: String },
-    lstSbj: { type: String },
+    lstSbjt: { type: String },
     orgId: { type: String },
     orgNm: { type: String },
     tel: { type: String },

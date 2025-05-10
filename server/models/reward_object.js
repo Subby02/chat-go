@@ -12,7 +12,7 @@ const reward_object_schema = mongoose.Schema({
     lstSteNm: { type: String },
     uniq: { type: String },
     lstLctNm: { type: String },
-    lstSbj: { type: String },
+    lstSbjt: { type: String },
     lstPlaceSeNm: { type: String },
     lstFilePathImg: { type: String },
     reward: { type: String }
