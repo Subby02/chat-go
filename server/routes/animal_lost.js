@@ -4,6 +4,7 @@ const router = express.Router();
 const { AnimalLost } = require('../models/AnimalLost');
 
 // 신고 글 등록
+// 1
 router.post('/lost/write', async (req, res) => {
     try {
         const newAnimal = new AnimalLost(req.body);
