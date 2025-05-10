@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>사례금 유기동물 상세 보기</title>
+</head>
+
+<body>
+    <h1>사례금 유기동물 상세 정보</h1>
+
+    <div id="detail-container">
+        <p>Loading...</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.getElementById('detail-container');
+            const segments = window.location.pathname.split('/');
+            const postId = segments[segments.length - 1];
+
+            if (!postId || !container) {
+                console.error('Missing ID or container element.');
+                container.innerHTML = '<p>Invalid access</p>';
+                return;
+            }
+
+            fetch(`/api/reward/animal/detail/${postId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Post not found');
+                    return res.json();
+                })
+                .then(result => {
+                    container.innerHTML = `
+                        <p><strong>신고자 이름:</strong> ${result.callName || '-'}</p>
+                        <p><strong>신고자 연락처:</strong> ${result.callTel || '-'}</p>
+                        <p><strong>발견 일자:</strong> ${result.happenDt || '-'}</p>
+                        <p><strong>발견 주소:</strong> ${result.happenAddr || '-'} ${result.happenAddrDtl || ''}</p>
+                        <p><strong>발견 장소:</strong> ${result.happenPlace || '-'}</p>
+                        <p><strong>품종:</strong> ${result.kindCd || '-'}</p>
+                        <p><strong>성별:</strong> ${result.sexCd || '-'}</p>
+                        <p><strong>나이:</strong> ${result.age || '-'}</p>
+                        <p><strong>특이사항:</strong> ${result.specialMark || '-'}</p>
+                        <p><strong>사례금:</strong> ${result.reward || '없음'}</p>
+                        ${result.popfile ? `<img src="${result.popfile}" width="200">` : '<p>이미지 없음</p>'}
+                        <br><br>
+                        <a href="/reward/animal/1">← 목록으로 돌아가기</a>
+                    `;
+                })
+                .catch(err => {
+                    console.error('Error loading post:', err.message);
+                    container.innerHTML = '<p>Post not found or server error.</p>';
+                });
+        });
+    </script>
+</body>
+
+</html>

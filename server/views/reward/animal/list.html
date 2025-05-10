@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>사례금 유기동물 게시글 목록</title>
+    <style>
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .write-button {
+            padding: 6px 12px;
+            font-size: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .write-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <h1>사례금 유기동물 게시글 목록</h1>
+        <a class="write-button" href="/reward/animal/write">글 작성하기</a>
+    </div>
+
+    <ul id="post-list">
+        <li>로딩 중...</li>
+    </ul>
+
+    <script>
+        const pageNum = 1;
+        fetch(`/api/reward/animal/list/${pageNum}`)
+            .then(res => res.json())
+            .then(posts => {
+                const ul = document.getElementById('post-list');
+                ul.innerHTML = '';
+
+                if (posts.length === 0) {
+                    ul.innerHTML = '<li>게시글이 없습니다.</li>';
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <h3>
+                            <a href="/reward/animal/detail/${post._id}">
+                                ${post.kindCd || '종류 없음'} (${post.sexCd || '성별 없음'})
+                            </a>
+                        </h3>
+                        <p>이름: ${post.callName || '-'}</p>
+                        <p>전화번호: ${post.callTel || '-'}</p>
+                        <p>발생 일자: ${post.happenDt || '-'}</p>
+                        <p>장소: ${post.happenPlace || '-'}</p>
+                        <p>특이사항: ${post.specialMark || '-'}</p>
+                        <p>사례금: ${post.reward || '없음'}</p>
+                        ${post.popfile ? `<img src="${post.popfile}" width="150">` : ''}
+                        <p>
+                            <a href="/reward/animal/edit/${post._id}" style="color: blue; text-decoration: underline;">수정하기</a>
+                        </p>
+                        <hr>
+                    `;
+                    ul.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching posts:', error);
+                document.getElementById('post-list').innerHTML = '<li>오류가 발생했습니다.</li>';
+            });
+    </script>
+</body>
+
+</html>
