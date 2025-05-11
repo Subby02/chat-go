@@ -74,14 +74,16 @@ passport.deserializeUser(async (user, done) => {
     })
 })
 
-router.get('/register', (req, res) => {
-    if(!req.isAuthenticated()){
-        res.sendFile(path.join(__dirname, '..', 'views', 'register.html'));
-    }else{
-        res.redirect('/')
-    }
-});
-
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: 회원가입
+ *     tags: [user]
+ *     responses:
+ *       200:
+ *         description: 회원가입 성공
+ */
 router.post('/register', async (req, res) => {
     if(!req.isAuthenticated()){
         const user = new User(req.body)
@@ -96,14 +98,16 @@ router.post('/register', async (req, res) => {
     }
 })
 
-router.get('/login', (req, res) => {
-    if(!req.isAuthenticated()){
-        res.sendFile(path.join(__dirname, '..', 'views', 'login.html'));
-    }else{
-        res.redirect('/')
-    }
-});
-
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: 로그인
+ *     tags: [user]
+ *     responses:
+ *       200:
+ *         description: 로그인 성공
+ */
 router.post('/login', (req, res, next) => {
     if(!req.isAuthenticated()){
         passport.authenticate('local', (error, user, info) => {
@@ -117,6 +121,16 @@ router.post('/login', (req, res, next) => {
     }
 })
 
+/**
+ * @swagger
+ * /check-email:
+ *   get:
+ *     summary: 이메일 확인
+ *     tags: [user]
+ *     responses:
+ *       200:
+ *         description: 이메일 확인 성공
+ */
 router.get('/check-email', async (req, res) => {
     const email = req.query.email;
     if (!email) return res.status(400).json({ message: '이메일이 필요합니다.' });
@@ -125,6 +139,17 @@ router.get('/check-email', async (req, res) => {
     return res.json({ exists: !!exists });
 })
 
+
+/**
+ * @swagger
+ * /send-code:
+ *   post:
+ *     summary: 인증 코드 발송
+ *     tags: [user]
+ *     responses:
+ *       200:
+ *         description: 인증 코드 발송 성공
+ */
 router.post('/send-code', async (req, res) => {
     const { phone_number: to } = req.query;
 
@@ -161,6 +186,16 @@ router.post('/send-code', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /verify-code:
+ *   post:
+ *     summary: 인증 번호 확인
+ *     tags: [user]
+ *     responses:
+ *       200:
+ *         description: 인증 번호 확인 성공
+ */
 router.post('/verify-code', async (req, res) => {
     const { to, code } = req.body;
 
@@ -188,6 +223,16 @@ router.post('/verify-code', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /status:
+ *   get:
+ *     summary: 로그인 상태
+ *     tags: [user]
+ *     responses:
+ *       200:
+ *         description: 로그인 상태 반환
+ */
 router.get('/status', (req, res) => {
     if (req.isAuthenticated()) {
       res.json({ authenticated: true, name: req.user.name });
@@ -196,6 +241,16 @@ router.get('/status', (req, res) => {
     }
 })
 
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: 로그아웃
+ *     tags: [user]
+ *     responses:
+ *       200:
+ *         description: 로그아웃 성공
+ */
 router.post('/logout', (req, res, next) => {
     if (req.isAuthenticated()) {
         req.logout((err) => {
