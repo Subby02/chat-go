@@ -80,4 +80,8 @@ router.get('/login', (req, res) => {
     }
 });
 
+router.get('/reset-password', (req, res) => {
+    res.sendFile(path.join(__dirname,'..', 'views', 'reset-password.html'));
+});
+
 module.exports = router
