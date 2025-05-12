@@ -18,7 +18,7 @@
   <script>
     async function checkAuth() {
       try {
-        const response = await fetch('/status', {
+        const response = await fetch('/api/status', {
           credentials: 'include' // 쿠키 기반 인증
         });
         const data = await response.json();

@@ -53,7 +53,7 @@
       if (!/^\S+@\S+\.\S+$/.test(email)) return alert('유효한 이메일 주소를 입력하세요.');
   
       try {
-        const res = await fetch(`http://localhost:5000/check-email?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`http://localhost:5000/api/check-email?email=${encodeURIComponent(email)}`);
         const result = await res.json();
   
         if (result.exists) {
@@ -78,7 +78,7 @@
         sendCodeBtn.disabled = true;
         codeVerifySection.style.display = 'block';
   
-        const res = await fetch(`http://localhost:5000/send-code?phone_number=${encodeURIComponent(phone)}`, {
+        const res = await fetch(`http://localhost:5000/api/send-code?phone_number=${encodeURIComponent(phone)}`, {
           method: 'POST'
         });
   
@@ -96,7 +96,7 @@
       const code = authCodeInput.value.trim();
   
       try {
-        const res = await fetch(`http://localhost:5000/verify-code`, {
+        const res = await fetch(`http://localhost:5000/api/verify-code`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ to: phone, code })
@@ -139,7 +139,7 @@
   
       const data = { email, password, name, phone_number };
   
-      const res = await fetch('http://localhost:5000/register', {
+      const res = await fetch('http://localhost:5000/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
