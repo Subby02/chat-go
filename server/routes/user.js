@@ -1,18 +1,17 @@
 const router = require('express').Router()
-const bcrypt = require('bcrypt')
 const { MongoClient, ObjectId } = require('mongodb')
+const bcrypt = require('bcryptjs');
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
-const coolsms = require('coolsms-node-sdk').default;
-const { User } = require('../models/user');
-const { AuthCode } = require('../models/authCodes');
+const coolsms = require('coolsms-node-sdk').default
+const { User } = require('../models/user')
+const { AuthCode } = require('../models/authCodes')
 
 function generateAuthCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 const messageService = new coolsms(process.env.SMS_API_KEY, process.env.SMS_API_SECRET);
-
 passport.use(new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
@@ -58,9 +57,10 @@ passport.deserializeUser(async (user, done) => {
 
 /**
  * @swagger
- * /register:
+ * /api/register:
  *   post:
- *     summary: 회원가입
+ *     summary: "회원가입"
+ *     description: "이 API는 사용자가 이메일, 전화번호 인증 후 회원가입을 진행하는 기능을 제공합니다."
  *     tags: [user]
  *     requestBody:
  *       required: true
@@ -68,35 +68,99 @@ passport.deserializeUser(async (user, done) => {
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
- *               - name
  *             properties:
  *               email:
  *                 type: string
- *                 example: user@example.com
+ *                 description: "사용자 이메일"
+ *                 example: "example@domain.com"
  *               password:
  *                 type: string
- *                 minLength: 5
- *                 example: securePassword123
- *               name:
- *                 type: string
- *                 example: 홍길동
+ *                 description: "사용자 비밀번호"
+ *                 example: "password123"
  *               phone_number:
  *                 type: string
- *                 example: 010-1234-5678
+ *                 description: "사용자 전화번호"
+ *                 example: "01012345678"
+ *               name:
+ *                 type: string
+ *                 description: "사용자 이름"
+ *                 example: "홍길동"
  *     responses:
  *       200:
- *         description: 회원가입 성공
+ *         description: "회원가입 성공, 로그인 페이지로 리디렉션"
+ *         headers:
+ *           Location:
+ *             type: string
+ *             description: "리디렉션된 페이지 URL"
+ *             example: "/login"
+ *       401:
+ *         description: "이메일 중복"
  *         content:
- *           text/html:
+ *           application/json:
  *             schema:
- *               type: string
- *               example: 로그인 페이지로 리디렉션됨
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "메일 중복"
+ *       402:
+ *         description: "전화번호 중복"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "전화번호 중복"
+ *       403:
+ *         description: "전화번호 인증 만료 또는 존재하지 않음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "전화번호 인증이 만료되었거나 존재하지 않습니다."
+ *       500:
+ *         description: "세션 종료 중 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "세션 종료 중 오류 발생"
  */
 router.post('/register', async (req, res) => {
     if(!req.isAuthenticated()){
+        const sessionData = req.session.phoneVerified;
+        const emailExists = await User.exists({ email : req.body.email });
+        const phoneExists = await User.exists({ phone_number : req.body.phone_number });
+
+        if(!!emailExists){
+            return res.status(401).json({ message: '메일 중복' });
+        }
+
+        if(!!phoneExists){
+            return res.status(402).json({ message: '전화번호 중복' });
+        }
+
+        if (!sessionData || Date.now() > sessionData.expiresAt) {
+            return res.status(403).json({ message: '전화번호 인증이 만료되었거나 존재하지 않습니다.' });
+        }
+
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('세션 종료 중 오류 발생', err);
+                return res.status(500).json({ message: '세션 종료 중 오류 발생' });
+            }
+
+            res.clearCookie('connect.sid'); 
+        });
+
         const user = new User(req.body)
 
         try {
@@ -109,10 +173,9 @@ router.post('/register', async (req, res) => {
     }
 })
 
-
 /**
  * @swagger
- * /login:
+ * /api/login:
  *   post:
  *     summary: 로그인
  *     tags: [user]
@@ -142,7 +205,7 @@ router.post('/register', async (req, res) => {
  *             schema:
  *               type: string
  *               example: 홈 페이지로 리디렉션됨
- *       400:
+ *       401:
  *         description: 로그인 실패 (잘못된 이메일 또는 비밀번호)
  *         content:
  *           application/json:
@@ -167,7 +230,7 @@ router.post('/login', (req, res, next) => {
     if(!req.isAuthenticated()){
         passport.authenticate('local', (error, user, info) => {
             if (error) return res.status(500).json(error)
-            if (!user) return res.status(400).json(info)
+            if (!user) return res.status(401).json(info)
             req.logIn(user, (err) => {
                 if (err) return next(err)
                 res.redirect('/')
@@ -178,7 +241,7 @@ router.post('/login', (req, res, next) => {
 
 /**
  * @swagger
- * /check-email:
+ * /api/check-email:
  *   get:
  *     summary: 이메일 중복 확인
  *     tags: [user]
@@ -202,7 +265,7 @@ router.post('/login', (req, res, next) => {
  *                   type: boolean
  *                   description: 이메일이 이미 존재하는지 여부
  *                   example: true
- *       400:
+ *       401:
  *         description: 이메일이 제공되지 않은 경우
  *         content:
  *           application/json:
@@ -215,7 +278,7 @@ router.post('/login', (req, res, next) => {
  */
 router.get('/check-email', async (req, res) => {
     const email = req.query.email;
-    if (!email) return res.status(400).json({ message: '이메일이 필요합니다.' });
+    if (!email) return res.status(401).json({ message: '이메일이 필요합니다.' });
 
     const exists = await User.exists({ email });
     return res.json({ exists: !!exists });
@@ -223,7 +286,7 @@ router.get('/check-email', async (req, res) => {
 
 /**
  * @swagger
- * /send-code:
+ * /api/send-code:
  *   post:
  *     summary: 인증 코드 전송
  *     tags: [user]
@@ -246,7 +309,7 @@ router.get('/check-email', async (req, res) => {
  *                 message:
  *                   type: string
  *                   example: "인증번호가 발송되었습니다."
- *       400:
+ *       401:
  *         description: 이미 인증 코드가 발송된 전화번호
  *         content:
  *           application/json:
@@ -274,7 +337,7 @@ router.post('/send-code', async (req, res) => {
     const existingAuthCode = await AuthCode.findOne({ phoneNumber: to });
 
     if (existingAuthCode) {
-        return res.status(400).json({
+        return res.status(401).json({
             message: '해당 전화번호에 대한 인증 코드가 이미 존재합니다.',
         });
     }
@@ -305,7 +368,7 @@ router.post('/send-code', async (req, res) => {
 
 /**
  * @swagger
- * /verify-code:
+ * /api/verify-code:
  *   post:
  *     summary: 인증 코드 검증
  *     tags: [user]
@@ -341,7 +404,7 @@ router.post('/send-code', async (req, res) => {
  *                 message:
  *                   type: string
  *                   example: "인증 성공!"
- *       400:
+ *       401:
  *         description: 인증 코드 검증 실패
  *         content:
  *           application/json:
@@ -354,6 +417,19 @@ router.post('/send-code', async (req, res) => {
  *                 message:
  *                   type: string
  *                   example: "인증 코드가 존재하지 않거나 만료되었습니다."
+ *       402:
+ *         description: 인증 코드 불일치
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 verified:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "인증 코드가 일치하지 않습니다."
  *       500:
  *         description: 서버 오류 (인증 코드 검증 중)
  *         content:
@@ -377,13 +453,18 @@ router.post('/verify-code', async (req, res) => {
 
         // 인증 코드가 존재하지 않거나 만료된 경우
         if (!authCode) {
-            return res.status(400).json({ verified: false, message: '인증 코드가 존재하지 않거나 만료되었습니다.' });
+            return res.status(401).json({ verified: false, message: '인증 코드가 존재하지 않거나 만료되었습니다.' });
         }
 
         // 인증 코드가 일치하지 않는 경우
         if (authCode.code !== code) {
-            return res.status(400).json({ verified: false, message: '인증 코드가 일치하지 않습니다.' });
+            return res.status(402).json({ verified: false, message: '인증 코드가 일치하지 않습니다.' });
         }
+
+         req.session.phoneVerified = {
+            phone_number: to,
+            expiresAt: Date.now() + 5 * 60 * 1000  // 5분 유효
+        };
 
         // 인증 코드 삭제
         await AuthCode.deleteOne({ phoneNumber: to });
@@ -397,7 +478,7 @@ router.post('/verify-code', async (req, res) => {
 
 /**
  * @swagger
- * /status:
+ * /api/status:
  *   get:
  *     summary: 현재 인증 상태 확인
  *     tags: [user]
@@ -436,7 +517,7 @@ router.get('/status', (req, res) => {
 
 /**
  * @swagger
- * /logout:
+ * /api/logout:
  *   post:
  *     summary: 사용자 로그아웃
  *     tags: [user]
@@ -470,6 +551,95 @@ router.post('/logout', (req, res, next) => {
         res.redirect('/');
     }
 })
+
+/**
+ * @swagger
+ * /api/reset-password:
+ *   post:
+ *     summary: "비밀번호 재설정"
+ *     description: "전화번호 인증을 완료한 후 비밀번호를 재설정하는 기능을 제공합니다."
+ *     tags: [user]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: "새로운 비밀번호"
+ *                 example: "newPassword123"
+ *     responses:
+ *       200:
+ *         description: "비밀번호 변경 성공, 로그인 페이지로 리디렉션"
+ *         headers:
+ *           Location:
+ *             type: string
+ *             description: "리디렉션된 페이지 URL"
+ *             example: "/login"
+ *       401:
+ *         description: "전화번호 인증 만료 또는 존재하지 않음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "전화번호 인증이 만료되었거나 존재하지 않습니다."
+ *       402:
+ *         description: "해당 전화번호로 등록된 사용자가 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "해당 전화번호로 등록된 사용자가 없습니다."
+ *       500:
+ *         description: "비밀번호 변경 중 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "비밀번호 변경 중 오류가 발생했습니다."
+ */
+router.post('/reset-password', async (req, res) => {
+    const { password } = req.body;
+    const sessionData = req.session.phoneVerified;
+
+    if (!sessionData || Date.now() > sessionData.expiresAt) {
+        return res.status(401).json({ message: '전화번호 인증이 만료되었거나 존재하지 않습니다.' });
+    }
+
+    try {
+        const user = await User.findOne({ phone_number: sessionData.phone_number });
+        if (!user) {
+            return res.status(402).json({ message: '해당 전화번호로 등록된 사용자가 없습니다.' });
+        }
+
+        user.password = password; 
+        await user.save();    
+
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('세션 종료 중 오류 발생', err);
+                return res.status(500).json({ message: '세션 종료 중 오류 발생' });
+            }
+
+            res.clearCookie('connect.sid');  // 세션 쿠키 삭제
+            return res.redirect('/login'); // 로그인 페이지로 리디렉션
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: '비밀번호 변경 중 오류가 발생했습니다.' });
+    }
+});
 
 
 module.exports = router

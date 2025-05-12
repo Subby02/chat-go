@@ -11,6 +11,10 @@
     <button type="submit">로그인</button>
   </form>
 
+  <!-- 비밀번호 재설정 링크 -->
+  <br>
+  <a href="/reset-password">비밀번호를 잊으셨나요?</a>
+
   <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -24,7 +28,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-        credentials: 'include' // 쿠키 포함(react로 할 경우 이부분 지워야됨)
+        credentials: 'include' // 쿠키 포함
       });
 
       if (res.redirected) {
