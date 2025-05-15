@@ -11,6 +11,8 @@ function generateAuthCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+console.log(process.env.SMS_API_SECRET);
+
 const messageService = new coolsms(process.env.SMS_API_KEY, process.env.SMS_API_SECRET);
 passport.use(new LocalStrategy({
     usernameField: 'email',
@@ -165,7 +167,7 @@ router.post('/register', async (req, res) => {
 
         try {
             await user.save();
-            return res.redirect('/login');
+            return res.status(200).json({ message: '회원가입 성공' });
         } catch (err) {
             return res.json({ message: err.message });
         }

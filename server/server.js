@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 const mongoose = require("mongoose");
 const MongoStore = require('connect-mongo')
 const session = require('express-session')
@@ -11,6 +12,11 @@ require('dotenv').config()
 
 const app = express();
 const PORT = process.env.PORT;
+
+app.use(cors({
+  origin: 'http://localhost:5173',  // React 앱 주소
+  credentials: true                // ✅ 세션 쿠키 허용
+}));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'views')));
