@@ -1,0 +1,76 @@
+
+
+.Register_Element {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  margin-left: -12px;
+}
+
+.txt1 {
+  font-size: 65px;
+  margin-top: 20px;
+}
+
+.txt2 {
+  font-size: 55px;
+  margin-top: 30px;
+  margin-left: 10px;
+}
+
+.input_box {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.input_box input {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.email_box, .phone_box, .key_box {
+  display: flex;
+  width: 100%;
+  gap: 3px;
+}
+
+.email_box, .phone_box, .key_box input {
+  flex: 1;
+}
+
+.input_box button {
+  transition: background-color 0.3s ease;
+}
+
+.btn {
+  margin-top: 10px;
+  width: 400px;
+}
+
+.btn button {
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.input_box button:hover {
+  background-color: #9999;
+}
+
+.btn button:hover {
+  background-color: #444;
+}
+
