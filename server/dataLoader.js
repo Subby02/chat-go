@@ -92,12 +92,12 @@ function getDocument(item, si, sgg, emd){
 }
 
 async function updateData(lastAtcId) {
+    let documents = [];
     let pageNo = 1;
     let isDone = false;
 
     while (true) {
         console.log(`${pageNo} Start!`);
-        let documents = [];
 
         const result = await fetchPage(pageNo, numOfRows);
         console.log(`${pageNo} Page Loaded!`);
@@ -123,10 +123,11 @@ async function updateData(lastAtcId) {
         }
 
         console.log(`${cnt}/${numOfRows} Loaded`);
-        await Object_lost.insertMany(documents);
         console.log(`${pageNo} End`);
 
         if (isDone) {
+            documents.reverse();
+            await Object_lost.insertMany(documents);
             console.log('데이터 수집 완료');
             break;
         }
@@ -137,12 +138,12 @@ async function updateData(lastAtcId) {
 }
 
 async function initData() {
+    let documents = [];
     let totalCnt = 0;
     let pageNo = 1;
 
     while (true) {
         console.log(`${pageNo} Start!`);
-        let documents = [];
 
         const result = await fetchPage(pageNo, numOfRows);
         console.log(`${pageNo} Page Loaded!`);
@@ -160,9 +161,10 @@ async function initData() {
             }
         }
         console.log(`${cnt}/${numOfRows} Loaded`);
-        await Object_lost.insertMany(documents);
         totalCnt += cnt;
         if (totalCnt >= initMax){
+            documents.reverse();
+            await Object_lost.insertMany(documents);
             console.log('데이터 수집 완료');
             break;
         }
@@ -178,7 +180,7 @@ async function deleteAll() {
 }
 
 async function latestDocument() {
-    const sorted = await Object_lost.find().sort({ _id: -1 }).limit(1);
+    const sorted = await Object_lost.find().limit(1);
     return sorted[0];
 }
 
@@ -186,7 +188,7 @@ async function update() {
     await connectDB();
 
     const lastDoc = await latestDocument();
-
+    console.log(lastDoc);
     await updateData(lastDoc.atcId);
 
     mongoose.disconnect(); 
@@ -209,11 +211,11 @@ async function clear() {
 }
 
 async function test() {
-    let result = await fetchAddress("맥도날드");
+    let result = await fetchAddress("서울경찰서");
 
     console.log(result)
 }
 
-init();
+update();
 
 
