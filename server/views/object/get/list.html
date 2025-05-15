@@ -29,7 +29,7 @@
 
 <body>
     <div class="top-bar">
-        <h1>분실물 습득 게시글 목록</h1>
+        <h1>분실물 습득득 게시글 목록</h1>
         <a class="write-button" href="/object/get/write">글 작성하기</a>
     </div>
 
@@ -37,44 +37,84 @@
         <li>로딩 중...</li>
     </ul>
 
-    <script>
-        const pageNum = 1;
-        fetch(`/api/object/get/list/${pageNum}`)
-            .then(res => res.json())
-            .then(posts => {
-                const ul = document.getElementById('post-list');
-                ul.innerHTML = '';
+    <div id="pagination" style="margin-top: 20px;"></div>
 
-                if (posts.length === 0) {
-                    ul.innerHTML = '<li>게시글이 없습니다.</li>';
-                    return;
+    <script>
+        // 경로에서 페이지 번호 추출
+        function getPageFromPath() {
+            const match = window.location.pathname.match(/\/object\/get\/(\d+)$/);
+            const page = match ? parseInt(match[1]) : 1;
+            return isNaN(page) || page < 1 ? 1 : page;
+        }
+
+        function loadPosts(pageNum) {
+            fetch(`/api/object/get/list/${pageNum}`)
+                .then(res => res.json())
+                .then(posts => {
+                    const ul = document.getElementById('post-list');
+                    ul.innerHTML = '';
+
+                    if (posts.length === 0) {
+                        ul.innerHTML = '<li>게시글이 없습니다.</li>';
+                        return;
+                    }
+
+                    posts.forEach(post => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <h3>
+                                <a href="/object/get/detail/${post._id}">
+                                    ${post.fdPrdtNm || '물품명 없음'}
+                                </a>
+                            </h3>
+                            <p><strong>분실일자:</strong> ${post.date || '-'}</p>
+                            <p><strong>보관장소:</strong> ${post.depPlace || '-'}</p>
+                            ${post.fdFilePathImg ? `<img src="${post.fdFilePathImg}" width="150">` : ''}
+                            <hr>
+                        `;
+                        ul.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching posts:', error);
+                    document.getElementById('post-list').innerHTML = '<li>오류가 발생했습니다.</li>';
+                });
+        }
+
+        function createPagination(totalPages, currentPage) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.style.marginRight = '5px';
+
+                if (i === currentPage) {
+                    btn.style.fontWeight = 'bold';
+                    btn.disabled = true;
                 }
 
-                posts.forEach(post => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <h3>
-                            <a href="/object/get/detail/${post._id}">
-                            ${post.fdPrdtNm || '물품명 없음'}
-                            </a>
-                        </h3>
-                        <p>습득 장소: ${post.fdPlace || '장소 없음'}</p>
-                        <p>습득 일자: ${post.fdYmd || '일자 없음'} ${post.fdHor || ''}</p>
-                        <p>특이사항: ${post.uniq || '-'}</p>
-                        <p>보관 장소: ${post.depPlace || '-'}</p>
-                        <p>기관: ${post.orgNm || '-'} (${post.tel || '-'})</p>
-                        ${post.fdFilePathImg ? `<img src="${post.fdFilePathImg}" width="150">` : ''}
-                        <p>
-                            <a href="/object/get/edit/${post._id}" style="color: blue; text-decoration: underline;">수정하기</a>
-                        </p>
-                        <hr>
-                    `;
-                    ul.appendChild(li);
-                });
+                btn.onclick = () => {
+                    window.location.href = `/object/get/${i}`;
+                };
+
+                pagination.appendChild(btn);
+            }
+        }
+
+        // 초기 실행
+        const currentPage = getPageFromPath();
+
+        fetch('/api/object/get/count')
+            .then(res => res.json())
+            .then(data => {
+                const totalPages = Math.ceil(data.totalCount); // 서버에서 페이지 수를 나눈 상태면 ceil만
+                createPagination(totalPages, currentPage);
+                loadPosts(currentPage);
             })
-            .catch(error => {
-                console.error('Error fetching posts:', error);
-                document.getElementById('post-list').innerHTML = '<li>오류가 발생했습니다.</li>';
+            .catch(err => {
+                console.error('페이지 수 불러오기 실패:', err);
             });
     </script>
 </body>

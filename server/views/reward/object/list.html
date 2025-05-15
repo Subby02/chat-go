@@ -37,45 +37,86 @@
         <li>로딩 중...</li>
     </ul>
 
-    <script>
-        const pageNum = 1; // 페이지 번호
-        fetch(`/api/reward/object/list/${pageNum}`)
-            .then(res => res.json())
-            .then(posts => {
-                const ul = document.getElementById('post-list');
-                ul.innerHTML = '';
+    <div id="pagination" style="margin-top: 20px;"></div>
 
-                if (posts.length === 0) {
-                    ul.innerHTML = '<li>게시글이 없습니다.</li>';
-                    return;
+    <script>
+        function getPageFromURL() {
+            const match = window.location.pathname.match(/\/reward\/object\/(\d+)/);
+            const page = match ? parseInt(match[1]) : 1;
+            return isNaN(page) || page < 1 ? 1 : page;
+        }
+
+        function loadPosts(pageNum) {
+            fetch(`/api/reward/object/list/${pageNum}`)
+                .then(res => res.json())
+                .then(posts => {
+                    const ul = document.getElementById('post-list');
+                    ul.innerHTML = '';
+
+                    if (posts.length === 0) {
+                        ul.innerHTML = '<li>게시글이 없습니다.</li>';
+                        return;
+                    }
+
+                    posts.forEach(post => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <h3>
+                                <a href="/reward/object/detail/${post._id}">
+                                    ${post.lstSbjt || '제목 없음'}
+                                </a>
+                            </h3>
+                            <p><strong>물품명:</strong> ${post.lstPrdtNm || '정보 없음'}</p>
+                            <p><strong>분실일자:</strong> ${post.lstYmd || '-'}</p>
+                            <p><strong>분실장소:</strong> ${post.lstPlace || '-'}</p>
+                            <p><strong>게시제목:</strong> ${post.lstSbjt || '-'}</p>
+                            <p><strong>사례금:</strong> ${post.reward ? post.reward + '원' : '-'}</p>
+                            ${post.lstFilePathImg ? `<img src="${post.lstFilePathImg}" width="150">` : ''}
+                            <hr>
+                        `;
+                        ul.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching posts:', error);
+                    document.getElementById('post-list').innerHTML = '<li>오류가 발생했습니다.</li>';
+                });
+        }
+
+        function createPagination(totalCount, currentPage) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalCount; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.style.marginRight = '5px';
+
+                if (i === currentPage) {
+                    btn.style.fontWeight = 'bold';
+                    btn.disabled = true;
                 }
 
-                posts.forEach(post => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <h3>
-                            <a href="/reward/object/detail/${post._id}">
-                                ${post.lstSbj || '제목 없음'}
-                            </a>
-                        </h3>
-                        <p>물품명: ${post.lstPrdtNm || '-'}</p>
-                        <p>분실일시: ${post.lstYmd || '-'} ${post.lstHor || ''}</p>
-                        <p>장소: ${post.lstPlace || '-'} (${post.lstPlaceSeNm || '-'})</p>
-                        <p>물품 분류: ${post.prdtClnm || '-'}</p>
-                        <p>특이사항: ${post.uniq || '-'}</p>
-                        <p>사례금: ${post.reward || '없음'}</p>
-                        ${post.lstFilePathImg ? `<img src="${post.lstFilePathImg}" width="150">` : ''}
-                        <p>
-                            <a href="/reward/object/edit/${post._id}" style="color: blue; text-decoration: underline;">수정하기</a>
-                        </p>
-                        <hr>
-                    `;
-                    ul.appendChild(li);
-                });
+                btn.onclick = () => {
+                    window.location.href = `/reward/object/${i}`;
+                };
+
+                pagination.appendChild(btn);
+            }
+        }
+
+        // 초기 실행
+        const currentPage = getPageFromURL();
+
+        fetch('/api/reward/object/count')
+            .then(res => res.json())
+            .then(data => {
+                const pageCount = data.totalCount || 1;
+                createPagination(pageCount, currentPage);
+                loadPosts(currentPage);
             })
-            .catch(error => {
-                console.error('Error fetching posts:', error);
-                document.getElementById('post-list').innerHTML = '<li>오류가 발생했습니다.</li>';
+            .catch(err => {
+                console.error('페이지 수 불러오기 실패:', err);
             });
     </script>
 </body>

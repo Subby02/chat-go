@@ -16,15 +16,22 @@ const show_list = process.env.SHOW_LIST
 router.get('/list/:num', async (req, res) => {
     try {
         const page = parseInt(req.params.num) || 1;
-        const limit = parseInt(process.env.SHOW_LIST) || 10;
+        const limit = show_list || 10;
         const skip = (page - 1) * limit;
 
         const result = await Reward_object.find({})
+            .sort({ _id: -1 })
             .skip(skip)
             .limit(limit)
             .exec();
 
-        res.json(result);
+        const formatted = result.map(doc => {
+            const obj = doc.toObject();
+            obj.date = obj.date ? obj.date.toISOString().split('T')[0] : null;
+            return obj;
+        });
+
+        res.json(formatted);
     } catch (err) {
         console.error('Database query error:', err.message);
         res.status(500).json({ error: 'Server Error' });
@@ -36,7 +43,14 @@ router.get('/detail/:id', async (req, res) => {
     try {
         const post = await Reward_object.findById(req.params.id);
         if (!post) return res.status(404).send("Not found");
-        res.json(post);
+
+        const obj = post.toObject();
+        const iso = obj.date.toISOString();
+        const [datePart, timePart] = iso.split('T');
+        const time = timePart.slice(0, 5);
+        obj.date = `${datePart} ${time}`;
+
+        res.json(obj);
     } catch (err) {
         console.error("Error:", err.message);
         res.status(500).send("Internal Server Error");
@@ -47,8 +61,6 @@ router.get('/detail/:id', async (req, res) => {
 router.post('/write', async (req, res) => {
     try {
         const {
-            id,
-            user_id,
             date,
             lstPrdtNm,
             lstYmd,
@@ -65,13 +77,12 @@ router.post('/write', async (req, res) => {
         } = req.body;
 
         // 필수 항목 체크
-        if (!id || !user_id || !lstSbjt) {
+        if (!lstPrdtNm || !lstYmd || !lstPlace || !reward) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다. (id, user_id, 제목)' });
         }
 
         const newPost = new Reward_object({
-            id,
-            user_id,
+            user_id: req.user.email,
             date: date || new Date(),
             lstPrdtNm,
             lstYmd,
@@ -94,23 +105,15 @@ router.post('/write', async (req, res) => {
     }
 })
 
-//해당하는 글 수정하기
-router.get('/edit/:id', async (req, res) => {
+// 게시글 총 개수 반환 API
+router.get('/count', async (req, res) => {
     try {
-        const post = await Reward_object.findById(req.params.id);
-        if (!post) return res.status(404).send('게시글을 찾을 수 없습니다.');
+        const totalCount = await Reward_object.countDocuments({});
+        res.json({ totalCount: Math.ceil(totalCount / 10) });
     } catch (err) {
-        res.status(500).send("Server Error");
+        console.error('게시글 수 조회 오류:', err.message);
+        res.status(500).json({ error: '서버 오류' });
     }
 });
 
-router.put('/edit/:id', async (req, res) => {
-    try {
-        const { uniq } = req.body;
-        await Reward_object.findByIdAndUpdate(req.params.id, { uniq });
-        res.json({ message: '수정 완료' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
 module.exports = router

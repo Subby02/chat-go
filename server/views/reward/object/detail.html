@@ -32,13 +32,20 @@
                 })
                 .then(result => {
                     container.innerHTML = `
+                        <p><strong>사례금 분실물 ID:</strong> ${result.id || '-'}</p>
+                        <p><strong>사용자 ID:</strong> ${result.user_id || '-'}</p>
+                        <p><strong>게시 날짜:</strong> ${result.date || '-'}</p>
                         <p><strong>물품명:</strong> ${result.lstPrdtNm || '정보 없음'}</p>
-                        <p><strong>분실 일시:</strong> ${result.lstYmd || '-'} ${result.lstHor || ''}</p>
-                        <p><strong>분실 장소:</strong> ${result.lstPlace || '-'}</p>
-                        <p><strong>분류:</strong> ${result.prdtClNm || '-'}</p>
-                        <p><strong>상태:</strong> ${result.lstSteNm || '-'}</p>
-                        <p><strong>지역:</strong> ${result.lstLctNm || '-'}</p>
+                        <p><strong>분실일자:</strong> ${result.lstYmd || '-'}</p>
+                        <p><strong>분실시간:</strong> ${result.lstHor || '-'}</p>
+                        <p><strong>분실장소:</strong> ${result.lstPlace || '-'}</p>
+                        <p><strong>물품 분류명:</strong> ${result.prdtClNm || '-'}</p>
+                        <p><strong>분실물 상태명:</strong> ${result.lstSteNm || '-'}</p>
                         <p><strong>특이사항:</strong> ${result.uniq || '-'}</p>
+                        <p><strong>분실지역명:</strong> ${result.lstLctNm || '-'}</p>
+                        <p><strong>게시제목:</strong> ${result.lstSbjt || '-'}</p>
+                        <p><strong>분실장소 구분명:</strong> ${result.lstPlaceSeNm || '-'}</p>
+                        <p><strong>사례금:</strong> ${result.reward ? result.reward + '원' : '-'}</p>
                         <p><strong>기관:</strong> ${result.orgNm || '-'} (${result.tel || '-'})</p>
                         ${result.lstFilePathImg ? `<img src="${result.lstFilePathImg}" width="200">` : '<p>이미지 없음</p>'}
                         <br><br>
