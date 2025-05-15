@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const reward_animal_schema = mongoose.Schema({
-    id: { type: String },
     user_id: { type: String },
     date: { type: Date },
     callName: { type: String },
@@ -10,6 +9,9 @@ const reward_animal_schema = mongoose.Schema({
     happenAddr: { type: String },
     happenAddrDtl: { type: String },
     happenPlace: { type: String },
+    si: { type: String },
+    sgg: { type: String },
+    emd: { type: String },
     popfile: { type: String },
     kindCd: { type: String },
     sexCd: { type: String, enum: ['M', 'F'] },

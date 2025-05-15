@@ -162,7 +162,6 @@ router.post('/register', async (req, res) => {
 
             res.clearCookie('connect.sid'); 
         });
-
         const user = new User(req.body)
 
         try {
@@ -171,7 +170,7 @@ router.post('/register', async (req, res) => {
         } catch (err) {
             return res.json({ message: err.message });
         }
-    
+
     }
 })
 
@@ -229,7 +228,7 @@ router.post('/register', async (req, res) => {
  *                   example: 서버 오류 발생
  */
 router.post('/login', (req, res, next) => {
-    if(!req.isAuthenticated()){
+    if (!req.isAuthenticated()) {
         passport.authenticate('local', (error, user, info) => {
             if (error) return res.status(500).json(error)
             if (!user) return res.status(401).json(info)
@@ -511,9 +510,9 @@ router.post('/verify-code', async (req, res) => {
  */
 router.get('/status', (req, res) => {
     if (req.isAuthenticated()) {
-      res.json({ authenticated: true, name: req.user.name });
+        res.json({ authenticated: true, name: req.user.name });
     } else {
-      res.json({ authenticated: false });
+        res.json({ authenticated: false });
     }
 })
 
@@ -545,7 +544,7 @@ router.post('/logout', (req, res, next) => {
             req.session.destroy((err) => {
                 if (err) return next(err);
 
-                res.clearCookie('connect.sid'); 
+                res.clearCookie('connect.sid');
                 res.redirect('/');
             });
         });

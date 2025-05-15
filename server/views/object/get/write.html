@@ -10,21 +10,13 @@
     <h1>습득물 등록</h1>
 
     <form id="write-form">
-        <label>ID (테스트용): <input type="text" name="id"></label><br>
-        <label>유저 ID (테스트용): <input type="text" name="user_id"></label><br>
-        <label>물품명 (필수): <input type="text" name="fdPrdtNm" required></label><br>
-        <label>습득일자: <input type="date" name="fdYmd"></label><br>
-        <label>습득시간: <input type="time" name="fdHor"></label><br>
-        <label>습득장소 (필수): <input type="text" name="fdPlace" required></label><br>
+        <label>게시 날짜: <input type="date" name="date"></label><br>
+        <label>물품명 (필수): <input type="text" name="fdPrdtNm"></label><br>
+        <label>습득일자 (필수): <input type="date" name="fdYmd"></label><br>
+        <label>습득장소 (필수): <input type="text" name="fdPlace"></label><br>
         <label>특이사항: <input type="text" name="uniq"></label><br>
-        <label>습득순번: <input type="text" name="fdSn"></label><br>
         <label>물품분류명: <input type="text" name="prdtClNm"></label><br>
-        <label>보관장소 (필수): <input type="text" name="depPlace" required></label><br>
-        <label>보관상태명: <input type="text" name="csteSteNm"></label><br>
-        <label>기관ID: <input type="text" name="orgId"></label><br>
-        <label>기관명: <input type="text" name="orgNm"></label><br>
-        <label>전화번호: <input type="text" name="tel"></label><br>
-        <label>보관기관구분명: <input type="text" name="fndKeepOrgnSeNm"></label><br>
+        <label>보관 장소 (필수): <input type="text" name="depPlace"></label><br>
         <label>이미지 URL: <input type="text" name="fdFilePathImg"></label><br><br>
 
         <button type="submit">등록하기</button>
@@ -51,7 +43,7 @@
                 const result = await res.json();
                 if (res.ok) {
                     document.getElementById("result").innerHTML =
-                        `<p style="color:green">등록 완료! 게시글 ID: ${result.id}</p>
+                        `<p style="color:green">등록 완료!</p>
                          <a href="/object/get/1">목록으로 이동</a>`;
                     form.reset();
                 } else {
