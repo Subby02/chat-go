@@ -519,16 +519,24 @@ router.get('/search', async (req, res) => {
 
     // 통합 텍스트 검색 (OR)
     if (search) {
-        const regex = { $regex: search, $options: 'i' };
-        const orTextConditions = [
-            { lstPrdtNm: regex },
-            { lstPlace: regex },
-            { prdtClNm: regex },
-            { uniq: regex },
-            { lstSbjt: regex },
-            { lstPlaceSeNm: regex }
-        ];
-        andConditions.push({ $or: orTextConditions });
+        const words = search.trim().split(/\s+/);
+        const orGroup = [];
+
+        for (const word of words) {
+            const regex = { $regex: word, $options: 'i' };
+            orGroup.push({
+                $or: [
+                    { lstPrdtNm: regex },
+                    { lstPlace: regex },
+                    { prdtClNm: regex },
+                    { uniq: regex },
+                    { lstSbjt: regex },
+                    { lstPlaceSeNm: regex }
+                ]
+            });
+        }
+
+        andConditions.push(...orGroup); // 모든 단어가 적어도 한 필드에 포함되어야 함
     }
 
     // 날짜 범위 (OR)
@@ -552,7 +560,7 @@ router.get('/search', async (req, res) => {
         andConditions.push({ $or: dateOrConditions });
     }
 
-    // ✅ si / sgg / emd는 개별 검색 (정확 일치)
+    // si / sgg / emd는 개별 검색 (정확 일치)
     if (si) andConditions.push({ si: { $regex: si, $options: 'i' } });
     if (sgg) andConditions.push({ sgg: { $regex: sgg, $options: 'i' } });
     if (emd) andConditions.push({ emd: { $regex: emd, $options: 'i' } });
