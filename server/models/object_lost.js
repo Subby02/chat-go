@@ -7,7 +7,7 @@ const object_lost_schema = mongoose.Schema({
     date: { type: Date },
     atcId: { type: String },
     lstPrdtNm: { type: String },
-    lstYmd: { type: String },
+    lstYmd: { type: Date },
     lstHor: { type: String },
     lstPlace: { type: String },
     si: { type: String },

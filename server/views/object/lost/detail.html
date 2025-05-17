@@ -18,38 +18,35 @@
             const container = document.getElementById('detail-container');
             const segments = window.location.pathname.split('/');
             const postId = segments[segments.length - 1];
+            const queryString = window.location.search;
 
-            if (!postId || !container) {
-                console.error('Missing ID or container');
-                container.innerHTML = '<p>Invalid request.</p>';
-                return;
-            }
-
-            fetch(`/api/object/lost/detail/${postId}`)
-                .then(res => {
-                    if (!res.ok) throw new Error('Post not found');
-                    return res.json();
-                })
+            fetch(`/api/object/lost/detail/${postId}${queryString}`)
+                .then(res => res.json())
                 .then(result => {
+                    const post = result.post;
+                    const query = result.query;
+
+                    const backLink = `/object/lost/list?${new URLSearchParams(query).toString()}`;
+
                     container.innerHTML = `
-                        <p><strong>물품명:</strong> ${result.lstPrdtNm || '정보 없음'}</p>
-                        <p><strong>분실 일시:</strong> ${result.lstYmd || '-'} ${result.lstHor || ''}</p>
-                        <p><strong>분실 장소:</strong> ${result.lstPlace || '-'}</p>
-                        <p><strong>분류:</strong> ${result.prdtClNm || '-'}</p>
-                        <p><strong>상태:</strong> ${result.lstSteNm || '-'}</p>
-                        <p><strong>지역:</strong> ${result.lstLctNm || '-'}</p>
-                        <p><strong>특이사항:</strong> ${result.uniq || '-'}</p>
-                        <p><strong>게시 제목:</strong> ${result.lstSbjt || '-'}</p>
-                        <p><strong>기관:</strong> ${result.orgNm || '-'} (${result.tel || '-'})</p>
-                        <p><strong>기관 ID:</strong> ${result.orgId || '-'}</p>
-                        <p><strong>분실장소 구분명:</strong> ${result.lstPlaceSeNm || '-'}</p>
-                        <p><strong>관리 ID:</strong> ${result.atcId || '-'}</p>
-                        <p><strong>작성자 ID:</strong> ${result.user_id || '-'}</p>
-                        <p><strong>게시 날짜:</strong> ${result.date || '-'}</p>
-                        ${result.lstFilePathImg ? `<img src="${result.lstFilePathImg}" width="200">` : '<p>이미지 없음</p>'}
-                        <br><br>
-                        <a href="/object/lost/1">← 목록으로 돌아가기</a>
-                    `;
+                    <p><strong>물품명:</strong> ${post.lstPrdtNm || '정보 없음'}</p>
+                    <p><strong>분실 일시:</strong> ${post.lstYmd || '-'}</p>
+                    <p><strong>분실 장소:</strong> ${post.lstPlace || '-'}</p>
+                    <p><strong>분류:</strong> ${post.prdtClNm || '-'}</p>
+                    <p><strong>상태:</strong> ${post.lstSteNm || '-'}</p>
+                    <p><strong>지역:</strong> ${post.lstLctNm || '-'}</p>
+                    <p><strong>특이사항:</strong> ${post.uniq || '-'}</p>
+                    <p><strong>게시 제목:</strong> ${post.lstSbjt || '-'}</p>
+                    <p><strong>기관:</strong> ${post.orgNm || '-'} (${post.tel || '-'})</p>
+                    <p><strong>기관 ID:</strong> ${post.orgId || '-'}</p>
+                    <p><strong>분실장소 구분명:</strong> ${post.lstPlaceSeNm || '-'}</p>
+                    <p><strong>관리 ID:</strong> ${post.atcId || '-'}</p>
+                    <p><strong>작성자 ID:</strong> ${post.user_id || '-'}</p>
+                    <p><strong>게시 날짜:</strong> ${post.date || '-'}</p>
+                    ${post.lstFilePathImg ? `<img src="${post.lstFilePathImg}" width="200">` : '<p>이미지 없음</p>'}
+                    <br><br>
+                    <a href="${backLink}">목록으로</a>
+                `;
                 })
                 .catch(err => {
                     console.error('Error loading post:', err.message);
