@@ -360,39 +360,6 @@ router.post('/write', async (req, res) => {
     }
 });
 
-// 게시글 총 개수 반환 API
-/**
- * @swagger
- * /api/object/lost/count:
- *   get:
- *     summary: 게시글 총 페이지 수 조회
- *     tags: [ObjectLost]
- *     responses:
- *       200:
- *         description: 총 페이지 수 반환 (10개 단위 페이징 기준)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 totalCount:
- *                   type: integer
- *                   example: 5
- *                   description: 전체 페이지 수 (게시글 수 / 10, 올림 처리)
- *       500:
- *         description: 서버 오류
- */
-router.get('/count', async (req, res) => {
-    try {
-        const totalCount = await Object_lost.countDocuments({});
-        res.json({ totalCount: Math.ceil(totalCount / show_list) });
-    } catch (err) {
-        console.error('게시글 수 조회 오류:', err.message);
-        res.status(500).json({ error: '서버 오류' });
-    }
-});
-
-
 // 검색기능 및 목록
 /**
  * @swagger
