@@ -1,0 +1,41 @@
+/* Pagination.css */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.pagination-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.page-item {
+  margin: 0 5px;
+}
+
+.page-item button {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.page-item button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.page-item.active button {
+  background-color: #007bff; /* 현재 페이지 활성 스타일 */
+  color: white;
+  border-color: #007bff;
+}
+
+.page-item.disabled button {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

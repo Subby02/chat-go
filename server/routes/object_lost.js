@@ -191,28 +191,7 @@ router.get('/detail/:id', async (req, res) => {
         const obj = post.toObject();
 
         // 날짜 포맷 처리: date
-        if (obj.date instanceof Date) {
-            const kst = new Date(obj.date.getTime() + 9 * 60 * 60 * 1000);
-            const iso = kst.toISOString();
-            const [datePart, timePart] = iso.split('T');
-            const time = timePart.slice(0, 5);
-            obj.date = `${datePart} ${time}`;
-        }
-
-        if (obj.lstYmd instanceof Date) {
-            let kstLstYmd = new Date(obj.lstYmd.getTime() + 9 * 60 * 60 * 1000); // UTC -> KST
-            let ymd = kstLstYmd.toISOString().slice(0, 10);
-
-            if (obj.lstHor === "24" || obj.lstHor === 24) {
-                // 하루 더하기
-                kstLstYmd.setDate(kstLstYmd.getDate() + 1);
-                ymd = kstLstYmd.toISOString().slice(0, 10);
-                obj.lstYmd = `${ymd} 00`;
-            } else {
-                obj.lstYmd = obj.lstHor ? `${ymd} ${obj.lstHor}` : ymd;
-            }
-        }
-
+      
         // 현재 검색 조건 및 페이지 정보를 그대로 전달
         const queryInfo = {
             page: req.query.page || '1',
@@ -559,7 +538,9 @@ router.get('/search', async (req, res) => {
         });
 
         res.json({
+            page: parseInt(page),
             totalPages: Math.ceil(totalCount / parseInt(show_list)),
+            totalCount,
             results
         });
     } catch (err) {

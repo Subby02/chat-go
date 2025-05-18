@@ -1,0 +1,28 @@
+.PostSlider{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 40px;
+    width: 100%;
+}
+
+
+.PostSlider > div {
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  justify-content: center;
+  gap: 56px;
+}
+
+.post{
+  font-size: 15px;
+}
+
+.PostSlider img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+

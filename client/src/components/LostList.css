@@ -1,0 +1,83 @@
+/* LostList.css */
+
+.lost-item-table {
+  width: 100%;
+  margin-top: 50px;
+  border-collapse: collapse; /* 셀 테두리를 한 줄로 합칩니다. */
+  border-spacing: 0; /* 테두리 사이 간격 제거 (collapse와 함께 사용) */
+  font-size: 16px;  /* 테이블 전체 기본 글꼴 크기 (필요에 따라 조절) */
+  color: #333;       /* 테이블 전체 기본 글자 색상 */
+  /* 테이블 전체에 둥근 모서리나 그림자를 주고 싶다면 여기에 추가 */
+  /* 예: border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+}
+
+/* --- Table Header Styling --- */
+.lost-item-table .lost-item-header { /* thead */
+  background-color: #f8f9fa; /* 헤더 배경색 (연한 회색 계열) */
+  /* thead 자체의 border-bottom으로 헤더와 본문 구분 */
+  border-top: 1px solid #dee2e6; /* 헤더 위쪽에도 얇은 선 (선택 사항) */
+  border-bottom: 2px solid #dee2e6; /* 헤더 아래쪽 구분선 (조금 더 진하게) */
+}
+
+.lost-item-table .lost-item-header th { /* th (헤더 셀) */
+  font-weight: 600; /* 글자 약간 두껍게 */
+  padding: 12px 15px; /* 헤더 셀 내부 여백 (상하 12px, 좌우 15px) - 기존 50px에서 조절 */
+  text-align: center; /* 기본적으로 헤더 텍스트 가운데 정렬 */
+  color: #495057;      /* 헤더 텍스트 색상 */
+  vertical-align: middle;
+}
+
+/* 특정 헤더 셀의 텍스트 정렬을 다르게 하고 싶다면 */
+.lost-item-table .lost-item-header th:nth-child(3) { /* 예: '분실물명' 컬럼은 왼쪽 정렬 */
+  text-align: left;
+}
+
+/* --- Table Body Styling --- */
+/* LostListItem 컴포넌트가 tr과 td를 렌더링하므로, 해당 요소들을 타겟팅합니다. */
+/* LostListItem.jsx에서 <tr className="lostItem">을 사용하고 있으므로 이를 활용 가능 */
+
+.lost-item-table tbody .lostItem td {
+  padding: 12px 15px; /* 데이터 셀 내부 여백 */
+  border-bottom: 1px solid #f1f3f5; /* 각 행 아래에 얇은 구분선 */
+  vertical-align: middle; /* 셀 내용 수직 가운데 정렬 (이미지 등과 텍스트 높이 맞춤) */
+  text-align: center; /* 기본적으로 데이터 텍스트 가운데 정렬 */
+}
+
+/* 특정 데이터 셀의 텍스트 정렬을 다르게 하고 싶다면 (헤더와 맞춤) */
+.lost-item-table tbody .lostItem td:nth-child(3) { /* 예: '분실물명' 데이터는 왼쪽 정렬 */
+  text-align: left;
+}
+
+/* 행(row)에 대한 스타일 (예: 호버 효과, 얼룩말 무늬) */
+.lost-item-table tbody .lostItem:nth-child(even) {
+  background-color: #f8f9fa; /* 짝수 행 배경색 (얼룩말 무늬) - 선택 사항 */
+}
+
+.lost-item-table tbody .lostItem:hover {
+  background-color: #e9ecef; /* 마우스 올렸을 때 배경색 변경 */
+  /* 이전에 행 전체 클릭 기능을 넣었다면 cursor: pointer; 도 여기에 추가 */
+}
+
+/* 이미지 스타일 (LostListItem 내의 .img 클래스) */
+.lost-item-table .img {
+  width: 60px;   /* 이미지 너비 (조절 가능) */
+  height: 60px;  /* 이미지 높이 (조절 가능) */
+  object-fit: cover; /* 이미지가 비율을 유지하며 지정된 영역을 채움 */
+  border-radius: 4px; /* 이미지 모서리 약간 둥글게 (선택 사항) */
+  display: block; /* 이미지를 블록 요소로 만들어 margin:auto 적용 가능하게 함 */
+  margin: 0 auto; /* 이미지가 셀 내에서 가운데 오도록 (td의 text-align:center와 함께) */
+}
+
+/* 이미지 없을 때 플레이스홀더 스타일 (LostListItem에 관련 div가 있다면) */
+.lost-item-table .image-placeholder {
+  width: 60px;
+  height: 60px;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+  font-size: 12px;
+  border-radius: 4px;
+  margin: 0 auto;
+}
