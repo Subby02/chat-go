@@ -199,11 +199,18 @@ router.get('/detail/:id', async (req, res) => {
             obj.date = `${datePart} ${time}`;
         }
 
-        // 날짜 포맷 처리: lstYmd (+ lstHor)
         if (obj.lstYmd instanceof Date) {
-            const kstLstYmd = new Date(obj.lstYmd.getTime() + 9 * 60 * 60 * 1000);
-            const ymd = kstLstYmd.toISOString().slice(0, 10);
-            obj.lstYmd = obj.lstHor ? `${ymd} ${obj.lstHor}` : ymd;
+            let kstLstYmd = new Date(obj.lstYmd.getTime() + 9 * 60 * 60 * 1000); // UTC -> KST
+            let ymd = kstLstYmd.toISOString().slice(0, 10);
+
+            if (obj.lstHor === "24" || obj.lstHor === 24) {
+                // 하루 더하기
+                kstLstYmd.setDate(kstLstYmd.getDate() + 1);
+                ymd = kstLstYmd.toISOString().slice(0, 10);
+                obj.lstYmd = `${ymd} 00`;
+            } else {
+                obj.lstYmd = obj.lstHor ? `${ymd} ${obj.lstHor}` : ymd;
+            }
         }
 
         // 현재 검색 조건 및 페이지 정보를 그대로 전달
@@ -311,52 +318,56 @@ router.get('/detail/:id', async (req, res) => {
  *         description: 서버 오류
  */
 router.post('/write', async (req, res) => {
-    try {
-        const {
-            date,
-            lstPrdtNm,
-            lstYmd,
-            lstHor,
-            lstPlace,
-            si,
-            sgg,
-            emd,
-            prdtClNm,
-            uniq,
-            lstLctNm,
-            lstSbjt,
-            lstFilePathImg
-        } = req.body;
+    if(req.isAuthenticated()){
+        try {
+            const {
+                date,
+                lstPrdtNm,
+                lstYmd,
+                lstHor,
+                lstPlace,
+                si,
+                sgg,
+                emd,
+                prdtClNm,
+                uniq,
+                lstLctNm,
+                lstSbjt,
+                lstFilePathImg
+            } = req.body;
 
-        // 필수 항목 체크
-        if (!lstPrdtNm || !lstYmd || !lstPlace) {
-            return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
+            // 필수 항목 체크
+            if (!lstPrdtNm || !lstYmd || !lstPlace) {
+                return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
+            }
+
+            const newPost = new Object_lost({
+                user_id: req.user.email,
+                date: date ? new Date(date) : new Date(),
+                lstPrdtNm,
+                lstYmd,
+                lstHor,
+                lstPlace,
+                si,
+                sgg,
+                emd,
+                prdtClNm,
+                uniq,
+                lstLctNm,
+                lstSbjt,
+                lstFilePathImg,
+                tel: req.user.phone_number,
+            });
+
+            const saved = await newPost.save();
+
+            res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
+        } catch (err) {
+            console.error("Error writing lost post:", err.message);
+            res.status(500).json({ error: "Server Error" });  // JSON 응답으로 수정
         }
-
-        const newPost = new Object_lost({
-            user_id: req.user.email,
-            date: date ? new Date(date) : new Date(),
-            lstPrdtNm,
-            lstYmd,
-            lstHor,
-            lstPlace,
-            si,
-            sgg,
-            emd,
-            prdtClNm,
-            uniq,
-            lstLctNm,
-            lstSbjt,
-            lstFilePathImg,
-            tel: req.user.phone_number,
-        });
-
-        const saved = await newPost.save();
-
-        res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
-    } catch (err) {
-        console.error("Error writing lost post:", err.message);
-        res.status(500).json({ error: "Server Error" });  // JSON 응답으로 수정
+    }else{
+        return res.status(401).json({ error: '로그인이 필요합니다.' });
     }
 });
 
