@@ -1,0 +1,35 @@
+.Introduce{
+    display: flex;
+    flex-direction: column;
+}
+
+.Introduce .Top{
+    display: flex;
+    border: none;
+}
+
+.Introduce .Left{
+    display: flex;
+    flex-direction: column;
+
+}
+
+
+
+.Left > img{
+    width: 150px;
+    padding-top: 50px;
+    
+}
+
+.Script{
+    display: flex;
+    flex: 1;
+    padding-top: 30px;
+    margin-left: 80px;
+    text-align: center;
+}
+
+.Introduce .Bottom{
+    display: flex;
+}

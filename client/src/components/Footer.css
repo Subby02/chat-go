@@ -1,0 +1,12 @@
+.Footer{
+    background-color: darkgray;
+    display:  flex;
+    align-items: center;
+}
+
+.Footer > img{
+    width: 80px;
+    height: 70px;
+    
+    margin : 0 30px;
+}
