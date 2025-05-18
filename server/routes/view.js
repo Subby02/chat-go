@@ -21,11 +21,7 @@ router.get('/object/get/:num', (req, res) => {
 
 //분실물 제보(작성, 세부내용 조회, 목록 조회)
 router.get('/object/lost/write', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, '..', 'views', 'object', 'lost', 'write.html'));
-    } else {
-        res.redirect('/object/lost/:num');
-    }
+    res.sendFile(path.join(__dirname, '..', 'views', 'object', 'lost', 'write.html'));
 });
 router.get('/object/lost/detail/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'views', 'object', 'lost', 'detail.html'));
@@ -85,7 +81,7 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/reset-password', (req, res) => {
-    res.sendFile(path.join(__dirname,'..', 'views', 'reset-password.html'));
+    res.sendFile(path.join(__dirname, '..', 'views', 'reset-password.html'));
 });
 
 module.exports = router
