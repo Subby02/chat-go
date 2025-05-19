@@ -10,6 +10,7 @@ const HeaderTop = ({
   register,
   logout,
   mypage,
+  authState,
 }) => {
   const nav = useNavigate();
 
@@ -21,17 +22,28 @@ const HeaderTop = ({
       <div className="Left" onClick={click}>
         <div className="icon">{icon}</div>
         <div className="Title">
-            <div className="Main">{mainTitle}</div>
-            <div className="Sub">{subTitle}</div>
+          <div className="Main">{mainTitle}</div>
+          <div className="Sub">{subTitle}</div>
         </div>
       </div>
       <div className="Right">
-        <div className="myPage">{mypage}</div>
-        <div className="Login">{login}</div>
-        <div className="Register">{register}</div>
+        {authState ? (
+          <>
+            <div className="myPage">{mypage}</div>
+            <div className="Logout">{logout}</div>
+          </>
+        ) : (
+          <>
+            <div className="Login">{login}</div>
+            <div className="Register">{register}</div>
+          </>
+        )}
+           
       </div>
     </div>
   );
 };
+
+
 
 export default HeaderTop;

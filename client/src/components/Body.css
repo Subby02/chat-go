@@ -1,3 +1,5 @@
+
+
 .Toptext{
     margin: 50px;
     font-size: 50px;
@@ -7,6 +9,6 @@
 .main{
     display: flex;
     flex-direction: column;
-    padding-left: 20vw;
-    padding-right: 20vw;
+    padding-left: 15vw;
+    padding-right: 15vw;
 }

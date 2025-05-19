@@ -6,6 +6,7 @@ const Body = () => {
   return (
     <main>
       <section id="PostSlider">
+
         <div className="main">
           <div style={{ fontSize: "30px", marginBottom:"3vh", marginTop:"3vh", textAlign: "left"}}>최신글</div>
           <PostSlider />

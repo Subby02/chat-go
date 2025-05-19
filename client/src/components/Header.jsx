@@ -26,6 +26,8 @@ const Header = ({
         login={login}
         register={register}
         logout={logout}
+        authState={authState}
+
       />
 
       <HeaderNavigation />
