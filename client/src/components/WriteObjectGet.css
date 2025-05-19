@@ -1,0 +1,86 @@
+.WriteObjectGet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.icon_section {
+  display: flex;
+  align-items: center;
+  margin-left: -12px;
+}
+
+.icon_section .txt {
+  font-size: 40px;
+  margin-top: 5px;
+}
+
+.WriteObjectGet .input {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.place_section,
+.dep_section,
+.plus_section,
+.etc_section,
+.tel_section,
+.img_URL{
+  display: flex;
+  flex-direction: column;
+}
+
+.object_section,
+.time_section {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.WriteObjectGet label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.place_section label,
+.dep_section,
+.plus_section,
+.etc_section label,
+.img_URL label,
+.tel_section label {
+  width: 100%;
+}
+
+.object_section label,
+.time_section label {
+  width: 48%;
+}
+
+.WriteObjectGet input {
+  margin-top: 5px;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.etc_input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  height: 100px; /* 고정 높이로도 가능 */
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
