@@ -48,7 +48,7 @@ const LoginElement = () => {
         </div>
       
         <div className="search_btn">
-          <Button text={"비밀번호를 잊으셨나요?"} className="pwd_btn"/>
+          <Button text={"비밀번호를 잊으셨나요?"} className="pwd_btn" onClick={()=>nav('/find-pwd')}/>
           <Button text={"회원가입"} className="rgt_btn" type={"BLACK"} onClick={()=>nav('/register')}/>
         </div>
       </div>

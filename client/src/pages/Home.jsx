@@ -5,7 +5,7 @@ import { getIconImage } from '../util/get-img-icon';
 const Home = ()=> {
   return(
     <div>
-      <Header 
+      <Header
         icon={<img src={getIconImage(1)} style={{width: '150px', height: 'auto'}} />}
         mainTitle={"찾Go"} 
         subTitle={"Find Lost Items"}
