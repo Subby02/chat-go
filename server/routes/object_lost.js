@@ -22,7 +22,7 @@ const show_list = process.env.SHOW_LIST
  * @swagger
  * /api/object/lost/detail/{id}:
  *   get:
- *     summary: 분실물 게시글 상세 조회
+ *     summary: 분실물 상세 정보 조회
  *     tags: [ObjectLost]
  *     parameters:
  *       - in: path
@@ -35,54 +35,54 @@ const show_list = process.env.SHOW_LIST
  *         name: page
  *         schema:
  *           type: string
- *         description: 목록에서 넘어온 페이지 번호
+ *         description: 현재 페이지 번호 (선택)
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: 통합 검색어
+ *         description: 검색어 (선택)
  *       - in: query
  *         name: dateStart
  *         schema:
  *           type: string
  *           format: date
- *         description: 게시 시작 날짜
+ *         description: 작성일 시작 범위 (선택)
  *       - in: query
  *         name: dateEnd
  *         schema:
  *           type: string
  *           format: date
- *         description: 게시 종료 날짜
+ *         description: 작성일 종료 범위 (선택)
  *       - in: query
  *         name: lstYmdStart
  *         schema:
  *           type: string
  *           format: date
- *         description: 분실 시작 일자
+ *         description: 분실일 시작 범위 (선택)
  *       - in: query
  *         name: lstYmdEnd
  *         schema:
  *           type: string
  *           format: date
- *         description: 분실 종료 일자
+ *         description: 분실일 종료 범위 (선택)
  *       - in: query
  *         name: si
  *         schema:
  *           type: string
- *         description: 시/도
+ *         description: 시/도 (선택)
  *       - in: query
  *         name: sgg
  *         schema:
  *           type: string
- *         description: 시군구
+ *         description: 시군구 (선택)
  *       - in: query
  *         name: emd
  *         schema:
  *           type: string
- *         description: 읍면동
+ *         description: 읍면동 (선택)
  *     responses:
  *       200:
- *         description: 게시글 상세 정보 및 검색 조건 반환
+ *         description: 게시글 및 쿼리 정보 반환
  *         content:
  *           application/json:
  *             schema:
@@ -90,96 +90,30 @@ const show_list = process.env.SHOW_LIST
  *               properties:
  *                 post:
  *                   type: object
- *                   properties:
- *                     lstPrdtNm:
- *                       type: string
- *                       example: 지갑
- *                     lstYmd:
- *                       type: string
- *                       example: "2025-05-01 14:30"
- *                     lstPlace:
- *                       type: string
- *                       example: 서울역 2층 대합실
- *                     prdtClNm:
- *                       type: string
- *                       example: 전자기기
- *                     lstSteNm:
- *                       type: string
- *                       example: 보관 중
- *                     lstLctNm:
- *                       type: string
- *                       example: 서울특별시
- *                     si:
- *                       type: string
- *                       example: 서울특별시
- *                     sgg:
- *                       type: string
- *                       example: 강남구
- *                     emd:
- *                       type: string
- *                       example: 역삼동
- *                     uniq:
- *                       type: string
- *                       example: 검정색 가죽지갑, 로고 있음
- *                     lstSbjt:
- *                       type: string
- *                       example: 지갑을 잃어버렸습니다
- *                     orgNm:
- *                       type: string
- *                       example: 서울역 분실물 센터
- *                     tel:
- *                       type: string
- *                       example: 02-1234-5678
- *                     orgId:
- *                       type: string
- *                       example: ORG001
- *                     lstPlaceSeNm:
- *                       type: string
- *                       example: 역사 내부
- *                     atcId:
- *                       type: string
- *                       example: ATC123456
- *                     user_id:
- *                       type: string
- *                       example: user@example.com
- *                     date:
- *                       type: string
- *                       example: "2025-05-15 15:30"
- *                     lstFilePathImg:
- *                       type: string
- *                       example: "https://example.com/image.jpg"
+ *                   description: 분실물 게시글 데이터
  *                 query:
  *                   type: object
  *                   properties:
  *                     page:
  *                       type: string
- *                       example: "1"
  *                     search:
  *                       type: string
- *                       example: 지갑
  *                     dateStart:
  *                       type: string
- *                       example: "2025-05-01"
  *                     dateEnd:
  *                       type: string
- *                       example: "2025-05-17"
  *                     lstYmdStart:
  *                       type: string
- *                       example: "2025-05-01"
  *                     lstYmdEnd:
  *                       type: string
- *                       example: "2025-05-10"
  *                     si:
  *                       type: string
- *                       example: 서울특별시
  *                     sgg:
  *                       type: string
- *                       example: 강남구
  *                     emd:
  *                       type: string
- *                       example: 역삼동
  *       404:
- *         description: 게시글을 찾을 수 없음
+ *         description: 게시글이 존재하지 않음
  *       500:
  *         description: 서버 오류
  */
@@ -190,8 +124,6 @@ router.get('/detail/:id', async (req, res) => {
 
         const obj = post.toObject();
 
-        // 날짜 포맷 처리: date
-      
         // 현재 검색 조건 및 페이지 정보를 그대로 전달
         const queryInfo = {
             page: req.query.page || '1',
@@ -223,6 +155,8 @@ router.get('/detail/:id', async (req, res) => {
  *   post:
  *     summary: 분실물 게시글 작성
  *     tags: [ObjectLost]
+ *     security:
+ *       - cookieAuth: []  # 세션 쿠키 인증
  *     requestBody:
  *       required: true
  *       content:
@@ -233,120 +167,131 @@ router.get('/detail/:id', async (req, res) => {
  *               - lstPrdtNm
  *               - lstYmd
  *               - lstPlace
- *               - lstSbjt
  *             properties:
- *               lstFilePathImg:
- *                 type: string
- *                 description: 이미지 URL
- *                 example: https://example.com/image.jpg
- *               tel:
- *                 type: string
- *                 description: 기관 전화번호
- *                 example: 02-1234-5678
- *               lstLctNm:
- *                 type: string
- *                 description: 분실 지역명
- *                 example: 서울특별시
  *               date:
- *                 type: Date
+ *                 type: string
  *                 format: date-time
- *                 description: 게시 날짜
- *                 example: "2025-05-15"
+ *                 description: 작성 일시
  *               lstPrdtNm:
  *                 type: string
  *                 description: 물품명
- *                 example: 스마트폰
  *               lstYmd:
  *                 type: string
- *                 description: 분실 일자
- *                 example: "2025-05-10"
+ *                 description: 분실 날짜
+ *               lstHor:
+ *                 type: string
+ *                 description: 분실 시간 
  *               lstPlace:
  *                 type: string
  *                 description: 분실 장소
- *                 example: 강남역
  *               si:
  *                 type: string
- *                 description: 시/도
- *                 example: 서울특별시
+ *                 description: 시/도 
  *               sgg:
  *                 type: string
  *                 description: 시군구
- *                 example: 강남구
  *               emd:
  *                 type: string
  *                 description: 읍면동
- *                 example: 역삼동
+ *               prdtClNm:
+ *                 type: string
+ *                 description: 분류명 
  *               uniq:
  *                 type: string
  *                 description: 특이사항
- *                 example: 케이스에 스티커 있음
+ *               lstLctNm:
+ *                 type: string
+ *                 description: 상세 지역명
  *               lstSbjt:
  *                 type: string
- *                 description: 게시 제목
- *                 example: 아이폰 분실했습니다
- *               prdtClNm:
+ *                 description: 게시글 제목
+ *               lstFilePathImg:
  *                 type: string
- *                 description: 물품분류명
- *                 example: 전자기기
+ *                 description: 이미지 경로
  *     responses:
  *       201:
- *         description: 게시글이 성공적으로 작성됨
+ *         description: 글이 성공적으로 등록됨
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 id:
+ *                   type: string
  *       400:
  *         description: 필수 항목 누락
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       401:
+ *         description: 인증되지 않은 사용자
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
  *       500:
  *         description: 서버 오류
  */
 router.post('/write', async (req, res) => {
-    if(req.isAuthenticated()){
-        try {
-            const {
-                date,
-                lstPrdtNm,
-                lstYmd,
-                lstHor,
-                lstPlace,
-                si,
-                sgg,
-                emd,
-                prdtClNm,
-                uniq,
-                lstLctNm,
-                lstSbjt,
-                lstFilePathImg
-            } = req.body;
-
-            // 필수 항목 체크
-            if (!lstPrdtNm || !lstYmd || !lstPlace) {
-                return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
-            }
-
-            const newPost = new Object_lost({
-                user_id: req.user.email,
-                date: date ? new Date(date) : new Date(),
-                lstPrdtNm,
-                lstYmd,
-                lstHor,
-                lstPlace,
-                si,
-                sgg,
-                emd,
-                prdtClNm,
-                uniq,
-                lstLctNm,
-                lstSbjt,
-                lstFilePathImg,
-                tel: req.user.phone_number,
-            });
-
-            const saved = await newPost.save();
-
-            res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
-        } catch (err) {
-            console.error("Error writing lost post:", err.message);
-            res.status(500).json({ error: "Server Error" });  // JSON 응답으로 수정
+    try {
+        if (!req.isAuthenticated()) {
+            return res.status(401).json({ error: '로그인이 필요합니다.' });
         }
-    }else{
-        return res.status(401).json({ error: '로그인이 필요합니다.' });
+
+        const {
+            date,
+            lstPrdtNm,
+            lstYmd,
+            lstHor,
+            lstPlace,
+            si,
+            sgg,
+            emd,
+            prdtClNm,
+            uniq,
+            lstLctNm,
+            lstSbjt,
+            lstFilePathImg
+        } = req.body;
+
+        // 필수 항목 체크
+        if (!lstPrdtNm || !lstYmd || !lstPlace) {
+            return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
+        }
+
+        const newPost = new Object_lost({
+            user_id: req.user.email,
+            date: date ? new Date(date) : new Date(),
+            lstPrdtNm,
+            lstYmd,
+            lstHor,
+            lstPlace,
+            si,
+            sgg,
+            emd,
+            prdtClNm,
+            uniq,
+            lstLctNm,
+            lstSbjt,
+            lstFilePathImg,
+            tel: req.user.phone_number,
+        });
+
+        const saved = await newPost.save();
+
+        res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
+    } catch (err) {
+        console.error("Error writing lost post:", err.message);
+        res.status(500).json({ error: "Server Error" });  // JSON 응답으로 수정
     }
 });
 

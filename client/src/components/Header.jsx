@@ -15,6 +15,7 @@ const Header = ({
   logout,
   authState,
 }) => {
+  const nav = useNavigate();
   return (
     <div>
       <HeaderTop
@@ -26,6 +27,7 @@ const Header = ({
         register={register}
         logout={logout}
         authState={authState}
+
       />
 
       <HeaderNavigation />

@@ -6,11 +6,13 @@ const Body = () => {
   return (
     <main>
       <section id="PostSlider">
-        <div style={{ fontSize: "30px", paddingLeft: "120px" }}>최신글</div>
+
         <div className="main">
+          <div style={{ fontSize: "30px", marginBottom:"3vh", marginTop:"3vh", textAlign: "left"}}>최신글</div>
           <PostSlider />
           <Introduce />
         </div>
+       
         <Footer />
       </section>
     </main>

@@ -4,7 +4,7 @@
   flex-direction: column;
   width: 100%;
   background-color: #fff; /* 헤더 배경색 추가 (예시) */
-  
+
 }
 
 .Top {
@@ -24,16 +24,36 @@
 }
 
 
-
 .Right {
   display: flex;
   align-items: center;
   gap: 0.5rem; /* 버튼들 사이 간격 */
-  /* margin-top: 90px; margin-right: 40px; /* 고정 마진 제거 */
-  /* width: 176.88; height: 92.5; /* 고정 크기 제거 */
   flex-wrap: wrap; /* 버튼 많을 시 줄바꿈 */
   justify-content: flex-end; /* 오른쪽 정렬 유지 */
 }
+
+.Main_Icon_Link {
+  display: flex; /* 아이콘 수직 정렬 위해 */
+  align-items: center;
+}
+
+.Main_Icon_Component,
+.Main_Icon_Image { /* icon prop으로 실제 이미지 태그가 들어갈 경우를 대비 */
+  /* width: 100px; /* 고정 너비 제거 */
+  max-width: clamp(70px, 10vw, 90px); /* 아이콘 최대 너비 (반응형) */
+  height: auto; /* 비율 유지 */
+  object-fit: contain;
+  padding-left: 26vw;
+}
+
+.Titles {
+  display: flex;
+  flex-direction: column; /* 메인 타이틀과 서브 타이틀 수직 정렬 */
+  justify-content: center;
+  /* margin-left: 20px; /* 고정 마진 제거, .Left의 gap으로 처리 */
+  /* gap: 40px; /* 고정 갭 제거, 개별 마진으로 처리 */
+}
+
 
 /* 버튼 래퍼들에 대한 스타일 (필요시) */
 

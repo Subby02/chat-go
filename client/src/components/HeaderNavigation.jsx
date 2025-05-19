@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 const HeaderNavigation = () => {
   return (
     <nav className="Navigate">
@@ -43,5 +44,6 @@ const HeaderNavigation = () => {
     </nav>
   );
 };
+
 
 export default HeaderNavigation;

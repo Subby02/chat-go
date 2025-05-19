@@ -38,9 +38,12 @@ const HeaderTop = ({
             <div className="Register">{register}</div>
           </>
         )}
+           
       </div>
     </div>
   );
 };
+
+
 
 export default HeaderTop;
