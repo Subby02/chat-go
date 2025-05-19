@@ -3,16 +3,15 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 40px;
-    width: 100%;
 }
 
 
 .PostSlider > div {
-  display: flex;
-  max-width: 1000px;
   width: 100%;
+  flex-wrap: wrap; /* 네비게이션 아이템 많을 시 줄바꿈 */
+  display: flex;
   justify-content: center;
-  gap: 56px;
+  gap: 5vw;
 }
 
 .post{

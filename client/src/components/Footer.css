@@ -2,11 +2,12 @@
     background-color: darkgray;
     display:  flex;
     align-items: center;
+    padding-left: 20vw;
+    padding-right: 20vw;
 }
 
 .Footer > img{
     width: 80px;
     height: 70px;
-    
     margin : 0 30px;
 }

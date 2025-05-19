@@ -1,0 +1,16 @@
+.Top{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20vw;
+}
+.Left{
+    cursor: pointer;
+}
+
+.Main{
+    font-size: 1.5rem;
+}
+
+.Top{
+
+}
