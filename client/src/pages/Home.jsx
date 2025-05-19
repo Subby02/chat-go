@@ -33,7 +33,7 @@ const Home = ({ LatesPost }) => {
         icon={
           <img
             src={getIconImage(1)}
-            style={{ width: "100%", height: "auto" }}
+            style={{ width: "100px", height: "100px" }}
           />
         }
         mainTitle={"찾Go"}

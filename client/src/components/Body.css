@@ -4,3 +4,9 @@
     margin-left: 9rem;
 }
 
+.main{
+    display: flex;
+    flex-direction: column;
+    padding-left: 20vw;
+    padding-right: 20vw;
+}
