@@ -5,18 +5,16 @@ const Introduce = () => {
   return (
     <div className="Introduce">
       <div className="Top">
-        <div className="Left">
-          <img src={getIconImage(1)} style={{ width: "100px" }} />
-          <div
-            style={{ marginTop: "30px", fontSize: "25px", textAlign: "center" }}
-          >
-            찾Go란?
-          </div>
+        <div className="LeftTop">
+          <img src={getIconImage(1)} />
+          <div style={{ textAlign: "center" }}>찾Go란?</div>
         </div>
 
-        <div className="Script">
+        <div className="ScriptTop">
           <p>
-            <span style={{ fontSize: "20px", fontWeight: "bold" }}>"찾Go"</span>
+            <span style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+              "찾Go"
+            </span>
             는 분실물과 유기동물 정보를 한 곳에 모아 신속하게 연결해주는 통합
             플랫폼입니다.<br></br>
             <br />
@@ -34,18 +32,16 @@ const Introduce = () => {
         </div>
       </div>
       <div className="Bottom">
-        <div className="Left">
+        <div className="LeftBottom">
           <img src={getIconImage(2)} />
-          <div
-            style={{ marginTop: "40px", fontSize: "40px", textAlign: "center" }}
-          >
-            사례금
-          </div>
+          <div style={{ textAlign: "center" }}>사례금 제도</div>
         </div>
 
-        <div className="Script">
+        <div className="ScriptBottom">
           <p>
-            <span style={{ fontSize: "20px", fontWeight: "bold" }}>"찾Go"</span>
+            <span style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+              "찾Go"
+            </span>
             는 분실물이나 유기동물을 되찾는 데 기여한 사용자에게 사례금을
             지급하는 제도를 운영합니다.
             <br />

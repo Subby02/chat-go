@@ -128,7 +128,16 @@ const LostPage = () => {
           />
         }
       />
-      <h1>분실물 신고 게시판</h1>
+      <h1
+        style={{
+          textAlign: "center",
+          paddingTop: "1.25rem",
+          paddingBottom: "1.25rem",
+          fontFamily: "sans-serif",
+        }}
+      >
+        분실물 신고 게시판
+      </h1>
       <Searchbar onSearch={handleSearch} />
       <LostList
         posts={filteredPosts}

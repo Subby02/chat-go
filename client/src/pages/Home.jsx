@@ -3,8 +3,29 @@ import { getIconImage } from "../util/get-img-icon";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 const Home = ({ LatesPost }) => {
+  const [auth, setAuth] = useState(false);
+
   const nav = useNavigate();
+  const fetchStatus = async () => {
+    const response = await axios.get("http://localhost:5000/api/status", {
+      withCredentials: true,
+    });
+
+    console.log(response);
+    setAuth(response.data.authenticated);
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+  const handleLogout = () => {
+    axios.post("http://localhost:5000/api/logout");
+    setAuth(false);
+  };
 
   return (
     <div>
@@ -36,6 +57,10 @@ const Home = ({ LatesPost }) => {
             }}
           />
         }
+        logout={
+          <Button text={"로그아웃"} type={"LOGIN"} onClick={handleLogout} />
+        }
+        authState={auth}
       />
       <Body />
     </div>

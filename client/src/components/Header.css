@@ -34,6 +34,7 @@
   max-width: clamp(70px, 10vw, 90px); /* 아이콘 최대 너비 (반응형) */
   height: auto; /* 비율 유지 */
   object-fit: contain;
+  padding-left: 10rem;
 }
 
 .Titles {
@@ -85,10 +86,9 @@
   justify-content: center; /* 기본 중앙 정렬 */
   align-items: center;
   padding: 0.6rem 2%; /* 상하좌우 여백 */
-  /* height: 80px; /* 고정 높이 제거 */
   border-bottom: 1px solid #e0e0e0;
   flex-wrap: wrap; /* 네비게이션 아이템 많을 시 줄바꿈 */
-  gap: 1rem 1.5rem; /* 행간, 열간 간격 (반응형) 기존 200px gap 제거 */
+  gap: 1rem 10rem; /* 행간, 열간 간격 (반응형) 기존 200px gap 제거 */
   background-color: #f9f9f9; /* 네비게이션 바 배경색 (선택 사항) */
 }
 

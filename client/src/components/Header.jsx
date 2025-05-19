@@ -1,7 +1,18 @@
 import "./Header.css";
 import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useCallback } from "react";
+import axios from "axios";
 
-const Header = ({ icon, mainTitle, subTitle, mypage, login, register }) => {
+const Header = ({
+  icon,
+  mainTitle,
+  subTitle,
+  mypage,
+  login,
+  register,
+  logout,
+  authState,
+}) => {
   return (
     <header className="Header">
       <div className="Top">
