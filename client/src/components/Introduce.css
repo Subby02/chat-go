@@ -2,11 +2,11 @@
 .Introduce {
   display: flex;
   flex-direction: column;
+  text-wrap: nowrap;
  }
 
 .Introduce .Top,
 .Introduce .Bottom {
-  flex-wrap: wrap;
   display: flex;
   align-items: center;   /* 자식 요소들(Left, Script) 수직 중앙 정렬 */
   gap: 2rem;             /* Left 블록과 Script 블록 사이 간격 */

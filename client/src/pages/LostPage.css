@@ -1,0 +1,13 @@
+.write{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: -20px;
+    margin-top: -20px;
+    padding-right: 10vw;
+}
+.write > button{
+    padding: 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}

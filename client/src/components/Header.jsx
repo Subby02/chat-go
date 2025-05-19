@@ -17,7 +17,7 @@ const Header = ({
 }) => {
   const nav = useNavigate();
   return (
-    <div>
+    <div className="headertop">
       <HeaderTop
         icon={icon}
         mainTitle={mainTitle}
@@ -27,7 +27,6 @@ const Header = ({
         register={register}
         logout={logout}
         authState={authState}
-
       />
 
       <HeaderNavigation />
