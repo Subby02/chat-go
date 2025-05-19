@@ -15,10 +15,10 @@ const LostListItem = ({ post, no, currentPage }) => {
   return (
     <tr className="lostItem" onClick={handleClick}>
       <td>{no}</td>
-      <td style={{ paddingLeft: "30px" }}>
+      <td>
         <img className="img" src={post.lstFilePathImg} alt="분실물이미지" />
       </td>
-      <td style={{ textAlign: "left" }}>{post.lstPrdtNm}</td>
+      <td>{post.lstPrdtNm}</td>
       <td>
         {post.si}
         {post.sgg}

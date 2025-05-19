@@ -6,12 +6,7 @@ const Body = () => {
   return (
     <main>
       <section id="PostSlider">
-        <div
-          className="Toptext"
-          style={{ fontSize: "30px", paddingLeft: "120px" }}
-        >
-          최신글
-        </div>
+        <div style={{ fontSize: "30px", paddingLeft: "120px" }}>최신글</div>
         <PostSlider />
         <Introduce />
         <Footer />

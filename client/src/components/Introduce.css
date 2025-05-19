@@ -1,35 +1,55 @@
-.Introduce{
-    display: flex;
-    flex-direction: column;
+/* Introduce.css */
+.Introduce {
+  display: flex;
+  flex-direction: column;
+ }
+
+.Introduce .Top,
+.Introduce .Bottom {
+  display: flex;
+  align-items: center;   /* 자식 요소들(Left, Script) 수직 중앙 정렬 */
+  gap: 2rem;             /* Left 블록과 Script 블록 사이 간격 */
+  margin-bottom: 3rem;   /* 각 섹션(Top, Bottom) 사이의 간격 */
+  padding: 1rem 0;  
+  border:none;
+}
+/* 마지막 .Bottom 섹션의 margin-bottom은 필요 없을 수 있습니다. */
+.Introduce .Bottom {
+  margin-bottom: 2rem;
 }
 
-.Introduce .Top{
-    display: flex;
-    border: none;
+.Top .LeftTop,
+.Bottom .LeftBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   
+  margin-left: 14rem;
 }
 
-.Introduce .Left{
-    display: flex;
-    flex-direction: column;
-
+.Top .LeftTop > img,
+.Bottom .LeftBottom > img {
+  width: 180px;          /* 이미지 너비 */
+  height: 180px;         /* 이미지 높이 */
+  object-fit: contain;   /* 또는 cover */
+  margin-bottom: 0.75rem; /* 이미지와 텍스트 사이 간격 */
 }
 
-
-
-.Left > img{
-    width: 150px;
-    padding-top: 50px;
-    
+.Top .LeftTop > div,
+.Bottom .LeftBottom > div {
+  font-size: 1.1rem;
+  font-weight: 600; /* bold 보다 조금 더 세밀한 두께 조절 */
+  text-align: center;
 }
 
-.Script{
-    display: flex;
-    flex: 1;
-    padding-top: 30px;
-    margin-left: 80px;
-    text-align: center;
+.Top .ScriptTop,
+.Bottom .ScriptBottom {
+  flex-grow: 1;          /* 남은 공간을 모두 차지 */
+  /* 만약 ScriptTop/Bottom 내용이 짧을 때도 일정한 최소 너비를 주고 싶다면 min-width 설정 가능 */
 }
 
-.Introduce .Bottom{
-    display: flex;
+.Top .ScriptTop > p,
+.Bottom .ScriptBottom > p {
+  font-size: 1.1rem; /* 다른 텍스트들과의 균형을 위해 폰트 크기 통일성 고려 */
+  line-height: 1.6;
+  /* text-align: justify; /* 양쪽 정렬은 텍스트 양이 적을 때 어색할 수 있음 */
 }

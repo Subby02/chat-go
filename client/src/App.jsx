@@ -10,7 +10,6 @@ import Searchbar from "./components/Searchbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ObjLostDetail from "./pages/ObjLostDetail";
-
 function App() {
   return (
     <div className="app-container">
