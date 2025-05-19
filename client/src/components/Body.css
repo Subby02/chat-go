@@ -9,6 +9,6 @@
 .main{
     display: flex;
     flex-direction: column;
-    padding-left: 15vw;
-    padding-right: 15vw;
+    padding-left: 10%;
+    padding-right: 10%;
 }

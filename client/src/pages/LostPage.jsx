@@ -9,7 +9,23 @@ import Header from "../components/Header";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
+
 const LostPage = () => {
+  const [auth, setAuth] = useState(false);
+
+  const fetchStatus = async () => {
+    const response = await axios.get("http://localhost:5000/api/status", {
+      withCredentials: true,
+    });
+
+    console.log(response);
+    setAuth(response.data.authenticated);
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
   const location = useLocation();
 
   const getInitialPageFromQuery = () => {
@@ -18,8 +34,7 @@ const LostPage = () => {
     const pageNumber = parseInt(pageFromQuery, 10); // 숫자로 변환
     return !isNaN(pageNumber) && pageNumber > 0 ? pageNumber : 1; // 유효한 숫자면 사용, 아니면 1
   };
-
-  const [posts, setPosts] = useState([]);
+  const [keyword, setKeyword] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,36 +47,47 @@ const LostPage = () => {
 
   const nav = useNavigate();
 
-  const fetchPosts = useCallback(async (pageToFetch = 1) => {
-    console.log(pageToFetch);
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/object/lost/search?page=${pageToFetch}`
-      );
+  const fetchPosts = useCallback(
+    async (pageToFetch = 1) => {
+      console.log(pageToFetch);
+      setLoading(true);
+      setError(null);
+      try {
+        const queryString = new URLSearchParams();
 
-      console.log(response.data);
-      const fetchedPosts = response.data.results;
+        if (keyword === "") {
+          queryString.set("page", pageToFetch);
+        } else {
+          queryString.set("search", keyword);
+          queryString.set("page", pageToFetch);
+        }
+        const response = await axios.get(
+          `http://localhost:5000/api/object/lost/search?${queryString.toString()}`
+        );
 
-      const totalPageCount = response.data.totalPages;
-      console.log(totalPageCount);
+        console.log(queryString.toString());
+        console.log(response.data);
+        const fetchedPosts = response.data.results;
 
-      const totalItem = response.data.totalCount;
+        const totalPageCount = response.data.totalPages;
+        console.log(totalPageCount);
 
-      console.log(totalItem);
+        const totalItem = response.data.totalCount;
 
-      setPosts(fetchedPosts);
-      setFilteredPosts(fetchedPosts);
-      setTotalPage(totalPageCount);
-      setTotalItems(totalItem);
-    } catch (err) {
-      setError(err);
-      console.error("데이터를 불러오는데 실패했습니다.", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        console.log(totalItem);
+
+        setFilteredPosts(fetchedPosts);
+        setTotalPage(totalPageCount);
+        setTotalItems(totalItem);
+      } catch (err) {
+        setError(err);
+        console.error("데이터를 불러오는데 실패했습니다.", err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [keyword]
+  );
 
   useEffect(() => {
     fetchPosts(currentPage);
@@ -74,16 +100,9 @@ const LostPage = () => {
   }, [currentPage, fetchPosts, nav, location.search]);
 
   useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredPosts(posts);
-    } else {
-      const lowercasedFilter = searchTerm.toLowerCase();
-      const filteredData = posts.filter((post) =>
-        post.title.toLowerCase().includes(lowercasedFilter)
-      );
-      setFilteredPosts(filteredData);
-    }
-  }, [searchTerm, posts]);
+    setKeyword(searchTerm);
+    console.log(searchTerm);
+  }, [searchTerm]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -93,6 +112,19 @@ const LostPage = () => {
 
   const handlePageChange = (PageNumber) => {
     setCurrentPage(PageNumber);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/logout",
+        {},
+        { withCredentials: true }
+      );
+      setAuth(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
@@ -109,24 +141,29 @@ const LostPage = () => {
         }
         mainTitle={"찾Go"}
         subTitle={"Find Lost Items"}
-        mypage={<Button text={"마이페이지"} />}
+        mypage={<Button text={"마이페이지"} type={"MYPAGE"} />}
         login={
           <Button
             text={"로그인"}
             onClick={() => {
               nav("/login");
             }}
+            type={"LOGIN"}
           />
         }
         register={
           <Button
             text={"회원가입"}
-            type={"BLACK"}
+            type={"REGISTER"}
             onClick={() => {
               nav("/register");
             }}
           />
         }
+        logout={
+          <Button text={"로그아웃"} type={"REGISTER"} onClick={handleLogout} />
+        }
+        authState={auth}
       />
       <h1
         style={{
@@ -139,6 +176,16 @@ const LostPage = () => {
         분실물 신고 게시판
       </h1>
       <Searchbar onSearch={handleSearch} />
+      <div className="write">
+        <button
+          onClick={() => {
+            if (auth) nav("/object/lost/write");
+            else nav("/login");
+          }}
+        >
+          글작성
+        </button>
+      </div>
       <LostList
         posts={filteredPosts}
         cnt={totalItems}

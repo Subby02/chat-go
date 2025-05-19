@@ -1,7 +1,8 @@
 .Top{
     display: flex;
     justify-content: space-between;
-    padding: 0 20vw;
+    padding: 0 10vw;
+    
 }
 .Left{
     cursor: pointer;

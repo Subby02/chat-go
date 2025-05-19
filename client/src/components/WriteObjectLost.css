@@ -59,7 +59,7 @@
 .object_section label,
 .time_section label,
 .pls_section label {
-  width: 48%;
+  width: 100%;
 }
 
 .WriteObjectLost input {

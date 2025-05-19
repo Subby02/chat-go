@@ -8,7 +8,6 @@
 
 .PostSlider > div {
   width: 100%;
-  flex-wrap: wrap; /* 네비게이션 아이템 많을 시 줄바꿈 */
   display: flex;
   justify-content: center;
   gap: 5vw;

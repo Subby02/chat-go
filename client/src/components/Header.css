@@ -1,4 +1,7 @@
 /* Header.css - 수정안 */
+.headertop{
+  text-wrap: nowrap;
+}
 .Header {
   display: flex;
   flex-direction: column;
@@ -13,7 +16,6 @@
   align-items: center;
   padding: 0.8rem 5%; 
   border-bottom: 1px solid #e0e0e0; 
-  flex-wrap: wrap; /* 화면 작을 시 요소들 줄바꿈 허용 */
   gap: 1rem; /* Left와 Right 사이의 최소 간격 (줄바꿈 시) */
 }
 
@@ -28,7 +30,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem; /* 버튼들 사이 간격 */
-  flex-wrap: wrap; /* 버튼 많을 시 줄바꿈 */
   justify-content: flex-end; /* 오른쪽 정렬 유지 */
 }
 
@@ -64,7 +65,6 @@
   align-items: center;
   padding: 0.6rem 2%; /* 상하좌우 여백 */
   border-bottom: 1px solid #e0e0e0;
-  flex-wrap: wrap; /* 네비게이션 아이템 많을 시 줄바꿈 */
   gap: 1rem 10rem; /* 행간, 열간 간격 (반응형) 기존 200px gap 제거 */
   background-color: #f9f9f9; /* 네비게이션 바 배경색 (선택 사항) */
 }
