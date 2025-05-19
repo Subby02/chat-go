@@ -7,8 +7,10 @@ const Body = () => {
     <main>
       <section id="PostSlider">
         <div style={{ fontSize: "30px", paddingLeft: "120px" }}>최신글</div>
-        <PostSlider />
-        <Introduce />
+        <div className="main">
+          <PostSlider />
+          <Introduce />
+        </div>
         <Footer />
       </section>
     </main>

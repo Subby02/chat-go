@@ -9,6 +9,7 @@ const Home = ({ LatesPost }) => {
   const [auth, setAuth] = useState(false);
 
   const nav = useNavigate();
+
   const fetchStatus = async () => {
     const response = await axios.get("http://localhost:5000/api/status", {
       withCredentials: true,
@@ -22,9 +23,17 @@ const Home = ({ LatesPost }) => {
     fetchStatus();
   }, []);
 
-  const handleLogout = () => {
-    axios.post("http://localhost:5000/api/logout");
-    setAuth(false);
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/logout",
+        {},
+        { withCredentials: true }
+      );
+      setAuth(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -33,7 +42,7 @@ const Home = ({ LatesPost }) => {
         icon={
           <img
             src={getIconImage(1)}
-            style={{ width: "100%", height: "auto" }}
+            style={{ width: "100px", height: "100px" }}
           />
         }
         mainTitle={"찾Go"}
@@ -58,7 +67,7 @@ const Home = ({ LatesPost }) => {
           />
         }
         logout={
-          <Button text={"로그아웃"} type={"LOGIN"} onClick={handleLogout} />
+          <Button text={"로그아웃"} type={"REGISTER"} onClick={handleLogout} />
         }
         authState={auth}
       />
