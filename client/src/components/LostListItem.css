@@ -1,0 +1,30 @@
+.lostItem{
+    cursor: pointer;
+}
+
+.lostItem:nth-child(even){
+    background-color: #f8f9fa;
+}
+
+.lostItem:hover{
+    background-color: rgb(233, 234, 236);
+}
+
+.lostItem > td{
+    text-align: center;
+    padding: 0.75rem 0.9375rem;
+    border-bottom: 1px solid #f1f3f5;
+    height: 60px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.lostItem .img{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+    display: block;
+    margin:0 auto;
+}
+

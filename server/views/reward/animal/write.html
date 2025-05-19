@@ -10,21 +10,20 @@
     <h1>유기동물 등록</h1>
 
     <form id="write-form">
-        <label>글 ID (필수): <input type="text" name="id" required></label><br>
-        <label>작성자 ID (필수): <input type="text" name="user_id" required></label><br>
-        <label>제보 날짜: <input type="date" name="date"></label><br>
-        <label>신고자 이름: <input type="text" name="callName"></label><br>
-        <label>신고자 전화번호: <input type="text" name="callTel"></label><br>
-        <label>발견 일자: <input type="date" name="happenDt"></label><br>
-        <label>발견 주소: <input type="text" name="happenAddr"></label><br>
-        <label>상세 주소: <input type="text" name="happenAddrDtl"></label><br>
-        <label>발견 장소 (필수): <input type="text" name="happenPlace" required></label><br>
-        <label>이미지 URL: <input type="text" name="popfile"></label><br>
-        <label>동물 종류: <input type="text" name="kindCd"></label><br>
-        <label>성별: <input type="text" name="sexCd"></label><br>
+        <label>사용자 ID: <input type="text" name="user_id"></label><br>
+        <label>글 작성일: <input type="date" name="date"></label><br>
+        <label>신고자 이름 (필수): <input type="text" name="callName"></label><br>
+        <label>신고자 연락처 (필수): <input type="tel" name="callTel"></label><br>
+        <label>접수일 (필수): <input type="date" name="happenDt"></label><br>
+        <label>분실장소 (필수): <input type="text" name="happenAddr"></label><br>
+        <label>분실장소 상세: <input type="text" name="happenAddrDtl"></label><br>
+        <label>주위 건물: <input type="text" name="happenPlace"></label><br>
+        <label>품종 (필수): <input type="text" name="kindCd"></label><br>
+        <label>성별 (M/F) (필수): <input type="text" name="sexCd"></label><br>
         <label>나이: <input type="text" name="age"></label><br>
-        <label>특이사항: <input type="text" name="specialMark"></label><br>
-        <label>사례금: <input type="text" name="reward"></label><br><br>
+        <label>특징: <input type="text" name="specialMark"></label><br>
+        <label>사례금 (필수): <input type="number" name="reward"></label><br>
+        <label>이미지 URL: <input type="text" name="popfile"></label><br><br>
 
         <button type="submit">등록하기</button>
     </form>
@@ -50,7 +49,7 @@
                 const result = await res.json();
                 if (res.ok) {
                     document.getElementById("result").innerHTML =
-                        `<p style="color:green">등록 완료! 게시글 ID: ${result.id}</p>
+                        `<p style="color:green">등록 완료!</p>
                          <a href="/reward/animal/1">목록으로 이동</a>`;
                     form.reset();
                 } else {

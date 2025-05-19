@@ -33,48 +33,113 @@
         <a class="write-button" href="/object/lost/write">글 작성하기</a>
     </div>
 
+    <!-- 🔍 검색 폼 추가 -->
+    <form id="search-form" style="margin: 20px 0;">
+        <label>통합 검색어: <input type="text" name="search" placeholder="물품명, 장소, 제목 등"></label><br><br>
+
+        <label>게시 날짜: </label>
+        <input type="date" name="dateStart"> ~
+        <input type="date" name="dateEnd"><br><br>
+
+        <label>분실 일자: </label>
+        <input type="date" name="lstYmdStart"> ~
+        <input type="date" name="lstYmdEnd"><br><br>
+
+        <label>시/도: <input type="text" name="si" placeholder="예: 서울특별시"></label><br>
+        <label>시군구: <input type="text" name="sgg" placeholder="예: 강남구"></label><br>
+        <label>읍면동: <input type="text" name="emd" placeholder="예: 역삼동"></label><br><br>
+
+        <button type="submit">검색</button>
+    </form>
+
+
     <ul id="post-list">
         <li>로딩 중...</li>
     </ul>
 
+    <div id="pagination" style="margin-top: 20px;"></div>
+
     <script>
-        const pageNum = 1;
-        fetch(`/api/object/lost/list/${pageNum}`)
-            .then(res => res.json())
-            .then(posts => {
-                const ul = document.getElementById('post-list');
-                ul.innerHTML = '';
+        function getQueryFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = {};
+            for (const [key, value] of urlParams.entries()) {
+                if (value.trim()) query[key] = value.trim();
+            }
+            return query;
+        }
 
-                if (posts.length === 0) {
-                    ul.innerHTML = '<li>게시글이 없습니다.</li>';
-                    return;
-                }
+        function getPageFromURL() {
+            const query = getQueryFromURL();
+            return parseInt(query.page) || 1;
+        }
 
-                posts.forEach(post => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <h3>
-                            <a href="/object/lost/detail/${post._id}">
-                                ${post.lstPrdtNm || '물품명 없음'}
-                            </a>
-                        </h3>
-                        <p>분실 장소: ${post.lstPlace || '장소 없음'}</p>
-                        <p>분실 일자: ${post.lstYmd || '일자 없음'} ${post.lstHor || ''}</p>
-                        <p>특이사항: ${post.uniq || '-'}</p>
-                        <p>기관: ${post.orgNm || '-'} (${post.tel || '-'})</p>
-                        ${post.lstFilePathImg ? `<img src="${post.lstFilePathImg}" width="150">` : ''}
-                        <p>
-                            <a href="/object/lost/edit/${post._id}" style="color: blue; text-decoration: underline;">수정하기</a>
-                        </p>
-                        <hr>
-                    `;
-                    ul.appendChild(li);
+        function searchPosts(pageNum, query) {
+            const queryString = new URLSearchParams({ ...query, page: pageNum }).toString();
+            fetch(`/api/object/lost/search?${queryString}`)
+                .then(res => res.json())
+                .then(data => {
+                    renderPosts(data.results, pageNum, query);
+                    createPagination(data.totalPages, pageNum, query);
+                })
+                .catch(() => {
+                    document.getElementById('post-list').innerHTML = '<li>오류 발생</li>';
                 });
-            })
-            .catch(error => {
-                console.error('Error fetching posts:', error);
-                document.getElementById('post-list').innerHTML = '<li>오류가 발생했습니다.</li>';
+        }
+
+        function renderPosts(posts, currentPage, currentQuery) {
+            const ul = document.getElementById('post-list');
+            ul.innerHTML = '';
+            posts.forEach(post => {
+                const li = document.createElement('li');
+                const queryString = new URLSearchParams({ ...currentQuery, page: currentPage }).toString();
+                li.innerHTML = `
+                <h3><a href="/object/lost/detail/${post._id}?${queryString}">
+                    ${post.lstPrdtNm || '물품명 없음'}
+                </a></h3>
+                <p><strong>게시날짜:</strong> ${post.date || '-'}</p>
+                <p><strong>분실장소:</strong> ${post.lstPlace || '-'}</p>
+                ${post.lstFilePathImg ? `<img src="${post.lstFilePathImg}" width="150">` : ''}
+                <hr>
+            `;
+                ul.appendChild(li);
             });
+        }
+
+        function createPagination(totalPages, currentPage, query = {}) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                if (i === currentPage) {
+                    btn.disabled = true;
+                    btn.style.fontWeight = 'bold';
+                }
+                btn.onclick = () => {
+                    const queryString = new URLSearchParams({ ...query, page: i }).toString();
+                    window.history.pushState({}, '', `?${queryString}`);
+                    searchPosts(i, query);
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        document.getElementById('search-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const query = {};
+            for (const [key, value] of formData.entries()) {
+                if (value.trim()) query[key] = value.trim();
+            }
+            const queryString = new URLSearchParams({ ...query, page: 1 }).toString();
+            window.history.pushState({}, '', `?${queryString}`);
+            searchPosts(1, query);
+        });
+
+        const query = getQueryFromURL();
+        const page = getPageFromURL();
+        searchPosts(page, query);
     </script>
 </body>
 

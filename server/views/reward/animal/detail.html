@@ -32,16 +32,20 @@
                 })
                 .then(result => {
                     container.innerHTML = `
-                        <p><strong>신고자 이름:</strong> ${result.callName || '-'}</p>
-                        <p><strong>신고자 연락처:</strong> ${result.callTel || '-'}</p>
-                        <p><strong>발견 일자:</strong> ${result.happenDt || '-'}</p>
-                        <p><strong>발견 주소:</strong> ${result.happenAddr || '-'} ${result.happenAddrDtl || ''}</p>
-                        <p><strong>발견 장소:</strong> ${result.happenPlace || '-'}</p>
-                        <p><strong>품종:</strong> ${result.kindCd || '-'}</p>
-                        <p><strong>성별:</strong> ${result.sexCd || '-'}</p>
-                        <p><strong>나이:</strong> ${result.age || '-'}</p>
-                        <p><strong>특이사항:</strong> ${result.specialMark || '-'}</p>
-                        <p><strong>사례금:</strong> ${result.reward || '없음'}</p>
+                          <p><strong>사례금 유기동물 분실 ID:</strong> ${result.id || '-'}</p>
+                          <p><strong>사용자 ID:</strong> ${result.user_id || '-'}</p>
+                          <p><strong>글 작성일:</strong> ${result.date || '-'}</p>
+                          <p><strong>신고자 이름:</strong> ${result.callName || '-'}</p>
+                          <p><strong>신고자 연락처:</strong> ${result.callTel || '-'}</p>
+                          <p><strong>접수일:</strong> ${result.happenDt || '-'}</p>
+                          <p><strong>분실장소:</strong> ${result.happenAddr || '-'}</p>
+                          <p><strong>분실장소 상세:</strong> ${result.happenAddrDtl || '-'}</p>
+                          <p><strong>주위 건물:</strong> ${result.happenPlace || '-'}</p>
+                          <p><strong>품종:</strong> ${result.kindCd || '-'}</p>
+                          <p><strong>성별:</strong> ${result.sexCd || '-'}</p>
+                          <p><strong>나이:</strong> ${result.age || '-'}</p>
+                          <p><strong>특징:</strong> ${result.specialMark || '-'}</p>
+                          <p><strong>사례금:</strong> ${result.reward ? result.reward + '원' : '-'}</p>
                         ${result.popfile ? `<img src="${result.popfile}" width="200">` : '<p>이미지 없음</p>'}
                         <br><br>
                         <a href="/reward/animal/1">← 목록으로 돌아가기</a>

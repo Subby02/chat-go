@@ -10,20 +10,22 @@
     <h1>사례금 분실물 등록</h1>
 
     <form id="write-form">
-        <label>게시글 ID (필수): <input type="text" name="id" required></label><br>
-        <label>작성자 ID (필수): <input type="text" name="user_id" required></label><br>
-        <label>제목 (필수): <input type="text" name="lstSbjt" required></label><br>
-        <label>물품명: <input type="text" name="lstPrdtNm"></label><br>
-        <label>분실일자: <input type="date" name="lstYmd"></label><br>
+        <label>사용자 ID: <input type="text" name="user_id"></label><br>
+        <label>게시 날짜: <input type="date" name="date"></label><br>
+        <label>물품명 (필수): <input type="text" name="lstPrdtNm"></label><br>
+        <label>분실일자 (필수): <input type="date" name="lstYmd"></label><br>
         <label>분실시간: <input type="time" name="lstHor"></label><br>
-        <label>분실장소: <input type="text" name="lstPlace"></label><br>
-        <label>물품분류명: <input type="text" name="prdtClNm"></label><br>
-        <label>상태명: <input type="text" name="lstSteNm"></label><br>
+        <label>분실장소 (필수): <input type="text" name="lstPlace"></label><br>
+        <label>물품 분류명: <input type="text" name="prdtClNm"></label><br>
+        <label>분실물 상태명: <input type="text" name="lstSteNm"></label><br>
         <label>특이사항: <input type="text" name="uniq"></label><br>
-        <label>지역명: <input type="text" name="lstLctNm"></label><br>
-        <label>장소구분명: <input type="text" name="lstPlaceSeNm"></label><br>
-        <label>이미지 URL: <input type="text" name="lstFilePathImg"></label><br>
-        <label>사례금: <input type="text" name="reward"></label><br><br>
+        <label>분실지역명: <input type="text" name="lstLctNm"></label><br>
+        <label>게시제목: <input type="text" name="lstSbjt"></label><br>
+        <label>분실장소 구분명: <input type="text" name="lstPlaceSeNm"></label><br>
+        <label>사례금 (필수): <input type="number" name="reward" ~></label><br>
+        <label>기관명: <input type="text" name="orgNm"></label><br>
+        <label>기관 전화번호: <input type="tel" name="tel"></label><br>
+        <label>이미지 URL: <input type="text" name="lstFilePathImg"></label><br><br>
 
         <button type="submit">등록하기</button>
     </form>
@@ -49,7 +51,7 @@
                 const result = await res.json();
                 if (res.ok) {
                     document.getElementById("result").innerHTML =
-                        `<p style="color:green">등록 완료! 게시글 ID: ${result.id}</p>
+                        `<p style="color:green">등록 완료!</p>
                          <a href="/reward/object/1">목록으로 이동</a>`;
                     form.reset();
                 } else {

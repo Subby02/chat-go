@@ -24,14 +24,21 @@
                 })
                 .then(result => {
                     container.innerHTML = `
+                      <p><strong>사용자:</strong> ${result.user_id || '-'}</p>
+                      <p><strong>게시 날짜:</strong> ${result.date || '-'}</p>
+                      <p><strong>관리 ID:</strong> ${result.atcId || '-'}</p>
                       <p><strong>물품명:</strong> ${result.fdPrdtNm || '정보 없음'}</p>
                       <p><strong>습득 일시:</strong> ${result.fdYmd || '-'} ${result.fdHor || ''}</p>
                       <p><strong>습득 장소:</strong> ${result.fdPlace || '-'}</p>
-                      <p><strong>보관 장소:</strong> ${result.depPlace || '-'}</p>
-                      <p><strong>기관명:</strong> ${result.orgNm || '-'} (${result.tel || '-'})</p>
                       <p><strong>특이사항:</strong> ${result.uniq || '-'}</p>
-                      <p><strong>상태:</strong> ${result.csteSteNm || '-'}</p>
-                      <p><strong>종류:</strong> ${result.prdtClNm || '-'}</p>
+                      <p><strong>습득 순번:</strong> ${result.fdSn || '-'}</p>
+                      <p><strong>물품분류명:</strong> ${result.prdtClNm || '-'}</p>
+                      <p><strong>보관 장소:</strong> ${result.depPlace || '-'}</p>
+                      <p><strong>보관상태명명:</strong> ${result.csteSteNm || '-'}</p>
+                      <p><strong>기관명:</strong> ${result.orgNm || '-'}</p>
+                      <p><strong>기관ID:</strong> ${result.orgId || '-'}</p>
+                      <p><strong>전화번호:</strong> ${result.tel || '-'}</p>
+                      <p><strong>습득물보관기관구분명:</strong> ${result.fndKeepOrgnSeNm || '-'}</p>                      
                       ${result.fdFilePathImg ? `<img src="${result.fdFilePathImg}" width="200">` : '<p>이미지 없음</p>'}
                       <br><br>
                       <a href="/object/get/1">← 목록으로 돌아가기</a>

@@ -3,21 +3,16 @@
   src: url("/CK_tc04170000017.ttf");
 }
 
-html,body {
-  margin: 0px;
-  width:100%;
-  background-color: white;
-}
-
-#root {
-  background-color: white;
-  max-width: 100%;
-  width: 100%;
-  margin: 0 auto;
-  min-height: 100vh;
-  height: 100%;
-}
-
 body * {
   font-family: "Wooahan", sans-serif;
+}
+
+body,html{
+  margin: 0px;
+  width: 100%;
+}
+
+#root{
+  width: 100%;
+  min-height: 100vh;
 }

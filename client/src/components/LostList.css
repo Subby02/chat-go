@@ -1,0 +1,32 @@
+/* LostList.css */
+
+.lost-item-table {
+  width: 80%;
+  margin : 3.125rem auto 0 auto;
+  border-collapse: collapse;
+  border-spacing: 0; 
+  font-size: 16px;
+  color: #333;    
+  box-shadow: -7px 0 5px rgba(0,0,0,0.1), 7px 0 5px rgba(0,0,0,0.1);   
+
+}
+
+
+.lost-item-table .lost-item-header { 
+  background-color: #f8f9fa; 
+  border-top: 1px solid #dee2e6; /* 헤더 위쪽에도 얇은 선 (선택 사항) */
+  border-bottom: 2px solid #dee2e6; /* 헤더 아래쪽 구분선 (조금 더 진하게) */
+}
+
+.lost-item-table .lost-item-header th { /* th (헤더 셀) */
+  font-weight: 600; 
+  padding: 12px 15px; 
+  text-align: center; 
+  color: #495057;      
+  vertical-align: middle;
+  font-size: 1.2rem;
+}
+
+
+
+

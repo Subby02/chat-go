@@ -10,12 +10,13 @@ import Register from './pages/Register';
 import FindPassWord from './pages/FindPassword';
 import NewObjectLost from './pages/NewObjectLost';
 import NewObjectGet from './pages/NewObjectGet';
-
 import Inquiry from './pages/Inquiry';
-
+import LostPage from "./pages/LostPage";
+import Searchbar from "./components/Searchbar";
+import ObjLostDetail from "./pages/ObjLostDetail";
 function App() {
   return (
-    <>
+    <div className="app-container">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/object" element={<Object />} />
@@ -23,16 +24,16 @@ function App() {
         <Route path='/object/get/write' element={<NewObjectGet />} />
         <Route path="/animal" element={<Animal />} />
         <Route path="/reward/:id" element={<Reward />} />
+        <Route path="/object/lost" element={<LostPage />} />
+        <Route path="/object/lost/:postId" element={<ObjLostDetail />} />
         <Route path="*" element={<Notfound />} />
         <Route path="/login" element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/find-pwd' element={<FindPassWord />} />
-
         <Route path='/inquiry' element={<Inquiry />} />
       </Routes>
-    </>
-    
+    </div>
   );
 }
 
-export default App
+export default App;
