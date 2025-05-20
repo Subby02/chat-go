@@ -1,7 +1,7 @@
 .Top{
     display: flex;
     justify-content: space-between;
-    padding: 0 10vw;
+    padding: 0 15vw;
     
 }
 .Left{
@@ -9,7 +9,9 @@
 }
 
 .Main{
-    font-size: 1.5rem;
+    font-size: 1.6vw;
 }
-
+.Sub{
+    font-size: 1.3vw;
+}
 

@@ -23,6 +23,7 @@
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.2s, color 0.2s;
+  font-size: 1vw;
 }
 
 .page-item button:hover:not(:disabled) {
@@ -33,6 +34,7 @@
   background-color: #007bff; /* 현재 페이지 활성 스타일 */
   color: white;
   border-color: #007bff;
+  font-size: 1vw;
 }
 
 .page-item.disabled button {

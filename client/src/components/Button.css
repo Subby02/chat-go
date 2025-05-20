@@ -6,6 +6,7 @@
   padding: 10px 20px;
   font-size: 20px;
   white-space: nowrap;
+  text-align: center;
 }
 
 .Button_BLACK {
@@ -14,14 +15,12 @@
 }
 
 .Button_LOGIN{
-  text-align: center;
-  font-size: 16px;
+  font-size: 1.1vw;
   width: 110px;
   height: 40px;
 }
 .Button_REGISTER{
-  text-align: center;
-  font-size: 16px;
+  font-size: 1.1vw;
   width: 110px;
   height: 40px;
    background-color: black;
@@ -29,8 +28,7 @@
 }
 
 .Button_MYPAGE{
-  text-align: center;
-  font-size: 16px;
-  width: 110px;
+  font-size: 1.1vw;
+  width: 120px;
   height: 40px;
 }
