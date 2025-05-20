@@ -25,6 +25,21 @@ const ObjectLostDetail = () => {
   const queryParams = new URLSearchParams(location.search);
   const previousPage = queryParams.get("page") || 1;
 
+  const fetchStatus = async () => {
+    const response = await axios.get("http://localhost:5000/api/status", {
+      withCredentials: true,
+    });
+
+    console.log(response);
+    setAuth(response.data.authenticated);
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+
+
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -33,6 +48,7 @@ const ObjectLostDetail = () => {
         { withCredentials: true }
       );
       setAuth(false);
+      nav('/');
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -204,3 +220,4 @@ const ObjectLostDetail = () => {
 };
 
 export default ObjectLostDetail;
+  

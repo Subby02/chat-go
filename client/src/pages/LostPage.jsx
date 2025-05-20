@@ -122,6 +122,7 @@ const LostPage = () => {
         { withCredentials: true }
       );
       setAuth(false);
+      nav('/');
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -170,7 +171,7 @@ const LostPage = () => {
           textAlign: "center",
           paddingTop: "1.25rem",
           paddingBottom: "1.25rem",
-          fontFamily: "sans-serif",
+          fontWeight:"normal"
         }}
       >
         분실물 신고 게시판
