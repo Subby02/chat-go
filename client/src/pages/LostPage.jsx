@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
+import { HiOutlinePencilAlt } from "react-icons/hi";
 
 const LostPage = () => {
   const [auth, setAuth] = useState(false);
@@ -34,6 +35,7 @@ const LostPage = () => {
     const pageNumber = parseInt(pageFromQuery, 10); // 숫자로 변환
     return !isNaN(pageNumber) && pageNumber > 0 ? pageNumber : 1; // 유효한 숫자면 사용, 아니면 1
   };
+
   const [keyword, setKeyword] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +124,8 @@ const LostPage = () => {
         { withCredentials: true }
       );
       setAuth(false);
-      nav('/');
+
+      nav("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -132,73 +135,50 @@ const LostPage = () => {
   if (error) return <p>에러가 발생했습니다: {error.message}</p>;
 
   return (
-    <div className="lost-page-container">
-      <Header
-        icon={
-          <img
-            src={getIconImage(1)}
-            style={{ width: "100px", height: "100px" }}
-          />
-        }
-        mainTitle={"찾Go"}
-        subTitle={"Find Lost Items"}
-        mypage={<Button text={"마이페이지"} type={"MYPAGE"} />}
-        login={
-          <Button
-            text={"로그인"}
-            onClick={() => {
-              nav("/login");
-            }}
-            type={"LOGIN"}
-          />
-        }
-        register={
-          <Button
-            text={"회원가입"}
-            type={"REGISTER"}
-            onClick={() => {
-              nav("/register");
-            }}
-          />
-        }
-        logout={
-          <Button text={"로그아웃"} type={"REGISTER"} onClick={handleLogout} />
-        }
-        authState={auth}
-      />
-      <h1
-        style={{
-          textAlign: "center",
-          paddingTop: "1.25rem",
-          paddingBottom: "1.25rem",
-          fontWeight:"normal"
-        }}
+    <>
+      <Header authState={auth} />
+
+      <div className="lost-page-container">
+        <h1
+          style={{
+            textAlign: "center",
+            fontWeight: "normal",
+            margin: "40px 0",
+          }}
       >
         분실물 신고 게시판
       </h1>
       <Searchbar onSearch={handleSearch} />
+        
       <div className="write">
-        <button
-          onClick={() => {
-            if (auth) nav("/object/lost/write");
-            else nav("/login");
-          }}
-        >
-          글작성
-        </button>
+         <button
+            className="writeButton"
+            onClick={() => {
+              if (auth) nav("/object/lost/write");
+              else nav("/login");
+            }}
+          >
+            <span style={{ fontSize: "20px" }}>글쓰기</span>
+
+            <HiOutlinePencilAlt
+              style={{ fontSize: "20px", marginBottom: "3px" }}
+            />
+          </button>
+        </div>
+
+        <LostList
+          posts={filteredPosts}
+          cnt={totalItems}
+          currentPage={currentPage}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPage}
+          onPageChange={handlePageChange}
+        />
       </div>
-      <LostList
-        posts={filteredPosts}
-        cnt={totalItems}
-        currentPage={currentPage}
-      />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPage}
-        onPageChange={handlePageChange}
-      />
       <Footer />
-    </div>
+    </>
   );
 };
 
