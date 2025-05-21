@@ -34,7 +34,6 @@ const LostPage = () => {
     const pageNumber = parseInt(pageFromQuery, 10); // 숫자로 변환
     return !isNaN(pageNumber) && pageNumber > 0 ? pageNumber : 1; // 유효한 숫자면 사용, 아니면 1
   };
-
   const [keyword, setKeyword] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,8 +122,7 @@ const LostPage = () => {
         { withCredentials: true }
       );
       setAuth(false);
-
-      nav("/");
+      nav('/');
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -135,7 +133,39 @@ const LostPage = () => {
 
   return (
     <div className="lost-page-container">
-      <Header authState={auth} />
+      <Header
+        icon={
+          <img
+            src={getIconImage(1)}
+            style={{ width: "100px", height: "100px" }}
+          />
+        }
+        mainTitle={"찾Go"}
+        subTitle={"Find Lost Items"}
+        mypage={<Button text={"마이페이지"} type={"MYPAGE"} />}
+        login={
+          <Button
+            text={"로그인"}
+            onClick={() => {
+              nav("/login");
+            }}
+            type={"LOGIN"}
+          />
+        }
+        register={
+          <Button
+            text={"회원가입"}
+            type={"REGISTER"}
+            onClick={() => {
+              nav("/register");
+            }}
+          />
+        }
+        logout={
+          <Button text={"로그아웃"} type={"REGISTER"} onClick={handleLogout} />
+        }
+        authState={auth}
+      />
       <h1
         style={{
           textAlign: "center",

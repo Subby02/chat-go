@@ -2,7 +2,6 @@ import Body from "../components/Body";
 import { getIconImage } from "../util/get-img-icon";
 import Header from "../components/Header";
 import Button from "../components/Button";
-import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -32,20 +31,48 @@ const Home = ({ LatesPost }) => {
         { withCredentials: true }
       );
       setAuth(false);
-      nav("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
   return (
-    <>
-      <Header authState={auth} />
-      <main style={{ width: "1200px", margin: "0 auto" }}>
-        <Body />
-      </main>
-      <Footer />
-    </>
+    <div>
+      <Header
+        icon={
+          <img
+            src={getIconImage(1)}
+            style={{ width: "100px", height: "100px" }}
+          />
+        }
+        mainTitle={"찾Go"}
+        subTitle={"Find Lost Items"}
+        mypage={<Button text={"마이페이지"} type={"MYPAGE"} />}
+        login={
+          <Button
+            text={"로그인"}
+            onClick={() => {
+              nav("/login");
+            }}
+            type={"LOGIN"}
+          />
+        }
+        register={
+          <Button
+            text={"회원가입"}
+            type={"REGISTER"}
+            onClick={() => {
+              nav("/register");
+            }}
+          />
+        }
+        logout={
+          <Button text={"로그아웃"} type={"REGISTER"} onClick={handleLogout} />
+        }
+        authState={auth}
+      />
+      <Body />
+    </div>
   );
 };
 
