@@ -38,6 +38,7 @@ const ObjectLostDetail = () => {
     fetchStatus();
   }, []);
 
+
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -47,6 +48,7 @@ const ObjectLostDetail = () => {
       );
       setAuth(false);
       nav("/");
+
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -218,3 +220,4 @@ const ObjectLostDetail = () => {
 };
 
 export default ObjectLostDetail;
+  

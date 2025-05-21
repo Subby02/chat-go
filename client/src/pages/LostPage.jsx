@@ -124,6 +124,7 @@ const LostPage = () => {
         { withCredentials: true }
       );
       setAuth(false);
+
       nav("/");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -144,14 +145,13 @@ const LostPage = () => {
             fontWeight: "normal",
             margin: "40px 0",
           }}
-        >
-          분실물 신고 게시판
-        </h1>
-
-        <Searchbar onSearch={handleSearch} />
-
-        <div className="write">
-          <button
+      >
+        분실물 신고 게시판
+      </h1>
+      <Searchbar onSearch={handleSearch} />
+        
+      <div className="write">
+         <button
             className="writeButton"
             onClick={() => {
               if (auth) nav("/object/lost/write");
