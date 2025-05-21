@@ -1,13 +1,22 @@
 .write{
     display: flex;
     justify-content: flex-end;
-    margin-bottom: -20px;
-    margin-top: -20px;
-    padding-right: 10vw;
+    margin-right: 130px;
+    margin-bottom: 20px;
 }
-.write > button{
-    padding: 20px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
+
+
+.lost-page-container{
+    width: 1300px;
+    margin: 0 auto;
+}
+
+.writeButton{
+    display: inline-flex;
+    padding: 10px 20px;
+    gap: 6px;
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid rgb(179, 179, 179);
+    background-color: whitesmoke;
 }
