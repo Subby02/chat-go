@@ -2,20 +2,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 40px;
+    width: 100%;
 }
 
 
-.PostSlider > div {
-  width: 100%;
+.PostSlider .post {
+  width: 900px;
   display: flex;
   justify-content: center;
-  gap: 5vw;
-}
+  gap: 30px ;
+  font-size: 16px;
 
-.post{
-  font-size: 1vw;
-}
+
 
 
 .PostSlider img {
