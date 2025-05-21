@@ -26,7 +26,7 @@
 }
 
 .Dropdown_Button { /* Dropdown > button 에서 클래스명으로 변경 */
-  font-size: clamp(0.85rem, 2vw, 1rem); /* 반응형 폰트 (기존 20px 고려) */
+  font-size: 1.2vw; /* 반응형 폰트 (기존 20px 고려) */
   color: #333;
   background-color: transparent; /* 기본 배경 투명 */
   border: none;

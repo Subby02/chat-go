@@ -1,18 +1,19 @@
 .Top{
     display: flex;
     justify-content: space-between;
+
 }
 .Left{
     display: flex;
     cursor: pointer;
 }
 
+
 .Right{
     display: flex;
     gap: 10px;
     justify-content: flex-end;
     padding-top: 60px;
-}
 
 
 
