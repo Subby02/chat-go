@@ -1,10 +1,59 @@
 /* Header.css - 수정안 */
 .headertop{
   text-wrap: nowrap;
-  margin:0 auto;
-  width: 1200px;
+}
+.Header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #fff; /* 헤더 배경색 추가 (예시) */
+
 }
 
+.Top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 5%; 
+  border-bottom: 1px solid #e0e0e0; 
+  gap: 1rem; /* Left와 Right 사이의 최소 간격 (줄바꿈 시) */
+}
+
+.Left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem; /* 아이콘과 타이틀 사이 간격 */
+}
+
+
+.Right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* 버튼들 사이 간격 */
+  justify-content: flex-end; /* 오른쪽 정렬 유지 */
+}
+
+.Main_Icon_Link {
+  display: flex; /* 아이콘 수직 정렬 위해 */
+  align-items: center;
+}
+
+.Main_Icon_Component,
+.Main_Icon_Image { /* icon prop으로 실제 이미지 태그가 들어갈 경우를 대비 */
+  /* width: 100px; /* 고정 너비 제거 */
+  max-width: clamp(70px, 10vw, 90px); /* 아이콘 최대 너비 (반응형) */
+  height: auto; /* 비율 유지 */
+  object-fit: contain;
+  padding-left: 26vw;
+}
+
+.Titles {
+  display: flex;
+  flex-direction: column; /* 메인 타이틀과 서브 타이틀 수직 정렬 */
+  justify-content: center;
+  /* margin-left: 20px; /* 고정 마진 제거, .Left의 gap으로 처리 */
+  /* gap: 40px; /* 고정 갭 제거, 개별 마진으로 처리 */
+}
 
 
 /* 버튼 래퍼들에 대한 스타일 (필요시) */
@@ -18,7 +67,6 @@
   border-bottom: 1px solid #e0e0e0;
   gap: 1rem 10rem; /* 행간, 열간 간격 (반응형) 기존 200px gap 제거 */
   background-color: #f9f9f9; /* 네비게이션 바 배경색 (선택 사항) */
-  text-wrap: nowrap;
 }
 
 .Dropdown {
@@ -47,6 +95,8 @@
   opacity: 0;
   position: absolute;
   top: calc(100% + 5px); /* 버튼 바로 아래 약간의 간격 (기존 translateY 대체) */
+  left: 50%;
+  transform: translateX(-50%); /* 중앙 정렬 */
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 4px;

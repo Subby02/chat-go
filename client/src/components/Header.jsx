@@ -5,16 +5,32 @@ import axios from "axios";
 import HeaderTop from "./HeaderTop";
 import HeaderNavigation from "./HeaderNavigation";
 
-const Header = ({ authState }) => {
+const Header = ({
+  icon,
+  mainTitle,
+  subTitle,
+  mypage,
+  login,
+  register,
+  logout,
+  authState,
+}) => {
+  const nav = useNavigate();
   return (
-    <>
-      <div className="headertop">
-        <HeaderTop authState={authState} />
-      </div>
-      <div>
-        <HeaderNavigation />
-      </div>
-    </>
+    <div className="headertop">
+      <HeaderTop
+        icon={icon}
+        mainTitle={mainTitle}
+        subTitle={subTitle}
+        mypage={mypage}
+        login={login}
+        register={register}
+        logout={logout}
+        authState={authState}
+      />
+
+      <HeaderNavigation />
+    </div>
   );
 };
 
