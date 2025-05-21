@@ -39,7 +39,6 @@ const ObjectLostDetail = () => {
   }, []);
 
 
-
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -48,7 +47,8 @@ const ObjectLostDetail = () => {
         { withCredentials: true }
       );
       setAuth(false);
-      nav('/');
+      nav("/");
+
     } catch (error) {
       console.error("Logout failed:", error);
     }
