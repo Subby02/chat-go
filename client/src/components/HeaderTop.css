@@ -1,17 +1,29 @@
 .Top{
     display: flex;
     justify-content: space-between;
-    padding: 0 15vw;
-    
+
 }
 .Left{
+    display: flex;
     cursor: pointer;
 }
 
-.Main{
-    font-size: 1.6vw;
+
+.Right{
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 60px;
 }
-.Sub{
-    font-size: 1.3vw;
+
+
+.Title .MainTitle{
+    margin-bottom: 0px;
+    margin-top: 50px;
+}
+
+.Title .SubTitle{
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
