@@ -1,5 +1,6 @@
 /* Introduce.css */
 .Introduce {
+  width: 80%;
   display: flex;
   flex-direction: column;
   text-wrap: nowrap;
