@@ -9,7 +9,6 @@ import Header from "../components/Header";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
-import { HiOutlinePencilAlt } from "react-icons/hi";
 
 const LostPage = () => {
   const [auth, setAuth] = useState(false);
@@ -135,50 +134,41 @@ const LostPage = () => {
   if (error) return <p>에러가 발생했습니다: {error.message}</p>;
 
   return (
-    <>
+    <div className="lost-page-container">
       <Header authState={auth} />
-
-      <div className="lost-page-container">
-        <h1
-          style={{
-            textAlign: "center",
-            fontWeight: "normal",
-            margin: "40px 0",
-          }}
+      <h1
+        style={{
+          textAlign: "center",
+          paddingTop: "1.25rem",
+          paddingBottom: "1.25rem",
+          fontWeight:"normal"
+        }}
       >
         분실물 신고 게시판
       </h1>
       <Searchbar onSearch={handleSearch} />
-        
       <div className="write">
-         <button
-            className="writeButton"
-            onClick={() => {
-              if (auth) nav("/object/lost/write");
-              else nav("/login");
-            }}
-          >
-            <span style={{ fontSize: "20px" }}>글쓰기</span>
-
-            <HiOutlinePencilAlt
-              style={{ fontSize: "20px", marginBottom: "3px" }}
-            />
-          </button>
-        </div>
-
-        <LostList
-          posts={filteredPosts}
-          cnt={totalItems}
-          currentPage={currentPage}
-        />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPage}
-          onPageChange={handlePageChange}
-        />
+        <button
+          onClick={() => {
+            if (auth) nav("/object/lost/write");
+            else nav("/login");
+          }}
+        >
+          글작성
+        </button>
       </div>
+      <LostList
+        posts={filteredPosts}
+        cnt={totalItems}
+        currentPage={currentPage}
+      />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPage}
+        onPageChange={handlePageChange}
+      />
       <Footer />
-    </>
+    </div>
   );
 };
 

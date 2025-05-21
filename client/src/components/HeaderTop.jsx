@@ -57,11 +57,7 @@ const HeaderTop = ({ authState }) => {
         {authState ? (
           <>
             <Button text={"마이페이지"} type={"MYPAGE"} />
-            <Button
-              text={"로그아웃"}
-              onClick={handleLogout}
-              type={"REGISTER"}
-            />
+            <Button text={"로그아웃"} onClick={handleLogout} type={"LOGIN"} />
           </>
         ) : (
           <>
