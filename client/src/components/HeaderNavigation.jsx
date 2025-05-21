@@ -9,7 +9,7 @@ const HeaderNavigation = () => {
         </button>
         <div className="DropDownMenu">
           <Link to="/object/lost">신고 게시판</Link>
-          <Link to="/animal">제보 게시판</Link>{" "}
+          <Link to="/object/get">제보 게시판</Link>
         </div>
       </div>
 
@@ -44,6 +44,5 @@ const HeaderNavigation = () => {
     </nav>
   );
 };
-
 
 export default HeaderNavigation;
