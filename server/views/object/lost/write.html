@@ -19,7 +19,7 @@
         <label>분실지역명: <input type="text" name="lstLctNm"></label><br>
         <label>특이사항: <input type="text" name="uniq"></label><br>
         <label>게시 제목 (필수): <input type="text" name="lstSbjt"></label><br>
-        <label>이미지 URL: <input type="text" name="lstFilePathImg"></label><br><br>
+        <label>이미지 파일: <input type="file" name="lstFilePathImg"></label><br><br>
 
         <button type="submit">제출하기</button>
     </form>
@@ -30,23 +30,21 @@
         document.getElementById("write-form").addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            const formData = new FormData(e.target);
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
+            const form = e.target;
+            const formData = new FormData(form); // 이미지 포함됨
 
             try {
                 const res = await fetch('/api/object/lost/write', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: formData // 헤더는 자동으로 설정됨
                 });
 
                 const result = await res.json();
                 if (res.ok) {
                     document.getElementById("result").innerHTML = `
-                        <p style="color:green">등록 완료!</p>
-                        <a href="/object/lost/1">→ 목록으로 돌아가기</a>
-                    `;
+                    <p style="color:green">등록 완료!</p>
+                    <a href="/object/lost/1">→ 목록으로 돌아가기</a>
+                `;
                 } else {
                     document.getElementById("result").innerHTML =
                         `<p style="color:red">오류: ${result.error || '등록 실패'}</p>`;

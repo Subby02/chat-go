@@ -6,11 +6,7 @@ const path = require('path');
 
 //분실물 습득(작성, 세부내용 조회, 목록 조회)
 router.get('/object/get/write', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, '..', 'views', 'object', 'get', 'write.html'));
-    } else {
-        res.redirect('/object/get/:num');
-    }
+    res.sendFile(path.join(__dirname, '..', 'views', 'object', 'get', 'write.html'));
 });
 router.get('/object/get/detail/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'views', 'object', 'get', 'detail.html'));
@@ -32,11 +28,7 @@ router.get('/object/lost/:num', (req, res) => {
 
 //포상금 유기동물(작성, 세부내용 조회, 목록 조회)
 router.get('/reward/animal/write', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, '..', 'views', 'reward', 'animal', 'write.html'));
-    } else {
-        res.redirect('/reward/animal/:num');
-    }
+    res.sendFile(path.join(__dirname, '..', 'views', 'reward', 'animal', 'write.html'));
 });
 router.get('/reward/animal/detail/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'views', 'reward', 'animal', 'detail.html'));
@@ -47,11 +39,7 @@ router.get('/reward/animal/:num', (req, res) => {
 
 //포상금 분실물(작성, 세부내용 조회, 목록 조회)
 router.get('/reward/object/write', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, '..', 'views', 'reward', 'object', 'write.html'));
-    } else {
-        res.redirect('/reward/object/:num');
-    }
+    res.sendFile(path.join(__dirname, '..', 'views', 'reward', 'object', 'write.html'));
 });
 router.get('/reward/object/detail/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'views', 'reward', 'object', 'detail.html'));

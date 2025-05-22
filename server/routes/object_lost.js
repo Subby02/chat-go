@@ -8,14 +8,18 @@ const { MongoClient, ObjectId } = require('mongodb')
 const MongoStore = require('connect-mongo')
 const path = require('path');
 const { Object_lost } = require('../models/object_lost.js');
+const multer = require('multer');
+const fs = require('fs');
 
 //한 페이지당 보여줄 게시글 수
 const show_list = process.env.SHOW_LIST
 
-//object 내용
-//글 목록 보여주기
-// 글 목록 JSON 데이터 응답, 데이터베이스를 사용하기 떄문에 /api사용
-//// 신고 목록 API
+// multer 설정
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, path.join(__dirname, '../images/object_lost')),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+});
+const upload = multer({ storage });
 
 //해당하는글 들어가기
 /**
@@ -160,7 +164,7 @@ router.get('/detail/:id', async (req, res) => {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -207,7 +211,8 @@ router.get('/detail/:id', async (req, res) => {
  *                 description: 게시글 제목
  *               lstFilePathImg:
  *                 type: string
- *                 description: 이미지 경로
+ *                 format: binary
+ *                 description: 업로드할 이미지 파일
  *     responses:
  *       201:
  *         description: 글이 성공적으로 등록됨
@@ -240,8 +245,15 @@ router.get('/detail/:id', async (req, res) => {
  *                   type: string
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
  */
-router.post('/write', async (req, res) => {
+router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
             return res.status(401).json({ error: '로그인이 필요합니다.' });
@@ -259,14 +271,15 @@ router.post('/write', async (req, res) => {
             prdtClNm,
             uniq,
             lstLctNm,
-            lstSbjt,
-            lstFilePathImg
+            lstSbjt
         } = req.body;
 
         // 필수 항목 체크
         if (!lstPrdtNm || !lstYmd || !lstPlace) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
+
+        const lstFilePathImg = req.file ? `/api/images/object_lost/${req.file.filename}` : null;
 
         const newPost = new Object_lost({
             user_id: req.user.email,

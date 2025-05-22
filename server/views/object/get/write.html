@@ -17,7 +17,7 @@
         <label>특이사항: <input type="text" name="uniq"></label><br>
         <label>물품분류명: <input type="text" name="prdtClNm"></label><br>
         <label>보관 장소 (필수): <input type="text" name="depPlace"></label><br>
-        <label>이미지 URL: <input type="text" name="fdFilePathImg"></label><br><br>
+        <label>이미지 파일: <input type="file" name="fdFilePathImg"></label><br><br>
 
         <button type="submit">등록하기</button>
     </form>
@@ -30,14 +30,11 @@
 
             const form = e.target;
             const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
 
             try {
                 const res = await fetch('/api/object/get/write', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 const result = await res.json();
