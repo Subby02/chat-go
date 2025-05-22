@@ -6,12 +6,19 @@ const LocalStrategy = require('passport-local')
 const coolsms = require('coolsms-node-sdk').default
 const { User } = require('../models/user')
 const { AuthCode } = require('../models/authCodes')
+const { Object_lost } = require('../models/object_lost.js');
+const { Object_get } = require('../models/object_get.js');
+const { Animal_lost } = require('../models/AnimalGet.js');
+const { Animal_get } = require('../models/AnimalLost.js');
+const { Reward_animal } = require('../models/reward_animal.js');
+const { Reward_object } = require('../models/reward_object.js');
+
 
 function generateAuthCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-console.log(process.env.SMS_API_SECRET);
+const MYPAGE_MAX_POST = 10;
 
 const messageService = new coolsms(process.env.SMS_API_KEY, process.env.SMS_API_SECRET);
 passport.use(new LocalStrategy({
@@ -51,6 +58,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (user, done) => {
     let result = await User.findOne({ _id: new ObjectId(user.id) })
+    result = result.toObject()
     delete result.password
     process.nextTick(() => {
         return done(null, result)
@@ -642,5 +650,51 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
+
+router.get('/user/info', (req, res) => {
+    if (req.isAuthenticated()) {
+        let result = req.user
+        delete result.role
+        delete result._id
+        res.json(result);
+    } else {
+        res.status(401).json({ message: '로그인이 필요합니다' });
+    }
+})
+
+router.get('/user/posts', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {
+            page = 1,
+        } = req.query;
+
+        try {
+        const skip = (parseInt(page) - 1) * MYPAGE_MAX_POST;
+        const limit = MYPAGE_MAX_POST;
+
+        const docs = await Object_lost.find({ user_id: req.user._id }).sort({ _id: -1 }).skip(skip).limit(limit);
+
+        const totalCount = await Object_lost.countDocuments({ user_id: req.user._id });
+
+        const results = docs.map(doc => {
+            const obj = doc.toObject();
+            obj.date = obj.date ? new Date(obj.date).toISOString().slice(0, 10) : null;
+            return obj;
+        });
+
+        res.json({
+            page: parseInt(page),
+            totalPages: Math.ceil(totalCount / MYPAGE_MAX_POST),
+            totalCount,
+            results
+        });
+    } catch (err) {
+        console.error("Search Error:", err.message);
+        res.status(501).json({ message: err.message });
+    }
+    } else {
+        res.status(401).json({ message: '로그인이 필요합니다' });
+    }
+})
 
 module.exports = router
