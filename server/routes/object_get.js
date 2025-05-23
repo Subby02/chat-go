@@ -219,10 +219,6 @@ router.get('/detail/:id', async (req, res) => {
  *               - fdPlace
  *               - depPlace
  *             properties:
- *               date:
- *                 type: string
- *                 format: date
- *                 description: 게시 날짜 (선택, 미입력 시 현재 시간)
  *               fdPrdtNm:
  *                 type: string
  *                 description: 물품명 (필수)
@@ -233,6 +229,15 @@ router.get('/detail/:id', async (req, res) => {
  *               fdPlace:
  *                 type: string
  *                 description: 습득 장소 (필수)
+ *               si:
+ *                 type: string
+ *                 description: 습득한 장소의 시/도 
+ *               sgg:
+ *                 type: string
+ *                 description: 습득한 장소의 시군구
+ *               emd:
+ *                 type: string
+ *                 description: 습득한 장소의 읍면동
  *               uniq:
  *                 type: string
  *                 description: 특이사항 (선택)
@@ -298,6 +303,9 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
             fdPrdtNm,
             fdYmd,
             fdPlace,
+            si,
+            sgg,
+            emd,
             uniq,
             prdtClNm,
             depPlace
@@ -316,6 +324,9 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
             fdPrdtNm,
             fdYmd,
             fdPlace,
+            si,
+            sgg,
+            emd,
             uniq,
             prdtClNm,
             depPlace,

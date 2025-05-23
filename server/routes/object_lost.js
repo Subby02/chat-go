@@ -172,10 +172,6 @@ router.get('/detail/:id', async (req, res) => {
  *               - lstYmd
  *               - lstPlace
  *             properties:
- *               date:
- *                 type: string
- *                 format: date-time
- *                 description: 작성 일시
  *               lstPrdtNm:
  *                 type: string
  *                 description: 물품명
