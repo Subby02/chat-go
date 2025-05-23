@@ -12,7 +12,7 @@ const multer = require('multer');
 const fs = require('fs');
 
 //한 페이지당 보여줄 게시글 수
-const show_list = process.env.SHOW_LIST
+const show_list = 10;
 
 // multer 설정
 const storage = multer.diskStorage({
@@ -260,7 +260,6 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
         }
 
         const {
-            date,
             lstPrdtNm,
             lstYmd,
             lstHor,
@@ -282,7 +281,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
         const lstFilePathImg = req.file ? `/api/images/object_lost/${req.file.filename}` : null;
 
         const newPost = new Object_lost({
-            user_id: req.user.email,
+            user_id: req.user._id,
             date: date ? new Date(date) : new Date(),
             lstPrdtNm,
             lstYmd,
@@ -296,7 +295,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
             lstLctNm,
             lstSbjt,
             lstFilePathImg,
-            tel: req.user.phone_number,
+            tel: req.user.phone_number
         });
 
         const saved = await newPost.save();
@@ -380,7 +379,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
  *                 totalPages:
  *                   type: integer
  *                   example: 5
- *                   description: 전체 페이지 수 (show_list 기준으로 나눈 값)
+ *                   description: 전체 페이지 수 (10 기준으로 나눈 값)
  *                 results:
  *                   type: array
  *                   description: 게시글 목록 (페이지당 최대 10개)

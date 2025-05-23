@@ -1,23 +1,22 @@
 const mongoose = require('mongoose');
 
 const reward_animal_schema = mongoose.Schema({
-    user_id: { type: String },
-    date: { type: Date },
-    callName: { type: String },
-    callTel: { type: String },
-    happenDt: { type: String },
-    happenAddr: { type: String },
-    happenAddrDtl: { type: String },
-    happenPlace: { type: String },
-    si: { type: String },
-    sgg: { type: String },
-    emd: { type: String },
-    popfile: { type: String },
-    kindCd: { type: String },
-    sexCd: { type: String, enum: ['M', 'F'] },
-    age: { type: String },
-    specialMark: { type: String },
-    reward: { type: String }
+    user_id: { type: String }, // 유저 아이디
+    date: { type: Date }, // 게시 날짜
+    callName: { type: String }, // 보호자 이름
+    callTel: { type: String }, // 보호자 연락처
+    happenDt: { type: String }, // 유기 날짜
+    happenAddr: { type: String }, // 유기 주소
+    happenPlace: { type: String },  //주위 건물
+    si: { type: String }, // 광역시
+    sgg: { type: String }, // 시군구
+    emd: { type: String }, // 읍면동
+    popfile: { type: String }, // 이미지
+    kindCd: { type: String }, // 품종
+    sexCd: { type: String }, // 성별
+    age: { type: Number }, // 나이
+    specialMark: { type: String }, // 특이사항
+    reward: { type: Number } // 보상금
 }, { versionKey: false });
 
 const Reward_animal = mongoose.model('Reward_animal', reward_animal_schema, 'reward_animal');
