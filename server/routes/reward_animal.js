@@ -24,10 +24,10 @@ const upload = multer({ storage });
 //해당하는글 들어가기
 /**
  * @swagger
- * /api/object/animal/detail/{id}:
+ * /api/reward/animal/detail/{id}:
  *   get:
  *     summary: 유기 동물 포상금 상세 정보 조회
- *     tags: [AnimalReward]
+ *     tags: [RewardAnimal]
  *     parameters:
  *       - in: path
  *         name: id
@@ -191,10 +191,10 @@ router.get('/detail/:id', async (req, res) => {
 //글 작성하기
 /**
  * @swagger
- * /api/object/animal/write:
+ * /api/reward/animal/write:
  *   post:
  *     summary: 유기 동물 포상금 게시글 작성
- *     tags: [AnimalReward]
+ *     tags: [RewardAnimal]
  *     security:
  *       - cookieAuth: []  # 세션 쿠키 인증
  *     requestBody:
@@ -341,10 +341,10 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
 // 검색 목록
 /**
  * @swagger
- * /api/object/animal/search:
+ * /api/reward/animal/search:
  *   get:
  *     summary: 유기 동물 포상금 게시글 검색 및 목록 조회
- *     tags: [AnimalReward]
+ *     tags: [RewardAnimal]
  *     parameters:
  *       - in: query
  *         name: search

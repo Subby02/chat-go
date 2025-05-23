@@ -24,10 +24,10 @@ const upload = multer({ storage });
 //해당하는글 들어가기
 /**
  * @swagger
- * /api/object/reward/detail/{id}:
+ * /api/reward/object/detail/{id}:
  *   get:
  *     summary: 보상물 상세 정보 조회
- *     tags: [ObjectReward]
+ *     tags: [RewardObject]
  *     parameters:
  *       - in: path
  *         name: id
@@ -153,10 +153,10 @@ router.get('/detail/:id', async (req, res) => {
 //글 작성하기
 /**
  * @swagger
- * /api/object/reward/write:
+ * /api/reward/object/write:
  *   post:
  *     summary: 보상물 게시글 작성
- *     tags: [ObjectReward]
+ *     tags: [RewardObject]
  *     security:
  *       - cookieAuth: []  # 세션 쿠키 인증
  *     requestBody:
@@ -313,10 +313,10 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
 //검색 목록
 /**
  * @swagger
- * /api/object/reward/search:
+ * /api/reward/object/search:
  *   get:
  *     summary: 보상물 게시글 검색 및 목록 조회
- *     tags: [ObjectReward]
+ *     tags: [RewardObject]
  *     parameters:
  *       - in: query
  *         name: search
