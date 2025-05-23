@@ -12,7 +12,7 @@ const multer = require('multer');
 const fs = require('fs');
 
 //한 페이지당 보여줄 게시글 수
-const show_list = process.env.SHOW_LIST
+const show_list = 10;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, path.join(__dirname, '../images/object_get')),
@@ -295,7 +295,6 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
         }
 
         const {
-            date,
             fdPrdtNm,
             fdYmd,
             fdPlace,
@@ -312,7 +311,7 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
         const fdFilePathImg = req.file ? `/api/images/object_get/${req.file.filename}` : null;
 
         const newPost = new Object_get({
-            user_id: req.user.email,
+            user_id: req.user._id,
             date: date ? new Date(date) : new Date(),
             fdPrdtNm,
             fdYmd,
