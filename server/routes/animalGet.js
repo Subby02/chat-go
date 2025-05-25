@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-const { AnimalGet } = require('../models/AnimalGet');
+const { AnimalGet } = require('../models/animalGet');
 
 // 보호 동물 글 등록
 // 1

@@ -7,16 +7,15 @@ const bcrypt = require('bcrypt')
 const { MongoClient, ObjectId } = require('mongodb')
 const MongoStore = require('connect-mongo')
 const path = require('path');
-const { Reward_object } = require('../models/reward_object');
+const { ObjectGet } = require('../models/objectGet.js');
 const multer = require('multer');
 const fs = require('fs');
 
 //한 페이지당 보여줄 게시글 수
 const show_list = 10;
 
-// multer 설정
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.join(__dirname, '../images/reward_object')),
+    destination: (req, file, cb) => cb(null, path.join(__dirname, '../images/object_get')),
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 const upload = multer({ storage });
@@ -24,69 +23,69 @@ const upload = multer({ storage });
 //해당하는글 들어가기
 /**
  * @swagger
- * /api/reward/object/detail/{id}:
+ * /api/object/get/detail/{id}:
  *   get:
- *     summary: 보상물 상세 정보 조회
- *     tags: [RewardObject]
+ *     summary: 분실물 습득 게시글 상세 조회
+ *     tags: [ObjectGet]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: 조회할 게시글의 MongoDB ObjectId
  *         schema:
  *           type: string
- *         description: 게시글의 MongoDB ObjectId
  *       - in: query
  *         name: page
  *         schema:
  *           type: string
- *         description: 현재 페이지 번호 (선택)
+ *         description: 페이지 번호 (목록 복귀용)
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: 검색어 (선택)
+ *         description: 통합 검색어
  *       - in: query
  *         name: dateStart
  *         schema:
  *           type: string
  *           format: date
- *         description: 작성일 시작 범위 (선택)
+ *         description: 게시 날짜 시작일
  *       - in: query
  *         name: dateEnd
  *         schema:
  *           type: string
  *           format: date
- *         description: 작성일 종료 범위 (선택)
+ *         description: 게시 날짜 종료일
  *       - in: query
- *         name: lstYmdStart
+ *         name: fdYmdStart
  *         schema:
  *           type: string
  *           format: date
- *         description: 분실일 시작 범위 (선택)
+ *         description: 습득 일자 시작일
  *       - in: query
- *         name: lstYmdEnd
+ *         name: fdYmdEnd
  *         schema:
  *           type: string
  *           format: date
- *         description: 분실일 종료 범위 (선택)
+ *         description: 습득 일자 종료일
  *       - in: query
  *         name: si
  *         schema:
  *           type: string
- *         description: 시/도 (선택)
+ *         description: 시/도
  *       - in: query
  *         name: sgg
  *         schema:
  *           type: string
- *         description: 시군구 (선택)
+ *         description: 시군구
  *       - in: query
  *         name: emd
  *         schema:
  *           type: string
- *         description: 읍면동 (선택)
+ *         description: 읍면동
  *     responses:
  *       200:
- *         description: 게시글 및 쿼리 정보 반환
+ *         description: 게시글 상세 정보 조회 성공
  *         content:
  *           application/json:
  *             schema:
@@ -94,7 +93,44 @@ const upload = multer({ storage });
  *               properties:
  *                 post:
  *                   type: object
- *                   description: 보상물 게시글 데이터
+ *                   properties:
+ *                     fdPrdtNm:
+ *                       type: string
+ *                     fdYmd:
+ *                       type: string
+ *                     fdHor:
+ *                       type: string
+ *                     fdPlace:
+ *                       type: string
+ *                     prdtClNm:
+ *                       type: string
+ *                     depPlace:
+ *                       type: string
+ *                     csteSteNm:
+ *                       type: string
+ *                     uniq:
+ *                       type: string
+ *                     fdSn:
+ *                       type: string
+ *                     fdSbjt:
+ *                       type: string
+ *                     orgNm:
+ *                       type: string
+ *                     tel:
+ *                       type: string
+ *                     orgId:
+ *                       type: string
+ *                     fndKeepOrgnSeNm:
+ *                       type: string
+ *                     atcId:
+ *                       type: string
+ *                     user_id:
+ *                       type: string
+ *                     date:
+ *                       type: string
+ *                       format: date-time
+ *                     fdFilePathImg:
+ *                       type: string
  *                 query:
  *                   type: object
  *                   properties:
@@ -106,9 +142,9 @@ const upload = multer({ storage });
  *                       type: string
  *                     dateEnd:
  *                       type: string
- *                     lstYmdStart:
+ *                     fdYmdStart:
  *                       type: string
- *                     lstYmdEnd:
+ *                     fdYmdEnd:
  *                       type: string
  *                     si:
  *                       type: string
@@ -116,12 +152,24 @@ const upload = multer({ storage });
  *                       type: string
  *                     emd:
  *                       type: string
+ *       404:
+ *         description: 해당 ID의 게시글이 존재하지 않음
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Not found
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Internal Server Error
  */
 router.get('/detail/:id', async (req, res) => {
     try {
-        const post = await Reward_object.findById(req.params.id);
+        const post = await ObjectGet.findById(req.params.id);
         if (!post) return res.status(404).send("Not found");
 
         const obj = post.toObject();
@@ -132,8 +180,8 @@ router.get('/detail/:id', async (req, res) => {
             search: req.query.search || '',
             dateStart: req.query.dateStart || '',
             dateEnd: req.query.dateEnd || '',
-            lstYmdStart: req.query.lstYmdStart || '',
-            lstYmdEnd: req.query.lstYmdEnd || '',
+            fdYmdStart: req.query.fdYmdStart || '',
+            fdYmdEnd: req.query.fdYmdEnd || '',
             si: req.query.si || '',
             sgg: req.query.sgg || '',
             emd: req.query.emd || ''
@@ -153,12 +201,12 @@ router.get('/detail/:id', async (req, res) => {
 //글 작성하기
 /**
  * @swagger
- * /api/reward/object/write:
+ * /api/object/get/write:
  *   post:
- *     summary: 보상물 게시글 작성
- *     tags: [RewardObject]
+ *     summary: 분실물 습득 게시글 작성
+ *     tags: [ObjectGet]
  *     security:
- *       - cookieAuth: []  # 세션 쿠키 인증
+ *       - cookieAuth: []  # 세션 기반 인증 필요 시 사용
  *     requestBody:
  *       required: true
  *       content:
@@ -166,58 +214,46 @@ router.get('/detail/:id', async (req, res) => {
  *           schema:
  *             type: object
  *             required:
- *               - lstPrdtNm
- *               - lstYmd
- *               - lstPlace
- *               - reward
+ *               - fdPrdtNm
+ *               - fdYmd
+ *               - fdPlace
+ *               - depPlace
  *             properties:
- *               date:
+ *               fdPrdtNm:
  *                 type: string
- *                 format: date-time
- *                 description: 작성 일시 (현재 시각)
- *               lstPrdtNm:
+ *                 description: 물품명 (필수)
+ *               fdYmd:
  *                 type: string
- *                 description: 물품명
- *               lstYmd:
+ *                 format: date
+ *                 description: 습득 일자 (필수)
+ *               fdPlace:
  *                 type: string
- *                 description: 분실 날짜
- *               lstHor:
- *                 type: string
- *                 description: 분실 시간 
- *               lstPlace:
- *                 type: string
- *                 description: 분실 장소
+ *                 description: 습득 장소 (필수)
  *               si:
  *                 type: string
- *                 description: 시/도 
+ *                 description: 습득한 장소의 시/도 
  *               sgg:
  *                 type: string
- *                 description: 시군구
+ *                 description: 습득한 장소의 시군구
  *               emd:
  *                 type: string
- *                 description: 읍면동
- *               prdtClNm:
- *                 type: string
- *                 description: 분류명 
+ *                 description: 습득한 장소의 읍면동
  *               uniq:
  *                 type: string
- *                 description: 특이사항
- *               lstLctNm:
+ *                 description: 특이사항 (선택)
+ *               prdtClNm:
  *                 type: string
- *                 description: 상세 지역명
- *               lstSbjt:
+ *                 description: 물품 분류명 (선택)
+ *               depPlace:
  *                 type: string
- *                 description: 게시글 제목
- *               reward:
- *                 type: integer 
- *                 description: 보상금
- *               lstFilePathImg:
+ *                 description: 보관 장소 (필수)
+ *               fdFilePathImg:
  *                 type: string
  *                 format: binary
- *                 description: 업로드할 이미지 파일
+ *                 description: 업로드할 이미지 파일 (선택)
  *     responses:
  *       201:
- *         description: 글이 성공적으로 등록됨
+ *         description: 게시글 등록 성공
  *         content:
  *           application/json:
  *             schema:
@@ -225,8 +261,10 @@ router.get('/detail/:id', async (req, res) => {
  *               properties:
  *                 message:
  *                   type: string
+ *                   example: 글이 성공적으로 등록되었습니다.
  *                 id:
  *                   type: string
+ *                   description: 생성된 게시글의 ID
  *       400:
  *         description: 필수 항목 누락
  *         content:
@@ -236,6 +274,7 @@ router.get('/detail/:id', async (req, res) => {
  *               properties:
  *                 error:
  *                   type: string
+ *                   example: 필수 항목이 누락되었습니다.
  *       401:
  *         description: 인증되지 않은 사용자
  *         content:
@@ -245,6 +284,162 @@ router.get('/detail/:id', async (req, res) => {
  *               properties:
  *                 error:
  *                   type: string
+ *                   example: 로그인이 필요합니다.
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Server Error
+ */
+router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
+    try {
+        if (!req.isAuthenticated()) {
+            return res.status(401).json({ error: '로그인이 필요합니다.' });
+        }
+
+        const {
+            fdPrdtNm,
+            fdYmd,
+            fdPlace,
+            si,
+            sgg,
+            emd,
+            uniq,
+            prdtClNm,
+            depPlace
+        } = req.body;
+
+        // 필수 항목 체크
+        if (!fdPrdtNm || !fdYmd || !fdPlace || !depPlace) {
+            return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
+        }
+
+        const fdFilePathImg = req.file ? `/api/images/object_get/${req.file.filename}` : null;
+
+        const newPost = new ObjectGet({
+            user_id: req.user._id,
+            date: date ? new Date(date) : new Date(),
+            fdPrdtNm,
+            fdYmd,
+            fdPlace,
+            si,
+            sgg,
+            emd,
+            uniq,
+            prdtClNm,
+            depPlace,
+            fdFilePathImg,
+            tel: req.user.phone_number,
+        });
+
+        const saved = await newPost.save();
+        res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
+    } catch (err) {
+        res.status(500).send("Server Error");
+    }
+});
+
+// 게시글 총 개수 반환 API
+/**
+ * @swagger
+ * /api/object/get/search:
+ *   get:
+ *     summary: 분실물 습득 게시글 검색
+ *     tags: [ObjectGet]
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: 통합 검색어 (물품명, 장소, 분류, 특이사항 등)
+ *       - in: query
+ *         name: dateStart
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: 게시 날짜 시작일    
+ *       - in: query
+ *         name: dateEnd
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: 게시 날짜 종료일
+ *       - in: query
+ *         name: fdYmdStart
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: 습득 일자 시작일
+ *       - in: query
+ *         name: fdYmdEnd
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: 습득 일자 종료일
+ *       - in: query
+ *         name: si
+ *         schema:
+ *           type: string
+ *         description: 시/도
+ *       - in: query
+ *         name: sgg
+ *         schema:
+ *           type: string
+ *         description: 시군구
+ *       - in: query
+ *         name: emd
+ *         schema:
+ *           type: string
+ *         description: 읍면동 
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *           minimum: 1
+ *         description: 페이지 번호
+ *     responses:
+ *       200:
+ *         description: 검색 결과 반환 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 5
+ *                 totalCount:
+ *                   type: integer
+ *                   example: 50
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       fdPrdtNm:
+ *                         type: string
+ *                         description: 물품명
+ *                       fdPlace:
+ *                         type: string
+ *                       prdtClNm:
+ *                         type: string
+ *                       uniq:
+ *                         type: string
+ *                       depPlace:
+ *                         type: string
+ *                       date:
+ *                         type: string
+ *                         format: date
+ *                       fdFilePathImg:
+ *                         type: string
  *       500:
  *         description: 서버 오류
  *         content:
@@ -254,189 +449,15 @@ router.get('/detail/:id', async (req, res) => {
  *               properties:
  *                 error:
  *                   type: string
- */
-router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
-    try {
-        if (!req.isAuthenticated()) {
-            return res.status(401).json({ error: '로그인이 필요합니다.' });
-        }
-
-        const {
-            lstPrdtNm,
-            lstYmd,
-            lstHor,
-            lstPlace,
-            si,
-            sgg,
-            emd,
-            prdtClNm,
-            uniq,
-            lstLctNm,
-            lstSbjt,
-            reward
-        } = req.body;
-
-        // 필수 항목 체크
-        if (!lstPrdtNm || !lstYmd || !lstPlace || !reward) {
-            return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
-        }
-
-        const lstFilePathImg = req.file ? `/api/images/reward_object/${req.file.filename}` : null;
-
-        const newPost = new Reward_object({
-            user_id: req.user._id,
-            date: date ? new Date(date) : new Date(),
-            lstPrdtNm,
-            lstYmd,
-            lstHor,
-            lstPlace,
-            si,
-            sgg,
-            emd,
-            prdtClNm,
-            uniq,
-            lstLctNm,
-            lstSbjt,
-            lstFilePathImg,
-            reward,
-            tel: req.user.phone_number
-        });
-
-        const saved = await newPost.save();
-
-        res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
-    } catch (err) {
-        res.status(500).send("Server Error")
-    }
-})
-
-//검색 목록
-/**
- * @swagger
- * /api/reward/object/search:
- *   get:
- *     summary: 보상물 게시글 검색 및 목록 조회
- *     tags: [RewardObject]
- *     parameters:
- *       - in: query
- *         name: search
- *         schema:
- *           type: string
- *         description: 통합 검색어 (물품명, 장소, 제목 등)
- *       - in: query
- *         name: dateStart
- *         schema:
- *           type: string
- *           format: date
- *         description: 게시 시작 날짜
- *       - in: query
- *         name: dateEnd
- *         schema:
- *           type: string
- *           format: date
- *         description: 게시 종료 날짜
- *       - in: query
- *         name: lstYmdStart
- *         schema:
- *           type: string
- *           format: date
- *         description: 분실 시작 일자
- *       - in: query
- *         name: lstYmdEnd
- *         schema:
- *           type: string
- *           format: date
- *         description: 분실 종료 일자
- *       - in: query
- *         name: si
- *         schema:
- *           type: string
- *           example: 서울특별시
- *         description: 시/도
- *       - in: query
- *         name: sgg
- *         schema:
- *           type: string
- *           example: 강남구
- *         description: 시군구
- *       - in: query
- *         name: emd
- *         schema:
- *           type: string
- *           example: 역삼동
- *         description: 읍면동
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           default: 1
- *         description: 요청할 페이지 번호 (1부터 시작)
- *     responses:
- *       200:
- *         description: 게시글 목록과 페이지 정보 반환
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 page:
- *                   type: integer
- *                   example: 1
- *                   description: 현재 페이지 번호
- *                 totalPages:
- *                   type: integer
- *                   example: 5
- *                   description: 전체 페이지 수
- *                 totalCount:
- *                   type: integer
- *                   example: 43
- *                   description: 전체 게시글 수
- *                 results:
- *                   type: array
- *                   description: 게시글 목록
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                         example: "6650d376e8237b07dcd5461b"
- *                       lstPrdtNm:
- *                         type: string
- *                         example: 지갑
- *                       lstPlace:
- *                         type: string
- *                         example: 서울역 2층 대합실
- *                       prdtClNm:
- *                         type: string
- *                         example: 전자기기
- *                       uniq:
- *                         type: string
- *                         example: 검정색 가죽 지갑, 카드 3장
- *                       lstLctNm:
- *                         type: string
- *                         example: 서울특별시
- *                       lstSbjt:
- *                         type: string
- *                         example: 지갑을 찾습니다
- *                       date:
- *                         type: string
- *                         example: "2025-05-16"
- *                       lstFilePathImg:
- *                         type: string
- *                         example: "https://example.com/image.jpg"
- *                       reward:
- *                         type: integer
- *                         example: 50000
- *       500:
- *         description: 서버 오류
+ *                   example: 서버 오류
  */
 router.get('/search', async (req, res) => {
     const {
         search,
         dateStart,
         dateEnd,
-        lstYmdStart,
-        lstYmdEnd,
+        fdYmdStart,
+        fdYmdEnd,
         si,
         sgg,
         emd,
@@ -454,12 +475,12 @@ router.get('/search', async (req, res) => {
             const regex = { $regex: word, $options: 'i' };
             orGroup.push({
                 $or: [
-                    { lstPrdtNm: regex },
-                    { lstPlace: regex },
+                    { fdPrdtNm: regex },
+                    { fdPlace: regex },
                     { prdtClNm: regex },
                     { uniq: regex },
-                    { lstSbjt: regex },
-                    { lstPlaceSeNm: regex }
+                    { depPlace: regex },
+                    { fndKeepOrgnSeNm: regex }
                 ]
             });
         }
@@ -477,10 +498,10 @@ router.get('/search', async (req, res) => {
         dateOrConditions.push({ date: range });
     }
 
-    if (lstYmdStart || lstYmdEnd) {
+    if (fdYmdStart || fdYmdEnd) {
         const range = {};
-        if (lstYmdStart) range.$gte = new Date(lstYmdStart);
-        if (lstYmdEnd) range.$lte = new Date(new Date(lstYmdEnd).setHours(23, 59, 59, 999));
+        if (fdYmdStart) range.$gte = new Date(fdYmdStart);
+        if (fdYmdEnd) range.$lte = new Date(new Date(fdYmdEnd).setHours(23, 59, 59, 999));
         dateOrConditions.push({ lstYmd: range });
     }
 
@@ -499,8 +520,8 @@ router.get('/search', async (req, res) => {
         const skip = (parseInt(page) - 1) * parseInt(show_list);
         const limit = parseInt(show_list);
 
-        const docs = await Reward_object.find(finalQuery).sort({ _id: -1 }).skip(skip).limit(limit);
-        const totalCount = await Reward_object.countDocuments(finalQuery);
+        const docs = await ObjectGet.find(finalQuery).sort({ _id: -1 }).skip(skip).limit(limit);
+        const totalCount = await ObjectGet.countDocuments(finalQuery);
 
         const results = docs.map(doc => {
             const obj = doc.toObject();
