@@ -24,6 +24,6 @@ const object_get_schema = mongoose.Schema({
     fdFilePathImg: { type: String }
 }, { versionKey: false });
 
-const Object_get = mongoose.model('Object_get', object_get_schema, 'object_get');
+const ObjectGet = mongoose.model('Object_get', object_get_schema, 'object_get');
 
-module.exports = { Object_get };
+module.exports = { ObjectGet };

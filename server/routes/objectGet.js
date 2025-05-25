@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt')
 const { MongoClient, ObjectId } = require('mongodb')
 const MongoStore = require('connect-mongo')
 const path = require('path');
-const { ObjectGet } = require('../models/objectGet.js');
+const { ObjectGet } = require('../models/objectGet');
 const multer = require('multer');
 const fs = require('fs');
 

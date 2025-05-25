@@ -19,6 +19,6 @@ const reward_object_schema = mongoose.Schema({
     reward: { type: Number } //보상금
 }, { versionKey: false });
 
-const Reward_object = mongoose.model('Reward_object', reward_object_schema, 'reward_object');
+const RewardObject = mongoose.model('Reward_object', reward_object_schema, 'reward_object');
 
-module.exports = { Reward_object };
+module.exports = { RewardObject };

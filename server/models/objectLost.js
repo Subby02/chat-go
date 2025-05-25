@@ -25,6 +25,6 @@ const object_lost_schema = mongoose.Schema({
     lstFilePathImg: { type: String }
 }, { versionKey: false });
 
-const Object_lost = mongoose.model('Object_lost', object_lost_schema, 'object_lost');
+const ObjectLost = mongoose.model('Object_lost', object_lost_schema, 'object_lost');
 
-module.exports = { Object_lost };
+module.exports = { ObjectLost };
