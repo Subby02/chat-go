@@ -48,13 +48,7 @@ const swaggerOptions = {
       title: 'ChatGO',
       version: '1.0.0',
       description: 'ChatGO Swagger 문서',
-    },
-    tags: [
-      {
-        name: 'user',
-        description: '회원가입, 로그인 등 사용자 관련 API',
-      }
-    ],
+    }
   },
   apis: ['./routes/*.js'], // 또는 현재 파일이면 ['./app.js']
 };
@@ -63,18 +57,17 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-app.use('/', require('./routes/view.js'))
 app.use('/api', require('./routes/user.js'))
-app.use('/api/animal', require('./routes/animal_get.js'));     // 보호 동물 라우터
-app.use('/api/animal', require('./routes/animal_lost.js'));    // 유실 동물 라우터
-app.use('/api/object/get', require('./routes/object_get.js'))
-app.use('/api/object/lost', require('./routes/object_lost.js'))
-app.use('/api/reward/animal', require('./routes/reward_animal.js'))
-app.use('/api/reward/object', require('./routes/reward_object.js'))
+app.use('/api/animal', require('./routes/animalGet.js'));     // 보호 동물 라우터
+app.use('/api/animal', require('./routes/animalLost.js'));    // 유실 동물 라우터
+app.use('/api/object/get', require('./routes/objectGet.js'))
+app.use('/api/object/lost', require('./routes/objectLost.js'))
+app.use('/api/reward/animal', require('./routes/rewardAnimal.js'))
+app.use('/api/reward/object', require('./routes/rewardObject.js'))
 app.use('/api/images', express.static(path.join(__dirname, './images')));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+  res.send("Hello World");
 })
 
 app.listen(PORT, () => {

@@ -6,13 +6,6 @@ const LocalStrategy = require('passport-local')
 const coolsms = require('coolsms-node-sdk').default
 const { User } = require('../models/user')
 const { AuthCode } = require('../models/authCodes')
-const { Object_lost } = require('../models/object_lost.js');
-const { Object_get } = require('../models/object_get.js');
-const { Animal_lost } = require('../models/AnimalGet.js');
-const { Animal_get } = require('../models/AnimalLost.js');
-const { Reward_animal } = require('../models/reward_animal.js');
-const { Reward_object } = require('../models/reward_object.js');
-
 
 function generateAuthCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -71,7 +64,7 @@ passport.deserializeUser(async (user, done) => {
  *   post:
  *     summary: "회원가입"
  *     description: "이 API는 사용자가 이메일, 전화번호 인증 후 회원가입을 진행하는 기능을 제공합니다."
- *     tags: [user]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
@@ -187,7 +180,7 @@ router.post('/register', async (req, res) => {
  * /api/login:
  *   post:
  *     summary: 로그인
- *     tags: [user]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
@@ -253,7 +246,7 @@ router.post('/login', (req, res, next) => {
  * /api/check-email:
  *   get:
  *     summary: 이메일 중복 확인
- *     tags: [user]
+ *     tags: [User]
  *     parameters:
  *       - in: query
  *         name: email
@@ -298,7 +291,7 @@ router.get('/check-email', async (req, res) => {
  * /api/send-code:
  *   post:
  *     summary: 인증 코드 전송
- *     tags: [user]
+ *     tags: [User]
  *     parameters:
  *       - in: query
  *         name: phone_number
@@ -380,7 +373,7 @@ router.post('/send-code', async (req, res) => {
  * /api/verify-code:
  *   post:
  *     summary: 인증 코드 검증
- *     tags: [user]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
@@ -490,7 +483,7 @@ router.post('/verify-code', async (req, res) => {
  * /api/status:
  *   get:
  *     summary: 현재 인증 상태 확인
- *     tags: [user]
+ *     tags: [User]
  *     responses:
  *       200:
  *         description: 인증 상태 응답
@@ -529,7 +522,7 @@ router.get('/status', (req, res) => {
  * /api/logout:
  *   post:
  *     summary: 사용자 로그아웃
- *     tags: [user]
+ *     tags: [User]
  *     responses:
  *       200:
  *         description: 로그아웃 성공
@@ -567,7 +560,7 @@ router.post('/logout', (req, res, next) => {
  *   post:
  *     summary: "비밀번호 재설정"
  *     description: "전화번호 인증을 완료한 후 비밀번호를 재설정하는 기능을 제공합니다."
- *     tags: [user]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:

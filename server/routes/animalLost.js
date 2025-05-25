@@ -7,15 +7,16 @@ const bcrypt = require('bcrypt')
 const { MongoClient, ObjectId } = require('mongodb')
 const MongoStore = require('connect-mongo')
 const path = require('path');
-const { Object_get } = require('../models/object_get.js');
+const { AnimalLost } = require('../models/animalLost');
 const multer = require('multer');
 const fs = require('fs');
 
 //한 페이지당 보여줄 게시글 수
 const show_list = 10;
 
+// multer 설정
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.join(__dirname, '../images/object_get')),
+    destination: (req, file, cb) => cb(null, path.join(__dirname, '../images/animal_lost')),
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 const upload = multer({ storage });
@@ -23,51 +24,53 @@ const upload = multer({ storage });
 //해당하는글 들어가기
 /**
  * @swagger
- * /api/object/get/detail/{id}:
+ * /api/animal/lost/detail/{id}:
  *   get:
- *     summary: 분실물 습득 게시글 상세 조회
- *     tags: [ObjectGet]
+ *     summary: 실종 동물 상세 정보 조회
+ *     description: 특정 실종 동물의 상세 정보를 조회합니다.
+ *     tags: [Animal Lost]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: 조회할 게시글의 MongoDB ObjectId
+ *         description: 실종 동물 게시글 ID
  *         schema:
  *           type: string
  *       - in: query
  *         name: page
  *         schema:
  *           type: string
- *         description: 페이지 번호 (목록 복귀용)
+ *         description: 페이지 번호
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: 통합 검색어
+ *         description: 검색어
  *       - in: query
  *         name: dateStart
  *         schema:
  *           type: string
- *           format: date
- *         description: 게시 날짜 시작일
+ *         description: 검색 시작일
  *       - in: query
  *         name: dateEnd
  *         schema:
  *           type: string
- *           format: date
- *         description: 게시 날짜 종료일
+ *         description: 검색 종료일
  *       - in: query
- *         name: fdYmdStart
+ *         name: rfidCd
  *         schema:
  *           type: string
- *           format: date
- *         description: 습득 일자 시작일
+ *         description: RFID 코드
  *       - in: query
- *         name: fdYmdEnd
+ *         name: happenDtStart
  *         schema:
  *           type: string
- *           format: date
- *         description: 습득 일자 종료일
+ *         description: 실종 시작일
+ *       - in: query
+ *         name: happenDtEnd
+ *         schema:
+ *           type: string
+ *         description: 실종 종료일
  *       - in: query
  *         name: si
  *         schema:
@@ -77,15 +80,30 @@ const upload = multer({ storage });
  *         name: sgg
  *         schema:
  *           type: string
- *         description: 시군구
+ *         description: 시/군/구
  *       - in: query
  *         name: emd
  *         schema:
  *           type: string
- *         description: 읍면동
+ *         description: 읍/면/동
+ *       - in: query
+ *         name: sexCd
+ *         schema:
+ *           type: string
+ *         description: 성별 코드
+ *       - in: query
+ *         name: ageStart
+ *         schema:
+ *           type: string
+ *         description: 나이 시작 범위
+ *       - in: query
+ *         name: ageEnd
+ *         schema:
+ *           type: string
+ *         description: 나이 종료 범위
  *     responses:
  *       200:
- *         description: 게시글 상세 정보 조회 성공
+ *         description: 성공적으로 실종 동물 정보를 조회함
  *         content:
  *           application/json:
  *             schema:
@@ -93,83 +111,18 @@ const upload = multer({ storage });
  *               properties:
  *                 post:
  *                   type: object
- *                   properties:
- *                     fdPrdtNm:
- *                       type: string
- *                     fdYmd:
- *                       type: string
- *                     fdHor:
- *                       type: string
- *                     fdPlace:
- *                       type: string
- *                     prdtClNm:
- *                       type: string
- *                     depPlace:
- *                       type: string
- *                     csteSteNm:
- *                       type: string
- *                     uniq:
- *                       type: string
- *                     fdSn:
- *                       type: string
- *                     fdSbjt:
- *                       type: string
- *                     orgNm:
- *                       type: string
- *                     tel:
- *                       type: string
- *                     orgId:
- *                       type: string
- *                     fndKeepOrgnSeNm:
- *                       type: string
- *                     atcId:
- *                       type: string
- *                     user_id:
- *                       type: string
- *                     date:
- *                       type: string
- *                       format: date-time
- *                     fdFilePathImg:
- *                       type: string
+ *                   description: 실종 동물 상세 정보
  *                 query:
  *                   type: object
- *                   properties:
- *                     page:
- *                       type: string
- *                     search:
- *                       type: string
- *                     dateStart:
- *                       type: string
- *                     dateEnd:
- *                       type: string
- *                     fdYmdStart:
- *                       type: string
- *                     fdYmdEnd:
- *                       type: string
- *                     si:
- *                       type: string
- *                     sgg:
- *                       type: string
- *                     emd:
- *                       type: string
+ *                   description: 검색 조건 정보
  *       404:
- *         description: 해당 ID의 게시글이 존재하지 않음
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: Not found
+ *         description: 실종 동물 정보를 찾을 수 없음
  *       500:
- *         description: 서버 오류
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: Internal Server Error
+ *         description: 서버 내부 오류
  */
 router.get('/detail/:id', async (req, res) => {
     try {
-        const post = await Object_get.findById(req.params.id);
+        const post = await AnimalLost.findById(req.params.id);
         if (!post) return res.status(404).send("Not found");
 
         const obj = post.toObject();
@@ -180,11 +133,15 @@ router.get('/detail/:id', async (req, res) => {
             search: req.query.search || '',
             dateStart: req.query.dateStart || '',
             dateEnd: req.query.dateEnd || '',
-            fdYmdStart: req.query.fdYmdStart || '',
-            fdYmdEnd: req.query.fdYmdEnd || '',
+            rfidCd: req.query.rfidCd || '',
+            happenDtStart: req.query.happenDtStart || '',
+            happenDtEnd: req.query.happenDtEnd || '',
             si: req.query.si || '',
             sgg: req.query.sgg || '',
-            emd: req.query.emd || ''
+            emd: req.query.emd || '',
+            sexCd: req.query.sexCd || '',
+            ageStart: req.query.ageStart || '',
+            ageEnd: req.query.ageEnd || ''
         };
 
         res.json({
@@ -201,12 +158,13 @@ router.get('/detail/:id', async (req, res) => {
 //글 작성하기
 /**
  * @swagger
- * /api/object/get/write:
+ * /api/animal/lost/write:
  *   post:
- *     summary: 분실물 습득 게시글 작성
- *     tags: [ObjectGet]
+ *     summary: 실종 동물 게시글 작성
+ *     description: 새로운 실종 동물 게시글을 작성합니다. 로그인이 필요한 기능입니다.
+ *     tags: [Animal Lost]
  *     security:
- *       - cookieAuth: []  # 세션 기반 인증 필요 시 사용
+ *       - session: []
  *     requestBody:
  *       required: true
  *       content:
@@ -214,46 +172,48 @@ router.get('/detail/:id', async (req, res) => {
  *           schema:
  *             type: object
  *             required:
- *               - fdPrdtNm
- *               - fdYmd
- *               - fdPlace
- *               - depPlace
+ *               - happenDt
+ *               - happenAddr
+ *               - kindCd
+ *               - sexCd
+ *               - age
+ *               - specialMark
  *             properties:
- *               fdPrdtNm:
- *                 type: string
- *                 description: 물품명 (필수)
- *               fdYmd:
- *                 type: string
- *                 format: date
- *                 description: 습득 일자 (필수)
- *               fdPlace:
- *                 type: string
- *                 description: 습득 장소 (필수)
- *               si:
- *                 type: string
- *                 description: 습득한 장소의 시/도 
- *               sgg:
- *                 type: string
- *                 description: 습득한 장소의 시군구
- *               emd:
- *                 type: string
- *                 description: 습득한 장소의 읍면동
- *               uniq:
- *                 type: string
- *                 description: 특이사항 (선택)
- *               prdtClNm:
- *                 type: string
- *                 description: 물품 분류명 (선택)
- *               depPlace:
- *                 type: string
- *                 description: 보관 장소 (필수)
- *               fdFilePathImg:
+ *               lstFilePathImg:
  *                 type: string
  *                 format: binary
- *                 description: 업로드할 이미지 파일 (선택)
+ *                 description: 실종 동물 이미지 파일
+ *               rfidCd:
+ *                 type: string
+ *                 description: RFID 코드
+ *               happenDt:
+ *                 type: string
+ *                 format: date
+ *                 description: 실종 발생 일자
+ *               happenAddr:
+ *                 type: string
+ *                 description: 실종 발생 주소
+ *               happenPlace:
+ *                 type: string
+ *                 description: 실종 발생 장소
+ *               popfile:
+ *                 type: string
+ *                 description: 대표 이미지 파일 경로
+ *               kindCd:
+ *                 type: string
+ *                 description: 동물 품종
+ *               sexCd:
+ *                 type: string
+ *                 description: 성별 코드
+ *               age:
+ *                 type: integer
+ *                 description: 동물 나이
+ *               specialMark:
+ *                 type: string
+ *                 description: 특이사항
  *     responses:
  *       201:
- *         description: 게시글 등록 성공
+ *         description: 게시글 작성 성공
  *         content:
  *           application/json:
  *             schema:
@@ -287,97 +247,110 @@ router.get('/detail/:id', async (req, res) => {
  *                   example: 로그인이 필요합니다.
  *       500:
  *         description: 서버 오류
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: Server Error
  */
-router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
+router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
     try {
+
         if (!req.isAuthenticated()) {
             return res.status(401).json({ error: '로그인이 필요합니다.' });
         }
 
         const {
-            fdPrdtNm,
-            fdYmd,
-            fdPlace,
-            si,
-            sgg,
-            emd,
-            uniq,
-            prdtClNm,
-            depPlace
+            rfidCd,
+            happenDt,
+            happenAddr,
+            happenPlace,
+            popfile,
+            kindCd,
+            sexCd,
+            age,
+            specialMark,
         } = req.body;
 
         // 필수 항목 체크
-        if (!fdPrdtNm || !fdYmd || !fdPlace || !depPlace) {
+        if (!happenDt || !happenAddr || !kindCd || !sexCd || !age || !specialMark || !reward) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
 
-        const fdFilePathImg = req.file ? `/api/images/object_get/${req.file.filename}` : null;
-
-        const newPost = new Object_get({
+        const newPost = new Reward_animal({
             user_id: req.user._id,
             date: date ? new Date(date) : new Date(),
-            fdPrdtNm,
-            fdYmd,
-            fdPlace,
+            rfidCd,
+            callName: req.user.name,
+            callTel: req.user.phone_number,
+            happenDt,
+            happenAddr,
+            happenPlace,
             si,
             sgg,
             emd,
-            uniq,
-            prdtClNm,
-            depPlace,
-            fdFilePathImg,
-            tel: req.user.phone_number,
+            popfile,
+            kindCd,
+            sexCd,
+            age,
+            specialMark,
         });
 
         const saved = await newPost.save();
         res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
     } catch (err) {
-        res.status(500).send("Server Error");
+        res.status(500).send("Server Error")
     }
-});
+})
 
-// 게시글 총 개수 반환 API
+// 검색 목록
 /**
  * @swagger
- * /api/object/get/search:
+ * /api/animal/lost/search:
  *   get:
- *     summary: 분실물 습득 게시글 검색
- *     tags: [ObjectGet]
+ *     summary: 실종 동물 게시글 검색
+ *     description: 다양한 조건으로 실종 동물 게시글을 검색합니다.
+ *     tags: [Animal Lost]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: 통합 검색어 (물품명, 장소, 분류, 특이사항 등)
+ *         description: 통합 검색어 (품종, 주소, 특이사항에서 검색)
+ *       - in: query
+ *         name: rfidCd
+ *         schema:
+ *           type: string
+ *         description: RFID 코드
  *       - in: query
  *         name: dateStart
  *         schema:
  *           type: string
  *           format: date
- *         description: 게시 날짜 시작일    
+ *         description: 게시글 작성일 시작 날짜
  *       - in: query
  *         name: dateEnd
  *         schema:
  *           type: string
  *           format: date
- *         description: 게시 날짜 종료일
+ *         description: 게시글 작성일 종료 날짜
  *       - in: query
- *         name: fdYmdStart
+ *         name: happenDtStart
  *         schema:
  *           type: string
  *           format: date
- *         description: 습득 일자 시작일
+ *         description: 실종 발생일 시작 날짜
  *       - in: query
- *         name: fdYmdEnd
+ *         name: happenDtEnd
  *         schema:
  *           type: string
  *           format: date
- *         description: 습득 일자 종료일
+ *         description: 실종 발생일 종료 날짜
+ *       - in: query
+ *         name: ageStart
+ *         schema:
+ *           type: integer
+ *         description: 동물 나이 시작 범위
+ *       - in: query
+ *         name: ageEnd
+ *         schema:
+ *           type: integer
+ *         description: 동물 나이 종료 범위
  *       - in: query
  *         name: si
  *         schema:
@@ -387,22 +360,26 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
  *         name: sgg
  *         schema:
  *           type: string
- *         description: 시군구
+ *         description: 시/군/구
  *       - in: query
  *         name: emd
  *         schema:
  *           type: string
- *         description: 읍면동 
+ *         description: 읍/면/동
+ *       - in: query
+ *         name: sexCd
+ *         schema:
+ *           type: string
+ *         description: 성별 코드
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
  *           default: 1
- *           minimum: 1
  *         description: 페이지 번호
  *     responses:
  *       200:
- *         description: 검색 결과 반환 성공
+ *         description: 검색 성공
  *         content:
  *           application/json:
  *             schema:
@@ -410,36 +387,45 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
  *               properties:
  *                 page:
  *                   type: integer
- *                   example: 1
+ *                   description: 현재 페이지 번호
  *                 totalPages:
  *                   type: integer
- *                   example: 5
+ *                   description: 전체 페이지 수
  *                 totalCount:
  *                   type: integer
- *                   example: 50
+ *                   description: 전체 검색 결과 수
  *                 results:
  *                   type: array
+ *                   description: 검색된 게시글 목록
  *                   items:
  *                     type: object
  *                     properties:
  *                       _id:
  *                         type: string
- *                       fdPrdtNm:
- *                         type: string
- *                         description: 물품명
- *                       fdPlace:
- *                         type: string
- *                       prdtClNm:
- *                         type: string
- *                       uniq:
- *                         type: string
- *                       depPlace:
- *                         type: string
+ *                         description: 게시글 ID
  *                       date:
  *                         type: string
  *                         format: date
- *                       fdFilePathImg:
+ *                         description: 게시글 작성일
+ *                       rfidCd:
  *                         type: string
+ *                         description: RFID 코드
+ *                       happenDt:
+ *                         type: string
+ *                         format: date
+ *                         description: 실종 발생일
+ *                       happenAddr:
+ *                         type: string
+ *                         description: 실종 발생 주소
+ *                       kindCd:
+ *                         type: string
+ *                         description: 동물 품종
+ *                       sexCd:
+ *                         type: string
+ *                         description: 성별 코드
+ *                       age:
+ *                         type: integer
+ *                         description: 동물 나이
  *       500:
  *         description: 서버 오류
  *         content:
@@ -454,13 +440,17 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
 router.get('/search', async (req, res) => {
     const {
         search,
+        rfidCd,
         dateStart,
         dateEnd,
-        fdYmdStart,
-        fdYmdEnd,
+        happenDtStart,
+        happenDtEnd,
+        ageStart,
+        ageEnd,
         si,
         sgg,
         emd,
+        sexCd,
         page = 1,
     } = req.query;
 
@@ -475,12 +465,9 @@ router.get('/search', async (req, res) => {
             const regex = { $regex: word, $options: 'i' };
             orGroup.push({
                 $or: [
-                    { fdPrdtNm: regex },
-                    { fdPlace: regex },
-                    { prdtClNm: regex },
-                    { uniq: regex },
-                    { depPlace: regex },
-                    { fndKeepOrgnSeNm: regex }
+                    { kindCd: regex },
+                    { happenAddr: regex },
+                    { specialMark: regex }
                 ]
             });
         }
@@ -491,6 +478,8 @@ router.get('/search', async (req, res) => {
     // 날짜 범위 (OR)
     const dateOrConditions = [];
 
+    if (rfidCd) andConditions.push({ rfidCd: { $regex: rfidCd, $options: 'i' } });
+
     if (dateStart || dateEnd) {
         const range = {};
         if (dateStart) range.$gte = new Date(dateStart);
@@ -498,15 +487,23 @@ router.get('/search', async (req, res) => {
         dateOrConditions.push({ date: range });
     }
 
-    if (fdYmdStart || fdYmdEnd) {
+    if (happenDtStart || happenDtEnd) {
         const range = {};
-        if (fdYmdStart) range.$gte = new Date(fdYmdStart);
-        if (fdYmdEnd) range.$lte = new Date(new Date(fdYmdEnd).setHours(23, 59, 59, 999));
-        dateOrConditions.push({ lstYmd: range });
+        if (happenDtStart) range.$gte = new Date(happenDtStart);
+        if (happenDtEnd) range.$lte = new Date(new Date(happenDtEnd).setHours(23, 59, 59, 999));
+        dateOrConditions.push({ happenDt: range });
     }
 
     if (dateOrConditions.length > 0) {
         andConditions.push({ $or: dateOrConditions });
+    }
+
+    // 나이 범위
+    if (ageStart || ageEnd) {
+        const ageRange = {};
+        if (ageStart) ageRange.$gte = parseInt(ageStart);
+        if (ageEnd) ageRange.$lte = parseInt(ageEnd);
+        andConditions.push({ age: ageRange });
     }
 
     // si / sgg / emd는 개별 검색 (정확 일치)
@@ -514,14 +511,17 @@ router.get('/search', async (req, res) => {
     if (sgg) andConditions.push({ sgg: { $regex: sgg, $options: 'i' } });
     if (emd) andConditions.push({ emd: { $regex: emd, $options: 'i' } });
 
+    // 성별
+    if (sexCd) andConditions.push({ sexCd: { $regex: sexCd, $options: 'i' } });
+
     const finalQuery = andConditions.length > 0 ? { $and: andConditions } : {};
 
     try {
         const skip = (parseInt(page) - 1) * parseInt(show_list);
         const limit = parseInt(show_list);
 
-        const docs = await Object_get.find(finalQuery).sort({ _id: -1 }).skip(skip).limit(limit);
-        const totalCount = await Object_get.countDocuments(finalQuery);
+        const docs = await Reward_animal.find(finalQuery).sort({ _id: -1 }).skip(skip).limit(limit);
+        const totalCount = await Reward_animal.countDocuments(finalQuery);
 
         const results = docs.map(doc => {
             const obj = doc.toObject();
