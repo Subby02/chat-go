@@ -272,7 +272,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
 
-        const newPost = new Reward_animal({
+        const newPost = new AnimalLost({
             user_id: req.user._id,
             date: date ? new Date(date) : new Date(),
             rfidCd,
@@ -520,8 +520,8 @@ router.get('/search', async (req, res) => {
         const skip = (parseInt(page) - 1) * parseInt(show_list);
         const limit = parseInt(show_list);
 
-        const docs = await Reward_animal.find(finalQuery).sort({ _id: -1 }).skip(skip).limit(limit);
-        const totalCount = await Reward_animal.countDocuments(finalQuery);
+        const docs = await AnimalLost.find(finalQuery).sort({ _id: -1 }).skip(skip).limit(limit);
+        const totalCount = await AnimalLost.countDocuments(finalQuery);
 
         const results = docs.map(doc => {
             const obj = doc.toObject();
