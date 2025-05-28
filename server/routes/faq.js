@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Faq } = require('../models/Faq');
+const { Faq } = require('../models/faq');
 
 // FAQ 등록
 router.post('/write', async (req, res) => {
