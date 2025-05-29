@@ -58,8 +58,8 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use('/api', require('./routes/user.js'))
-app.use('/api/animal', require('./routes/animalGet.js'));     // 보호 동물 라우터
-app.use('/api/animal', require('./routes/animalLost.js'));    // 유실 동물 라우터
+app.use('/api/animal/get', require('./routes/animalGet.js'));     // 보호 동물 라우터
+app.use('/api/animal/lost', require('./routes/animalLost.js'));    // 유실 동물 라우터
 app.use('/api/object/get', require('./routes/objectGet.js'))
 app.use('/api/object/lost', require('./routes/objectLost.js'))
 app.use('/api/reward/animal', require('./routes/rewardAnimal.js'))
