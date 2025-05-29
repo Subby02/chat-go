@@ -248,7 +248,7 @@ router.get('/detail/:id', async (req, res) => {
  *       500:
  *         description: 서버 오류
  */
-router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
+router.post('/write', upload.single('popfile'), async (req, res) => {
     try {
 
         if (!req.isAuthenticated()) {
@@ -259,8 +259,11 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
             rfidCd,
             happenDt,
             happenAddr,
+            happenAddrDtl,
             happenPlace,
-            popfile,
+            si,
+            sgg,
+            emd,
             kindCd,
             sexCd,
             age,
@@ -268,9 +271,11 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
         } = req.body;
 
         // 필수 항목 체크
-        if (!happenDt || !happenAddr || !kindCd || !sexCd || !age || !specialMark || !reward) {
+        if (!happenDt || !happenAddr || !happenPlace || !si || !sgg || !emd || !kindCd || !sexCd || !age || !specialMark) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
+
+        const popfile = req.file ? `/api/images/animal_lost/${req.file.filename}` : null;
 
         const newPost = new AnimalLost({
             user_id: req.user._id,
@@ -280,6 +285,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
             callTel: req.user.phone_number,
             happenDt,
             happenAddr,
+            happenAddrDtl,
             happenPlace,
             si,
             sgg,
