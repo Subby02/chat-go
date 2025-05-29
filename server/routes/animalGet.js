@@ -24,7 +24,7 @@ const upload = multer({ storage });
 //해당하는글 들어가기
 /**
  * @swagger
- * /api/animal/detail/{id}:
+ * /api/animal/get/detail/{id}:
  *   get:
  *     summary: 특정 동물 찾기 게시글의 상세 정보를 조회합니다.
  *     tags: [AnimalGet]
@@ -147,7 +147,7 @@ router.get('/detail/:id', async (req, res) => {
 //글 작성하기
 /**
  * @swagger
- * /api/animal/write:
+ * /api/animal/get/write:
  *   post:
  *     summary: 새로운 동물 찾기 게시글을 작성합니다.
  *     tags: [AnimalGet]
@@ -268,7 +268,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
 
         const newPost = new AnimalGet({
             user_id: req.user._id,
-            date: date ? new Date(date) : new Date(),
+            date: new Date(),
             rfidCd,
             callName: req.user.name,
             callTel: req.user.phone_number,
@@ -291,6 +291,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
         const saved = await newPost.save();
         res.status(201).json({ message: '글이 성공적으로 등록되었습니다.', id: saved._id });
     } catch (err) {
+        console.log(err)
         res.status(500).send("Server Error")
     }
 })
@@ -298,7 +299,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
 // 검색 목록
 /**
  * @swagger
- * /api/animal/search:
+ * /api/animal/get/search:
  *   get:
  *     summary: 동물 찾기 게시글을 검색합니다.
  *     tags: [AnimalGet]

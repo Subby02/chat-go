@@ -174,12 +174,16 @@ router.get('/detail/:id', async (req, res) => {
  *             required:
  *               - happenDt
  *               - happenAddr
+ *               - happenPlace
+ *               - si
+ *               - sgg
+ *               - emd
  *               - kindCd
  *               - sexCd
  *               - age
  *               - specialMark
  *             properties:
- *               lstFilePathImg:
+ *               popfile:
  *                 type: string
  *                 format: binary
  *                 description: 실종 동물 이미지 파일
@@ -193,12 +197,21 @@ router.get('/detail/:id', async (req, res) => {
  *               happenAddr:
  *                 type: string
  *                 description: 실종 발생 주소
+ *               happenAddrDtl:
+ *                 type: string
+ *                 description: 실종 발생 상세 주소
  *               happenPlace:
  *                 type: string
  *                 description: 실종 발생 장소
- *               popfile:
+ *               si:
  *                 type: string
- *                 description: 대표 이미지 파일 경로
+ *                 description: 시/도
+ *               sgg:
+ *                 type: string
+ *                 description: 시/군/구
+ *               emd:
+ *                 type: string
+ *                 description: 읍/면/동
  *               kindCd:
  *                 type: string
  *                 description: 동물 품종
@@ -279,7 +292,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
 
         const newPost = new AnimalLost({
             user_id: req.user._id,
-            date: date ? new Date(date) : new Date(),
+            date: new Date(),
             rfidCd,
             callName: req.user.name,
             callTel: req.user.phone_number,
@@ -423,6 +436,12 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
  *                       happenAddr:
  *                         type: string
  *                         description: 실종 발생 주소
+ *                       happenAddrDtl:
+ *                         type: string
+ *                         description: 실종 발생 상세 주소
+ *                       happenPlace:
+ *                         type: string
+ *                         description: 실종 발생 장소
  *                       kindCd:
  *                         type: string
  *                         description: 동물 품종
@@ -432,6 +451,9 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
  *                       age:
  *                         type: integer
  *                         description: 동물 나이
+ *                       popfile:
+ *                         type: string
+ *                         description: 동물 이미지 파일 경로
  *       500:
  *         description: 서버 오류
  *         content:
