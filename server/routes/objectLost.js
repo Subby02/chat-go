@@ -278,7 +278,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
 
         const newPost = new ObjectLost({
             user_id: req.user._id,
-            date: date ? new Date(date) : new Date(),
+            date: new Date(),
             lstPrdtNm,
             lstYmd,
             lstHor,

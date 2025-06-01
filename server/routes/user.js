@@ -6,6 +6,12 @@ const LocalStrategy = require('passport-local')
 const coolsms = require('coolsms-node-sdk').default
 const { User } = require('../models/user')
 const { AuthCode } = require('../models/authCodes')
+const { ObjectLost } = require('../models/objectLost');
+const { ObjectGet } = require('../models/objectGet');
+const { AnimalLost } = require('../models/animalLost');
+const { AnimalGet } = require('../models/animalGet');
+const { RewardAnimal } = require('../models/rewardAnimal');
+const { RewardObject } = require('../models/rewardObject');
 
 function generateAuthCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -643,7 +649,46 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /api/user/info:
+ *   get:
+ *     summary: 로그인한 사용자의 정보 조회
+ *     description: 현재 로그인한 사용자의 기본 정보를 조회합니다.
+ *     tags: [User]
+ *     security:
+ *       - session: []
+ *     responses:
+ *       200:
+ *         description: 사용자 정보 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 email:
+ *                   type: string
+ *                   description: 사용자 이메일
+ *                   example: user@example.com
+ *                 name:
+ *                   type: string
+ *                   description: 사용자 이름
+ *                   example: 홍길동
+ *                 phone_number:
+ *                   type: string
+ *                   description: 사용자 전화번호
+ *                   example: "01012345678"
+ *       401:
+ *         description: 인증되지 않은 사용자
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요합니다
+ */
 router.get('/user/info', (req, res) => {
     if (req.isAuthenticated()) {
         let result = req.user
@@ -655,36 +700,225 @@ router.get('/user/info', (req, res) => {
     }
 })
 
+/**
+ * @swagger
+ * /api/user/posts:
+ *   get:
+ *     summary: 사용자가 작성한 게시글 목록 조회
+ *     description: 로그인한 사용자가 작성한 게시글 목록을 조회합니다.
+ *     tags: [User]
+ *     security:
+ *       - session: []
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: integer
+ *           enum: [0, 1, 2, 3, 4, 5]
+ *           default: 0
+ *         description: |
+ *           게시판 타입
+ *           - 0: 분실물
+ *           - 1: 습득물
+ *           - 2: 분실 동물
+ *           - 3: 구조 동물 
+ *           - 4: 사례금 동물
+ *           - 5: 사례금 분실물
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *           minimum: 1
+ *         description: 페이지 번호
+ *     responses:
+ *       200:
+ *         description: 게시글 목록 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 page:
+ *                   type: integer
+ *                   description: 현재 페이지 번호
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   description: 전체 페이지 수
+ *                   example: 5
+ *                 totalCount:
+ *                   type: integer
+ *                   description: 전체 게시글 수
+ *                   example: 42
+ *                 results:
+ *                   type: array
+ *                   description: 게시글 목록
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         description: 게시글 ID
+ *                       date:
+ *                         type: string
+ *                         format: date
+ *                         description: 작성일
+ *                       user_id:
+ *                         type: string
+ *                         description: 작성자 ID
+ *                       title:
+ *                         type: string
+ *                         description: 게시글 제목
+ *                       content:
+ *                         type: string
+ *                         description: 게시글 내용
+ *                       popfile:
+ *                         type: string
+ *                         description: 이미지 파일 경로
+ *       401:
+ *         description: 인증되지 않은 사용자
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요합니다
+ *       402:
+ *         description: 잘못된 게시판 타입
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 유효하지 않은 게시판 타입입니다.
+ *       501:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 서버 오류가 발생했습니다.
+ */
 router.get('/user/posts', async (req, res) => {
     if (req.isAuthenticated()) {
         const {
+            type = 0,
             page = 1,
         } = req.query;
 
+        const modelMap = {
+            0: ObjectLost,
+            1: ObjectGet,
+            2: AnimalLost,
+            3: AnimalGet,
+            4: RewardAnimal,
+            5: RewardObject
+        };
+
         try {
-        const skip = (parseInt(page) - 1) * MYPAGE_MAX_POST;
-        const limit = MYPAGE_MAX_POST;
+            const skip = (parseInt(page) - 1) * MYPAGE_MAX_POST;
+            const limit = MYPAGE_MAX_POST;
 
-        const docs = await Object_lost.find({ user_id: req.user._id }).sort({ _id: -1 }).skip(skip).limit(limit);
+            const Model = modelMap[type];
+            if (!Model) {
+                return res.status(402).json({ message: '유효하지 않은 게시판 타입입니다.' });
+            }
 
-        const totalCount = await Object_lost.countDocuments({ user_id: req.user._id });
+            const docs = await Model.find({ user_id: req.user._id })
+                .sort({ _id: -1 })
+                .skip(skip)
+                .limit(limit);
 
-        const results = docs.map(doc => {
-            const obj = doc.toObject();
-            obj.date = obj.date ? new Date(obj.date).toISOString().slice(0, 10) : null;
-            return obj;
-        });
+            const totalCount = await Model.countDocuments({ user_id: req.user._id });
 
-        res.json({
-            page: parseInt(page),
-            totalPages: Math.ceil(totalCount / MYPAGE_MAX_POST),
-            totalCount,
-            results
-        });
-    } catch (err) {
-        console.error("Search Error:", err.message);
-        res.status(501).json({ message: err.message });
+            const results = docs.map(doc => {
+                const obj = doc.toObject();
+                obj.date = obj.date ? new Date(obj.date).toISOString().slice(0, 10) : null;
+                return obj;
+            });
+
+            res.json({
+                page: parseInt(page),
+                totalPages: Math.ceil(totalCount / MYPAGE_MAX_POST),
+                totalCount,
+                results
+            });
+        } catch (err) {
+            console.error("Search Error:", err.message);
+            res.status(501).json({ message: err.message });
+        }
+    } else {
+        res.status(401).json({ message: '로그인이 필요합니다' });
     }
+})
+
+/**
+ * @swagger
+ * /api/user/delete:
+ *   delete:
+ *     summary: 회원 탈퇴
+ *     description: 현재 로그인한 사용자의 계정을 삭제하고 로그아웃합니다.
+ *     tags: [User]
+ *     security:
+ *       - session: []
+ *     responses:
+ *       200:
+ *         description: 회원 탈퇴 성공 및 로그아웃
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               description: 홈페이지로 리디렉션
+ *       401:
+ *         description: 인증되지 않은 사용자
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요합니다
+ *       501:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 서버 오류가 발생했습니다.
+ */
+router.delete('/user/delete', async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const post = await User.findOneAndDelete({
+                _id: req.user.id,
+            });
+
+            req.logout((err) => {
+                if (err) return next(err);
+    
+                req.session.destroy((err) => {
+                    if (err) return next(err);
+    
+                    res.clearCookie('connect.sid');
+                    res.redirect('/');
+                });
+            });
+        } catch (err) {
+            console.error("Search Error:", err.message);
+            res.status(501).json({ message: err.message });
+        }
     } else {
         res.status(401).json({ message: '로그인이 필요합니다' });
     }
