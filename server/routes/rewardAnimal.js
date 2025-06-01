@@ -314,7 +314,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
 
         const newPost = new RewardAnimal({
             user_id: req.user._id,
-            date: date ? new Date(date) : new Date(),
+            date: new Date(),
             callName: req.user.name,
             happenDt,
             happenAddr,

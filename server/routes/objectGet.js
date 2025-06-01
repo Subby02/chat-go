@@ -320,7 +320,7 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
 
         const newPost = new ObjectGet({
             user_id: req.user._id,
-            date: date ? new Date(date) : new Date(),
+            date: new Date(),
             fdPrdtNm,
             fdYmd,
             fdPlace,
