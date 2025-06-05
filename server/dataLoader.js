@@ -12,7 +12,7 @@ const parser = new xml2js.Parser({
 require('dotenv').config()
 
 let numOfRows = 100;
-let initMax = 1000;
+let initMax = 100;
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -105,39 +105,11 @@ async function fetchPoliceGetObjectPage(pageNo, numOfRows) {
     }
 }
 
-async function fetchPoliceGetObjectDetail(atcId) {
-    const url = 'http://apis.data.go.kr/1320000/LosfundInfoInqireService/getLosfundDetailInfo';
-    let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + process.env.PUBLIC_DATA_API_KEY;
-    queryParams += '&' + encodeURIComponent('ATC_ID') + '=' + encodeURIComponent(atcId);
-
-    try {
-        const response = await axios.get(url + queryParams);
-        return response.data;
-    } catch (error) {
-        console.log(url + queryParams);
-        console.error(error.message);
-    }
-}
-
 async function fetchOrgGetObjectPage(pageNo, numOfRows) {
     const url = 'http://apis.data.go.kr/1320000/LosPtfundInfoInqireService/getPtLosfundInfoAccToClAreaPd';
     let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + process.env.PUBLIC_DATA_API_KEY;
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent(pageNo);
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent(numOfRows); 
-
-    try {
-        const response = await axios.get(url + queryParams);
-        return response.data;
-    } catch (error) {
-        console.log(url + queryParams);
-        console.error(error.message);
-    }
-}
-
-async function fetchOrgGetObjectDetail(atcId) {
-    const url = 'http://apis.data.go.kr/1320000/LosPtfundInfoInqireService/getPtLosfundDetailInfo';
-    let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + process.env.PUBLIC_DATA_API_KEY;
-    queryParams += '&' + encodeURIComponent('ATC_ID') + '=' + encodeURIComponent(atcId);
 
     try {
         const response = await axios.get(url + queryParams);
@@ -269,21 +241,15 @@ function getOrgFoundObjectDocument(item, si, sgg, emd) {
         atcId: item.atcId,
         fdPrdtNm: item.fdPrdtNm,
         fdYmd: item.fdYmd,
-        fdHor: item.fdHor,
-        fdPlace: item.fdPlace,
         si: si,
         sgg: sgg,
         emd: emd,
-        uniq: item.uniq,
         fdSn: item.fdSn,
         prdtClNm: item.prdtClNm,
         depPlace: item.depPlace,
-        csteSteNm: item.csteSteNm,
-        orgId: item.orgId,
-        orgNm: item.orgNm,
-        tel: item.tel,
-        fndKeepOrgnSeNm: item.fndKeepOrgnSeNm,
         fdFilePathImg: item.fdFilePathImg,
+        clrNm : item.clrNm,
+        fdsbjt: item.fdsbjt,
         date: new Date()
     };
 }
@@ -492,27 +458,8 @@ async function updatePoliceFoundObjectData(lastAtcId) {
                     break;
             }
 
-            let si = '', sgg = '', emd = '';
-
-            try {
-                const keyword = item.depPlace.trim();
-                const addressRes = await fetchAddress(keyword);
-                const rawJuso = addressRes?.results?.juso;
-
-                let juso = null;
-                if (Array.isArray(rawJuso) && rawJuso.length > 0) {
-                    juso = rawJuso[0];
-                } else if (typeof rawJuso === 'object' && rawJuso !== null) {
-                    juso = rawJuso;
-                }
-
-                si = juso.siNm || '';
-                sgg = juso.sggNm || '';
-                emd = juso.emdNm || '';
-
-            } catch (err) {
-                console.error(`❌ 습득 주소 파싱 오류 (${item.orgNm}):`, err.message);
-            }
+            const keyword = await searchKeyword(item.depPlace);
+            const { si, sgg, emd } = await parseAddressWithRetry(keyword);
 
             documents.push(getPoliceFoundObjectDocument(item, si, sgg, emd));
             cnt++;
@@ -557,27 +504,8 @@ async function updateOrgFoundObjectData(lastAtcId) {
                     break;
             }
             
-            let si = '', sgg = '', emd = '';
-
-            try {
-                const keyword = item.depPlace.trim();
-                const addressRes = await fetchAddress(keyword);
-                const rawJuso = addressRes?.results?.juso;
-
-                let juso = null;
-                if (Array.isArray(rawJuso) && rawJuso.length > 0) {
-                    juso = rawJuso[0];
-                } else if (typeof rawJuso === 'object' && rawJuso !== null) {
-                    juso = rawJuso;
-                }
-
-                si = juso.siNm || '';
-                sgg = juso.sggNm || '';
-                emd = juso.emdNm || '';
-                
-            } catch (err) {
-                console.error(`❌ 습득 주소 파싱 오류 (${item.orgNm}):`, err.message);
-            }
+            const keyword = await searchKeyword(item.depPlace);
+            const { si, sgg, emd } = await parseAddressWithRetry(keyword);
 
             documents.push(getOrgFoundObjectDocument(item, si, sgg, emd));
             cnt++;
@@ -811,27 +739,8 @@ async function initPoliceFoundObjectData() {
             const item = items[i];
             if (!item) continue;
             
-            let si = '', sgg = '', emd = '';
-
-            try {
-                const keyword = item.depPlace.trim();
-                const addressRes = await fetchAddress(keyword);
-                const rawJuso = addressRes?.results?.juso;
-
-                let juso = null;
-                if (Array.isArray(rawJuso) && rawJuso.length > 0) {
-                    juso = rawJuso[0];
-                } else if (typeof rawJuso === 'object' && rawJuso !== null) {
-                    juso = rawJuso;
-                }
-
-                si = juso.siNm || '';
-                sgg = juso.sggNm || '';
-                emd = juso.emdNm || '';
-
-            } catch (err) {
-                console.error(`❌ 습득 주소 파싱 오류 (${item.orgNm}):`, err.message);
-            }
+            const keyword = await searchKeyword(item.depPlace);
+            const { si, sgg, emd } = await parseAddressWithRetry(keyword);
 
             documents.push(getPoliceFoundObjectDocument(item, si, sgg, emd));
             cnt++;
@@ -872,27 +781,8 @@ async function initOrgFoundObjectData() {
             const item = items[i];
             if (!item) continue;
             
-            let si = '', sgg = '', emd = '';
-
-            try {
-                const keyword = item.depPlace.trim();
-                const addressRes = await fetchAddress(keyword);
-                const rawJuso = addressRes?.results?.juso;
-
-                let juso = null;
-                if (Array.isArray(rawJuso) && rawJuso.length > 0) {
-                    juso = rawJuso[0];
-                } else if (typeof rawJuso === 'object' && rawJuso !== null) {
-                    juso = rawJuso;
-                }
-
-                si = juso.siNm || '';
-                sgg = juso.sggNm || '';
-                emd = juso.emdNm || '';
-                
-            } catch (err) {
-                console.error(`❌ 습득 주소 파싱 오류 (${item.orgNm}):`, err.message);
-            }
+            const keyword = await searchKeyword(item.depPlace);
+            const { si, sgg, emd } = await parseAddressWithRetry(keyword);
 
             documents.push(getOrgFoundObjectDocument(item, si, sgg, emd));
             cnt++;
@@ -999,6 +889,10 @@ async function parseAddressWithRetry(rawAddr) {
 }
 
 function cleanAddress(addr) {
+  if (!addr || typeof addr !== 'string') {
+    console.warn('[cleanAddress] 잘못된 입력:', addr);
+    return '';
+  }
   // 1. 괄호 및 괄호 안 제거
   addr = addr.replace(/\s*\(.*?\)\s*/g, '');
 
@@ -1157,6 +1051,36 @@ async function test() {
     let result = await fetchLostObjectPage(1, 10);
 
     console.log(result.response.body.items)
+}
+
+async function searchKeyword(keyword) {
+  const url = 'https://dapi.kakao.com/v2/local/search/keyword.json';
+
+  try {
+    const response = await axios.get(url, {
+      params: {
+        query: keyword,
+        size: 1, // 최대 45까지 가능
+      },
+      headers: {
+        Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`
+      }
+    });
+
+    const places = response.data.documents;
+
+    if (places.length === 0) {
+      console.log('검색 결과가 없습니다.');
+      return;
+    }
+
+    const place = places[0]; // ✅ 첫 번째 결과 가져오기
+    
+    return place.road_address_name || place.address_name || ''; // ✅ 가장 구체적인 주소 반환
+
+  } catch (error) {
+    console.error('에러 발생:', error.response?.data || error.message);
+  }
 }
 
 update();
