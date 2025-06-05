@@ -7,7 +7,7 @@ const animalLostSchema = mongoose.Schema({
   rfidCd: { type: String },
   callName: { type: String },
   callTel: { type: String },
-  happenDt: { type: String }, 
+  happenDt: { type: Date }, 
   happenAddr: { type: String },
   happenAddrDtl: { type: String},
   happenPlace: { type: String },

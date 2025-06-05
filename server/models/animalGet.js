@@ -5,7 +5,7 @@ const animalGetSchema = mongoose.Schema({
   date: { type: Date},
   desertionNo: { type: String},
   rfidCd: { type: String },
-  happenDt: { type: String },
+  happenDt: { type: Date },
   happenPlace: { type: String },
   si: { type: String },
   sgg: { type: String },
