@@ -19,7 +19,7 @@ const HeaderNavigation = () => {
         </button>
         <div className="DropDownMenu">
           <Link to="/animal/lost">신고 게시판</Link>
-          <Link to="/animal/found">제보 게시판</Link>
+          <Link to="/animal/get">제보 게시판</Link>
         </div>
       </div>
 
@@ -28,7 +28,8 @@ const HeaderNavigation = () => {
           사례금 게시판
         </button>
         <div className="DropDownMenu">
-          <Link to="/reward">사례금 게시판</Link>
+          <Link to="/reward/object">사례금 물건</Link>
+          <Link to="/reward/animal">사례금 동물</Link>
         </div>
       </div>
 

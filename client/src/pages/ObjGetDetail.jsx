@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   useParams,
   Link as RouterLink,
@@ -8,11 +8,9 @@ import {
 import axios from "axios";
 import "./ObjLostDetail.css";
 import Header from "../components/Header";
-import { getIconImage } from "../util/get-img-icon";
-import Button from "../components/Button";
 import Footer from "../components/Footer";
 
-const ObjectLostDetail = () => {
+const ObjGetDetail = () => {
   const { postId } = useParams(); // App.js의 <Route path="/object/lost/:postId" ... /> 에서 :postId 값을 가져옴
   const location = useLocation();
   const [post, setPost] = useState(null);
@@ -59,7 +57,7 @@ const ObjectLostDetail = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/object/lost/detail/${postId}`
+        `http://localhost:5000/api/object/get/detail/${postId}`
       );
       console.log(response.data);
       setPost(response.data);
@@ -90,7 +88,7 @@ const ObjectLostDetail = () => {
           (ID: {postId})
         </p>
         <RouterLink
-          to={`/object/lost?page=${previousPage}`}
+          to={`/object/get?page=${previousPage}`}
           className="back-to-list-link"
           style={{ marginTop: "20px" }}
         >
@@ -117,34 +115,30 @@ const ObjectLostDetail = () => {
       <Header authState={auth} handleLogout={handleLogout} />
 
       <div className="post-detail-container">
-        <h1>{post.post.lstPrdtNm}</h1>
-        {post.post.lstFilePathImg && (
+        <h1>{post.post.fdPrdtNm}</h1>
+        {post.post.fdFilePathImg && (
           <img
             className="detail-image"
-            src={post.post.lstFilePathImg}
-            alt={post.post.lstPrdtNm || "분실물 이미지"}
+            src={post.post.fdFilePathImg}
+            alt={post.post.fdPrdtNm || "습득물 이미지"}
           />
         )}
         <p>
-          <strong>분실물 제목:</strong> {post.post.lstSbjt || "제목 없음"}
+          <strong>습득득물 제목:</strong> {post.post.fdPrdtNm || "제목 없음"}
         </p>
         <p>
-          <strong>분실 장소 (분류):</strong>{" "}
-          {post.post.lstPlaceSeNm || "정보 없음"}
-        </p>
-        <p>
-          <strong>분실 장소 (상세):</strong> {post.post.lstPlace || "정보 없음"}
+          <strong>습득 장소:</strong> {post.post.fdPlace || "정보 없음"}
         </p>
         <p>
           <strong>보관 장소:</strong>
-          {post.post.orgNm
-            ? `${post.post.orgNm} (${post.post.tel || "연락처 없음"})`
+          {post.post.depPlace
+            ? `${post.post.depPlace} (${post.post.tel || "연락처 없음"})`
             : "정보 없음"}
         </p>
         <p>
-          <strong>분실 일:</strong>
-          {post.post.lstYmd
-            ? new Date(post.post.lstYmd).toLocaleDateString("ko-KR", {
+          <strong>습득 일:</strong>
+          {post.post.fdYmd
+            ? new Date(post.post.fdYmd).toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -166,15 +160,15 @@ const ObjectLostDetail = () => {
         </p>
 
         <p>
-          <strong>물품 분류:</strong> {post.post.prdtClnm || "정보 없음"}
+          <strong>물품 분류:</strong> {post.post.prdtClNm || "정보 없음"}
         </p>
         <p>
-          <strong>상태:</strong> {post.post.lstSteNm || "정보 없음"}
+          <strong>상태:</strong> {post.post.csteSteNm || "정보 없음"}
         </p>
 
         <div>
           <RouterLink
-            to={`/object/lost?page=${previousPage}`}
+            to={`/object/get?page=${previousPage}`}
             className="back-to-list-link"
           >
             목록으로 돌아가기
@@ -186,4 +180,4 @@ const ObjectLostDetail = () => {
   );
 };
 
-export default ObjectLostDetail;
+export default ObjGetDetail;

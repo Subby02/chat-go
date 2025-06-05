@@ -3,41 +3,53 @@ import { useState } from "react";
 import { getIconImage } from "../util/get-img-icon";
 import { AiFillCaretDown } from "react-icons/ai";
 import { AiOutlineSearch } from "react-icons/ai";
+import FilterModal from "./FilterModal";
 
-const Searchbar = ({ onSearch }) => {
+const Searchbar = ({ onSearch, keyword, setKeyword, filters, setFilters }) => {
   const [inputVal, setInputVal] = useState("");
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(inputVal);
+    setKeyword(inputVal);
+    onSearch(); 
+  };
+
+  const handleModal = () => {
+    setModalOpen(!isModalOpen);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="Searchbar">
-      <img src={getIconImage(1)} alt="Icon" className="SearchbarLeftIcon" />
+    <>
+      <form className="searchbar" onSubmit={handleSubmit}>
+        <img src={getIconImage(2)} alt="Icon" className="searchbar-left-icon" />
 
-      <input
-        className="SearchbarInput"
-        type="text"
-        placeholder="검색어를 입력하세요..."
-        value={inputVal} //입력 데이터 UI요소 동기화.
-        onChange={(e) => setInputVal(e.target.value)}
-      ></input>
+        <input
+          className="searchbar-input"
+          onChange={(e) => {
+            setInputVal(e.target.value);
+          }}
+        ></input>
 
-      <div className="SearchbarButtonGroup">
-        <button
-          type="button"
-          className="SearchbarFilterButton"
-          aria-label="상세기능"
-        >
-          <AiFillCaretDown className="FeatureIconDropdown" />
-        </button>
+        <div className="button-area">
+          <button type="button" className="filter-button" onClick={handleModal}>
+            상세 검색
+            <AiFillCaretDown style={{ fontSize: "25px" }} />
+          </button>
 
-        <button type="submit" className="SearchButton" aria-label="검색">
-          <AiOutlineSearch className="Search" />
-        </button>
-      </div>
-    </form>
+          <button className="search-button" type="submit">
+            <AiOutlineSearch style={{ fontSize: "25px" }} />
+          </button>
+        </div>
+      </form>
+      {isModalOpen && (
+        <FilterModal
+          onClose={handleModal}
+          filters={filters}
+          setFilters={setFilters}
+        />
+      )}
+    </>
   );
 };
 

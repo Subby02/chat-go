@@ -1,15 +1,12 @@
 import Body from "../components/Body";
-import { getIconImage } from "../util/get-img-icon";
 import Header from "../components/Header";
-import Button from "../components/Button";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-const Home = ({ LatesPost }) => {
-  const [auth, setAuth] = useState(false);
-
+const Home = () => {
   const nav = useNavigate();
+  const [auth, setAuth] = useState(false);
 
   const fetchStatus = async () => {
     const response = await axios.get("http://localhost:5000/api/status", {
@@ -40,7 +37,7 @@ const Home = ({ LatesPost }) => {
 
   return (
     <>
-      <Header authState={auth} />
+      <Header authState={auth} handleLogout={handleLogout} />
       <main style={{ width: "1200px", margin: "0 auto" }}>
         <Body />
       </main>

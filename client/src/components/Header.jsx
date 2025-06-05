@@ -5,11 +5,11 @@ import axios from "axios";
 import HeaderTop from "./HeaderTop";
 import HeaderNavigation from "./HeaderNavigation";
 
-const Header = ({ authState }) => {
+const Header = ({ authState, handleLogout }) => {
   return (
     <>
       <div className="headertop">
-        <HeaderTop authState={authState} />
+        <HeaderTop authState={authState} handleLogout={handleLogout} />
       </div>
       <div>
         <HeaderNavigation />

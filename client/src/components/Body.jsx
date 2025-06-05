@@ -8,6 +8,14 @@ const Body = () => {
         <div>사례금 게시판</div>
       </h1>
       <PostSlider />
+      <h1 className="PostTitle">
+        <div>분실물 게시판</div>
+      </h1>
+      <PostSlider />
+      <h1 className="PostTitle">
+        <div>유기동물 게시판</div>
+      </h1>
+      <PostSlider />
       <Introduce />
     </section>
   );
