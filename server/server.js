@@ -8,6 +8,8 @@ const passport = require('passport')
 const methodOverride = require('method-override');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const cron = require('node-cron');
+const { update } = require('./dataLoader.js');
 require('dotenv').config()
 const app = express();
 const PORT = process.env.PORT;
@@ -74,4 +76,8 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`server running on PORT ${PORT}`);
 })
+
+// cron.schedule('56 16 * * *', async () => {    // 정각 00시 자동 업데이트
+//   await update();
+// });
 
