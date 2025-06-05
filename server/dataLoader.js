@@ -903,15 +903,17 @@ function cleanAddress(addr) {
 
 function getDateStrings() {
   const today = new Date();
+  const yesterday = new Date();
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(today.getFullYear() - 1);
+  yesterday.setDate(today.getDate() -1);
 
   const format = (date) =>
     date.toISOString().split('T')[0].replace(/-/g, ''); // YYYYMMDD 형식
 
   return {
     bgnde: format(oneYearAgo), // 과거
-    endde: format(today)        // 오늘
+    endde: format(yesterday)  // 어제
   };
 }
 
@@ -931,9 +933,9 @@ function getYesterdayDateStrings() {
 
 async function deleteAll() {
     await AnimalLost.deleteMany({});
-    await AnimalGet.deleteMany({});
+    // await AnimalGet.deleteMany({});
     await ObjectLost.deleteMany({});
-    await ObjectGet.deleteMany({});
+    // await ObjectGet.deleteMany({});
     console.log('모든 데이터 삭제 완료');
 }
 

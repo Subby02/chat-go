@@ -6,7 +6,7 @@ const object_get_schema = mongoose.Schema({
     date: { type: Date },
     atcId: { type: String },
     fdPrdtNm: { type: String },
-    fdYmd: { type: String },
+    fdYmd: { type: Date },
     si: { type: String },
     sgg: { type: String },
     emd: { type: String },
