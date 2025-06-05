@@ -135,7 +135,7 @@ const RegisterElement = () => {
   return(
     <div className="Register_Wrapper">
       <div className="Register_Element">
-        <div className="icon" onClick={()=>nav('/')}>
+        <div className="icon">
           <img src={getIconImage(1)} style={{width: '120px', height: 'auto'}} className="icon"/>
           <div className='txt1'>찾Go</div>
           <div className='txt2'>회원가입</div>
