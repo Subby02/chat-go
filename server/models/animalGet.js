@@ -17,7 +17,7 @@ const animalGetSchema = mongoose.Schema({
   noticeNo: { type: String },
   noticeSdt: { type: String },
   noticeEdt: { type: String },
-  popfile: { type: String },
+  popfile1: { type: String },
   processState: { type: String },
   sexCd: { type: String },
   neuterYn: { type: String },

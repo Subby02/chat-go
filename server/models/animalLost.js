@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const animalLostSchema = mongoose.Schema({
   user_id: { type: String },
   date: { type: Date },
+  desertionNo:{ type: String}, 
   rfidCd: { type: String },
   callName: { type: String },
   callTel: { type: String },
