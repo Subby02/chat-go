@@ -1,16 +1,15 @@
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
 import Searchbar from "../components/Searchbar";
-import LostList from "../components/LostList";
+import RewardObjectList from "../components/RewardObjectList";
 import "./LostPage.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/Header";
-import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 
-const ReportBoard = ({ type }) => {
+const RewardObject = ({ type }) => {
   const [auth, setAuth] = useState(false);
 
   const handleLogout = async () => {
@@ -83,7 +82,7 @@ const ReportBoard = ({ type }) => {
       if (filters.town) queryString.set("emd", filters.town);
       queryString.set("page", pageToFetch);
 
-      let apiUrl = "http://localhost:5000/api/object/get/search";
+      let apiUrl = "http://localhost:5000/api/reward/object/search";
       if (queryString) {
         apiUrl += `?${queryString}`;
       }
@@ -120,7 +119,7 @@ const ReportBoard = ({ type }) => {
     const params = new URLSearchParams(location.search);
     const pageFromQuery = parseInt(params.get("page"), 10);
     if (pageFromQuery !== currentPage) {
-      nav(`/object/get?page=${currentPage}`, { replace: true });
+      nav(`/reward/object?page=${currentPage}`, { replace: true });
     }
   }, [currentPage, fetchPosts, nav, location.search]);
 
@@ -147,7 +146,7 @@ const ReportBoard = ({ type }) => {
             margin: "40px 0",
           }}
         >
-          분실물 제보 게시판
+          사례금 물건 게시판
         </h1>
         <Searchbar
           onSearch={handleSearch}
@@ -173,7 +172,7 @@ const ReportBoard = ({ type }) => {
           </button>
         </div>
 
-        <LostList
+        <RewardObjectList
           posts={filteredPosts}
           cnt={totalItems}
           currentPage={currentPage}
@@ -189,4 +188,4 @@ const ReportBoard = ({ type }) => {
   );
 };
 
-export default ReportBoard;
+export default RewardObject;

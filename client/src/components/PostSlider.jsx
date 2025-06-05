@@ -1,6 +1,5 @@
 import "./PostSlider.css";
 import { useState } from "react";
-import Button from "./Button";
 
 const PostSlider = ({ type }) => {
   console.log(type);

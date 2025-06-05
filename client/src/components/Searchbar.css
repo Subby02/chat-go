@@ -1,76 +1,46 @@
-/* Searchbar.css */
-.Searchbar {
+.searchbar{
   display: flex;
+  width: 800px;
+  height: 60px;
+  margin: 30px auto;
+  border: 2px solid #ccc;
+  border-radius: 20px;
   align-items: center;
-  background-color: white;
-  border: 1px solid #ccc; /* 일반적인 테두리 색상, 필요시 네이버 스타일로 변경 */
-  border-radius: 30px;
-  padding: 8px 12px; /* 내부 여백 조절 */
-  width: 100%;
-  max-width: 700px; /* 최대 너비 */
-  margin: 20px auto; /* 페이지 내 중앙 정렬 및 상하 여백 */
-  height: 50px;
+  position: relative;
 }
 
-.SearchbarLeftIcon {
-  width: 30px; /* 왼쪽 아이콘 크기 */
-  height: 30px;
-  margin-right: 10px; /* 입력창과의 간격 */
-  object-fit: contain; /* 이미지 비율 유지 */
+.searchbar-left-icon{
+  width:40px;
+  height: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-.SearchbarInput {
+.searchbar-input{
   flex-grow: 1;
   border: none;
   outline: none;
-  font-size: 16px;
-  background-color: transparent;
-  color: #333;
-  width: 100%; /* 너비가 부족할 경우를 대비 */
+  font-size: 18px;
 }
 
-.SearchbarInput::placeholder {
-  color: #999;
-}
-
-.SearchbarButtonGroup {
-  display: flex; /* 버튼들을 가로로 정렬 */
-  align-items: center;
-  margin-left: 8px; /* 입력창과의 간격 */
-}
-
-.SearchbarFilterButton,
-.SearchButton {
-  background: none;
-  border: none;
-  padding: 5px; /* 아이콘 주변 클릭 영역 확보 */
-  cursor: pointer;
+.button-area{
   display: flex;
+  margin-right: 8px;
   align-items: center;
-  justify-content: center;
-  line-height: 0; /* 버튼 높이가 아이콘보다 커지는 것 방지 */
+  
 }
 
-/* 버튼 간 간격을 주고 싶다면 (예: 오른쪽 버튼 그룹 내 첫 번째 버튼 제외) */
-.SearchbarFeatureButton + .SearchbarSubmitButton {
-  margin-left: 4px;
+.filter-button{
+  display: inline-flex;
+  align-items: center;
+  border:none;
+  background-color: white;
+  cursor: pointer;
 }
 
-.FeatureIconDropdown {
-  font-size: 20px; /* AiFillCaretDown 아이콘 크기 */
-  color: #555;     /* 아이콘 색상 */
-}
-
-/* 호버 효과 (선택 사항) */
-.SearchbarFilterButton:hover .FeatureIconDropdown,
-.SearchButton:hover{
-  opacity: 0.7;
-}
-
-/* 포커스 스타일 (접근성) */
-.SearchbarFilterButton:focus-visible,
-.SearchButton:focus-visible {
-  outline: 2px solid Highlight; /* 시스템 기본 하이라이트 */
-  outline-offset: 2px;
-  border-radius: 4px;
+.search-button{
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  
 }

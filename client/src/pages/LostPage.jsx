@@ -4,15 +4,27 @@ import Searchbar from "../components/Searchbar";
 import LostList from "../components/LostList";
 import "./LostPage.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getIconImage } from "../util/get-img-icon";
 import Header from "../components/Header";
-import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 
-const LostPage = () => {
+const LostPage = ({ type }) => {
   const [auth, setAuth] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/logout",
+        {},
+        { withCredentials: true }
+      );
+      setAuth(false);
+      nav("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const fetchStatus = async () => {
     const response = await axios.get("http://localhost:5000/api/status", {
@@ -40,8 +52,16 @@ const LostPage = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-
+  const [activeFilters, setActiveFilters] = useState({
+    startDate: "",
+    endDate: "",
+    lstYmdStart: "",
+    lstYmdEnd: "",
+    si: "",
+    sgg: "",
+    emd: "",
+  });
+  const [pendingFilters, setPendingFilters] = useState(activeFilters);
   const [currentPage, setCurrentPage] = useState(getInitialPageFromQuery);
   const [totalPage, setTotalPage] = useState(0);
 
@@ -51,20 +71,30 @@ const LostPage = () => {
 
   const fetchPosts = useCallback(
     async (pageToFetch = 1) => {
-      console.log(pageToFetch);
       setLoading(true);
       setError(null);
-      try {
-        const queryString = new URLSearchParams();
 
-        if (keyword === "") {
-          queryString.set("page", pageToFetch);
-        } else {
-          queryString.set("search", keyword);
-          queryString.set("page", pageToFetch);
-        }
+      const queryString = new URLSearchParams();
+
+      if (keyword) queryString.set("search", keyword);
+      if (activeFilters.startDate)
+        queryString.set("dateStart", activeFilters.startDate);
+      if (activeFilters.endDate)
+        queryString.set("dateEnd", activeFilters.endDate);
+      if (activeFilters.lstYmdStart)
+        queryString.set("lstYmdStart", activeFilters.lstYmdStart);
+      if (activeFilters.lstYmdEnd)
+        queryString.set("lstYmdEnd", activeFilters.lstYmdEnd);
+      if (activeFilters.si) queryString.set("si", activeFilters.si);
+      if (activeFilters.sgg) queryString.set("sgg", activeFilters.sgg);
+      if (activeFilters.emd) queryString.set("emd", activeFilters.emd);
+      queryString.set("page", pageToFetch);
+
+      console.log(activeFilters.si);
+      console.log(queryString.toString());
+      try {
         const response = await axios.get(
-          `http://localhost:5000/api/object/lost/search?${queryString.toString()}`
+          `http://localhost:5000/api/object/lost/search?${queryString}`
         );
 
         console.log(queryString.toString());
@@ -88,7 +118,7 @@ const LostPage = () => {
         setLoading(false);
       }
     },
-    [keyword]
+    [keyword, activeFilters]
   );
 
   useEffect(() => {
@@ -101,34 +131,13 @@ const LostPage = () => {
     }
   }, [currentPage, fetchPosts, nav, location.search]);
 
-  useEffect(() => {
-    setKeyword(searchTerm);
-    console.log(searchTerm);
-  }, [searchTerm]);
-
-  const handleSearch = (term) => {
-    setSearchTerm(term);
+  const handleSearch = () => {
+    setActiveFilters(pendingFilters);
     setCurrentPage(1);
-    // fetchPosts(1);
   };
 
   const handlePageChange = (PageNumber) => {
     setCurrentPage(PageNumber);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await axios.post(
-        "http://localhost:5000/api/logout",
-        {},
-        { withCredentials: true }
-      );
-      setAuth(false);
-
-      nav("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
   };
 
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
@@ -136,7 +145,7 @@ const LostPage = () => {
 
   return (
     <>
-      <Header authState={auth} />
+      <Header authState={auth} handleLogout={handleLogout} />
 
       <div className="lost-page-container">
         <h1
@@ -145,13 +154,19 @@ const LostPage = () => {
             fontWeight: "normal",
             margin: "40px 0",
           }}
-      >
-        분실물 신고 게시판
-      </h1>
-      <Searchbar onSearch={handleSearch} />
-        
-      <div className="write">
-         <button
+        >
+          분실물 신고 게시판
+        </h1>
+        <Searchbar
+          onSearch={handleSearch}
+          keyword={keyword}
+          setKeyword={setKeyword}
+          filters={pendingFilters}
+          setFilters={setPendingFilters}
+        />
+
+        <div className="write">
+          <button
             className="writeButton"
             onClick={() => {
               if (auth) nav("/object/lost/write");
