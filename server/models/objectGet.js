@@ -7,20 +7,14 @@ const object_get_schema = mongoose.Schema({
     atcId: { type: String },
     fdPrdtNm: { type: String },
     fdYmd: { type: String },
-    fdHor: { type: String },
-    fdPlace: { type: String },
     si: { type: String },
     sgg: { type: String },
     emd: { type: String },
-    uniq: { type: String },
     fdSn: { type: String },
     prdtClNm: { type: String },
     depPlace: { type: String },
-    csteSteNm: { type: String },
-    orgId: { type: String },
-    orgNm: { type: String },
-    tel: { type: String },
-    fndKeepOrgnSeNm: { type: String },
+    clrNm: { type: String },
+    fdsbjt: {type: String},
     fdFilePathImg: { type: String }
 }, { versionKey: false });
 

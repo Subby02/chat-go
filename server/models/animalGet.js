@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const animalGetSchema = mongoose.Schema({
   user_id: { type: String},
   date: { type: Date},
+  desertionNo: { type: String},
   rfidCd: { type: String },
   happenDt: { type: String },
   happenPlace: { type: String },
