@@ -9,6 +9,8 @@ import axios from "axios";
 const WriteAnimalReward = () => {
   const nav = useNavigate();
 
+  const [imageFile, setImageFile] = useState(null);
+
   const [form, setForm] = useState({
     kindCd: "", // 품종(필수)
     rfidCd: "", // RFIC 코드
@@ -29,15 +31,9 @@ const WriteAnimalReward = () => {
     const { name, value } = e.target;
 
     if (name === "reward") {
-    // 숫자만 추출
     const onlyNums = value.replace(/[^0-9]/g, "");
-
     setForm({ ...form, [name]: onlyNums });
-  } else {
-    setForm({ ...form, [name]: value });
-  }
-
-    if (name === "si") {
+    } else if (name === "si") {
       setForm((prev) => ({ ...prev, si: value, sgg: "", emd: "" }));
     } else if (name === "sgg") {
       setForm((prev) => ({ ...prev, sgg: value, emd: "" }));
@@ -94,11 +90,24 @@ const WriteAnimalReward = () => {
     }
 
     try {
+      const formData = new FormData();
+
+      for (const key in form) {
+        formData.append(key, form[key]);
+      }
+
+      if (imageFile) {
+        formData.append("popfile", imageFile);  // name 그대로
+      }
+      
       const res = await axios.post(
         "http://localhost:5000/api/reward/animal/write",
-        form,
+        formData,
         {
           withCredentials: true,
+          headers: {
+          "Content-Type": "multipart/form-data",
+          },
         }
       );
 
@@ -148,7 +157,7 @@ const WriteAnimalReward = () => {
             </label>
 
             <label>
-              나이(필수):{" "}
+              동물 나이(필수):{" "}
               <input type="text" name="age" value={form.age} onChange={handleChange} />
             </label>
           </div>
@@ -222,8 +231,18 @@ const WriteAnimalReward = () => {
 
         <div className="img_section">
           <label>
-            이미지 업로드:{" "}
-            <input type="text" name="popfile" value={form.popfile} onChange={handleChange} />
+            동물 이미지 업로드:{" "}
+            <input type="file" accept="image/*" name="popfile" onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const ext = file.name.substring(file.name.lastIndexOf('.'));
+                const safeName = `${Date.now()}${ext}`;
+
+                const newFile = new File([file], safeName, { type: file.type });
+
+                setImageFile(newFile);
+              }}} 
+            />
           </label>
         </div>
 

@@ -9,6 +9,8 @@ import axios from "axios";
 const WriteObjectReward = () => {
   const nav = useNavigate();
 
+  const [imageFile, setImageFile] = useState(null);
+
   const [form, setForm] = useState({
     lstPrdtNm: "", // 물품명(필수)
     prdtClNm: "", // 분류명(필수)
@@ -28,15 +30,9 @@ const WriteObjectReward = () => {
     const { name, value } = e.target;
 
     if (name === "reward") {
-    // 숫자만 추출
-    const onlyNums = value.replace(/[^0-9]/g, "");
-
-    setForm({ ...form, [name]: onlyNums });
-  } else {
-    setForm({ ...form, [name]: value });
-  }
-
-    if (name === "si") {
+      const onlyNums = value.replace(/[^0-9]/g, "");
+      setForm({ ...form, [name]: onlyNums });
+    } else if (name === "si") {
       setForm((prev) => ({ ...prev, si: value, sgg: "", emd: "" }));
     } else if (name === "sgg") {
       setForm((prev) => ({ ...prev, sgg: value, emd: "" }));
@@ -73,11 +69,25 @@ const WriteObjectReward = () => {
     }
 
     try {
+      const formData = new FormData();
+
+      for(const key in form)
+      {
+        formData.append(key, form[key]);
+      }
+
+      if (imageFile) {
+      formData.append("lstFilePathImg", imageFile);  // name 그대로
+      }
+
       const res = await axios.post(
         "http://localhost:5000/api/reward/object/write",
-        form,
+        formData,
         {
           withCredentials: true,
+          headers: {
+          "Content-Type": "multipart/form-data",
+        },
         }
       );
 
@@ -188,8 +198,19 @@ const WriteObjectReward = () => {
 
         <div className="img_section">
           <label>
-            이미지 업로드:{" "}
-            <input type="text" name="lstFilePathImg" value={form.lstFilePathImg} onChange={handleChange} />
+            분실물 이미지 업로드:{" "}
+            <input type="file" accept="image/*" name="lstFilePathImg" onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                // 한글 or 특수문자 파일명 방지 → 새로운 File 객체 생성 (safe name)
+                const ext = file.name.substring(file.name.lastIndexOf('.'));
+                const safeName = `${Date.now()}${ext}`;
+
+                const newFile = new File([file], safeName, { type: file.type });
+
+                setImageFile(newFile);
+              }}}
+            />
           </label>
         </div>
 

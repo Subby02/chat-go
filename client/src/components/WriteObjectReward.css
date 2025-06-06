@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-
 }
 
 .icon_section {
@@ -24,6 +23,12 @@
   width: 600px;
   gap: 10px;
   margin-top: 20px;
+}
+
+.object_section {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .si_section {
