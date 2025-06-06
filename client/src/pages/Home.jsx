@@ -4,6 +4,9 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import PostSlider from "../components/PostSlider";
+import Introduce from "../components/Introduce";
+import NewPost from "../components/NewPost";
 const Home = () => {
   const nav = useNavigate();
   const [auth, setAuth] = useState(false);
@@ -38,8 +41,8 @@ const Home = () => {
   return (
     <>
       <Header authState={auth} handleLogout={handleLogout} />
-      <main style={{ width: "1200px", margin: "0 auto" }}>
-        <Body />
+      <main>
+        <Body auth={auth} />
       </main>
       <Footer />
     </>

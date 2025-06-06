@@ -1,12 +1,12 @@
 import "./LostListItem.css";
 import { useNavigate } from "react-router-dom";
 
-const RewardObjectItem = ({ post, no, currentPage }) => {
+const GetListItem = ({ post, no, currentPage }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (post && post._id) {
-      navigate(`/reward/object/${post._id}?page=${currentPage}`);
+      navigate(`/object/lost/${post._id}?page=${currentPage}`);
     } else {
       console.error("게시물 ID가 없습니다: ", post);
     }
@@ -16,7 +16,7 @@ const RewardObjectItem = ({ post, no, currentPage }) => {
     <tr className="lostItem" onClick={handleClick}>
       <td>{no}</td>
       <td>
-        <img className="img" src={post.lstFilePathImg} alt="분실물 이미지" />
+        <img className="img" src={post.lstFilePathImg} alt="분실물이미지" />
       </td>
       <td>{post.lstPrdtNm}</td>
       <td>
@@ -29,4 +29,4 @@ const RewardObjectItem = ({ post, no, currentPage }) => {
   );
 };
 
-export default RewardObjectItem;
+export default GetListItem;

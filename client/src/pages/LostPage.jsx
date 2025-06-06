@@ -163,6 +163,10 @@ const LostPage = ({ type }) => {
           setKeyword={setKeyword}
           filters={pendingFilters}
           setFilters={setPendingFilters}
+          sd="분실 시작일"
+          ed="분실 종료일"
+          sub_sd="lstYmdStart"
+          sub_ed="lstYmdEnd"
         />
 
         <div className="write">

@@ -28,7 +28,13 @@ const HeaderTop = ({ authState, handleLogout }) => {
       <div className="Right">
         {authState ? (
           <>
-            <Button text={"마이페이지"} type={"MYPAGE"} />
+            <Button
+              text={"마이페이지"}
+              onClick={() => {
+                nav("/mypage");
+              }}
+              type={"MYPAGE"}
+            />
             <Button
               text={"로그아웃"}
               onClick={handleLogout}

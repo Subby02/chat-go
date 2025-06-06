@@ -1,16 +1,15 @@
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
 import Searchbar from "../components/Searchbar";
-import LostList from "../components/LostList";
+import GetList from "../components/GetList";
 import "./LostPage.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/Header";
-import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 
-const ReportBoard = ({ type }) => {
+const ReportBoard = () => {
   const [auth, setAuth] = useState(false);
 
   const handleLogout = async () => {
@@ -53,13 +52,17 @@ const ReportBoard = ({ type }) => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
+  const [activeFilters, setActiveFilters] = useState({
     startDate: "",
-    lostDate: "",
-    province: "",
-    city: "",
-    town: "",
+    endDate: "",
+    fdYmdStart: "",
+    fdYmdEnd: "",
+    si: "",
+    sgg: "",
+    emd: "",
   });
+  const [pendingFilters, setPendingFilters] = useState(activeFilters);
+
   const [currentPage, setCurrentPage] = useState(getInitialPageFromQuery);
   const [totalPage, setTotalPage] = useState(0);
 
@@ -76,11 +79,17 @@ const ReportBoard = ({ type }) => {
       const queryString = new URLSearchParams();
 
       if (keyword) queryString.set("search", keyword);
-      if (filters.startDate) queryString.set("startDate", filters.startDate);
-      if (filters.lostDate) queryString.set("lostDate", filters.lostDate);
-      if (filters.province) queryString.set("si", filters.province);
-      if (filters.city) queryString.set("sgg", filters.city);
-      if (filters.town) queryString.set("emd", filters.town);
+      if (activeFilters.startDate)
+        queryString.set("dateStart", activeFilters.startDate);
+      if (activeFilters.endDate)
+        queryString.set("dateEnd", activeFilters.endDate);
+      if (activeFilters.fdYmdStart)
+        queryString.set("fdYmdStart", activeFilters.fdYmdStart);
+      if (activeFilters.fdYmdEnd)
+        queryString.set("fdYmdEnd", activeFilters.fdYmdEnd);
+      if (activeFilters.si) queryString.set("si", activeFilters.si);
+      if (activeFilters.sgg) queryString.set("sgg", activeFilters.sgg);
+      if (activeFilters.emd) queryString.set("emd", activeFilters.emd);
       queryString.set("page", pageToFetch);
 
       let apiUrl = "http://localhost:5000/api/object/get/search";
@@ -111,7 +120,7 @@ const ReportBoard = ({ type }) => {
         setLoading(false);
       }
     },
-    [keyword, filters]
+    [keyword, activeFilters]
   );
 
   useEffect(() => {
@@ -153,15 +162,19 @@ const ReportBoard = ({ type }) => {
           onSearch={handleSearch}
           keyword={keyword}
           setKeyword={setKeyword}
-          filters={filters}
-          setFilters={setFilters}
+          filters={pendingFilters}
+          setFilters={setPendingFilters}
+          sd="습득 시작일"
+          ed="습득 종료일"
+          sub_sd="lstYmdStart"
+          sub_ed="lstYmdEnd"
         />
 
         <div className="write">
           <button
             className="writeButton"
             onClick={() => {
-              if (auth) nav("/object/lost/write");
+              if (auth) nav("/object/get/write");
               else nav("/login");
             }}
           >
@@ -173,7 +186,7 @@ const ReportBoard = ({ type }) => {
           </button>
         </div>
 
-        <LostList
+        <GetList
           posts={filteredPosts}
           cnt={totalItems}
           currentPage={currentPage}

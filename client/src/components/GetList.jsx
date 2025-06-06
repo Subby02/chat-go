@@ -1,6 +1,7 @@
 import "./LostList.css";
-import AnimalGetListItem from "./AnimalGetListItem";
-const AnimalGetList = ({ posts, cnt, currentPage }) => {
+import GetListItem from "./GetListItem";
+
+const GetList = ({ posts, cnt, currentPage }) => {
   const startNum = cnt - (currentPage - 1) * 10;
   return (
     <table className="lost-item-table">
@@ -8,7 +9,7 @@ const AnimalGetList = ({ posts, cnt, currentPage }) => {
         <tr className="lost-item-header-text">
           <th>NO</th>
           <th></th>
-          <th>품종명</th>
+          <th>분실물명</th>
           <th>지역</th>
           <th>작성 날짜</th>
         </tr>
@@ -16,12 +17,12 @@ const AnimalGetList = ({ posts, cnt, currentPage }) => {
       <tbody>
         {posts.map((post, index) => {
           return (
-            <AnimalGetListItem
+            <GetListItem
               key={post._id}
               post={post}
               no={startNum - index}
               currentPage={currentPage}
-            ></AnimalGetListItem>
+            ></GetListItem>
           );
         })}
       </tbody>
@@ -29,4 +30,4 @@ const AnimalGetList = ({ posts, cnt, currentPage }) => {
   );
 };
 
-export default AnimalGetList;
+export default GetList;

@@ -19,7 +19,11 @@ const AnimalLostItem = ({ post, no, currentPage }) => {
         <img className="img" src={post.popfile} alt="유기동물이미지" />
       </td>
       <td>{post.kindCd}</td>
-      <td>{post.happenPlace}</td>
+      <td>
+        {post.si}
+        {post.sgg}
+        {post.emd}
+      </td>
       <td>{new Date(post.date).toLocaleDateString()}</td>
     </tr>
   );

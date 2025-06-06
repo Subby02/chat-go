@@ -124,8 +124,13 @@ const AnimalLostDetail = () => {
             alt={post.post.kindCd || "유기동물 이미지"}
           />
         )}
+
         <p>
-          <strong>품종:</strong> {post.post.kindCd || "제목 없음"}
+          <strong>실종일:</strong> {post.post.happenDt || "정보 없음"}
+        </p>
+
+        <p>
+          <strong>품종:</strong> {post.post.kindCd || "정보 없음"}
         </p>
         <p>
           <strong>성별:</strong> {post.post.sexCd || "정보 없음"}
@@ -156,7 +161,7 @@ const AnimalLostDetail = () => {
         </p>
 
         <p>
-          <strong>분실 장소:</strong> {post.post.orgNm || "정보 없음"}
+          <strong>분실 장소:</strong> {post.post.happenAddr || "정보 없음"}
         </p>
         <p>
           <strong>분실 장소(상세):</strong>{" "}

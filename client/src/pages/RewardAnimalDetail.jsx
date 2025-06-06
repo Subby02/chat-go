@@ -11,7 +11,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const RewardAnimalDetail = () => {
-  const { postId } = useParams(); // App.js의 <Route path="/object/lost/:postId" ... /> 에서 :postId 값을 가져옴
+  const { postId } = useParams();
   const location = useLocation();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -120,7 +120,7 @@ const RewardAnimalDetail = () => {
           <img
             className="detail-image"
             src={post.post.popfile}
-            alt={post.post.kindCd || "습득물 이미지"}
+            alt={post.post.kindCd || "이미지"}
           />
         )}
         <p>

@@ -1,5 +1,5 @@
-.PostTitle{
-    margin: 0;
+.PostTitle1{
+    margin: 0 auto;
     padding-top: 20px;
     padding-bottom: 20px;
     
@@ -10,6 +10,39 @@
 }
 
 
-.PostTitle > div{
+.PostTitle1 > div{
     margin-left: 192px;
+}
+
+.PostTitle2{
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    
+    font-weight: normal;
+    font-size: 30px;
+    width: 1200px;
+
+}
+
+.PostTitle2 > div{
+    margin-top: 10px;
+    margin-left: 192px;
+}
+
+.line1{
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 40px;
+    padding-top: 20px;
+}
+
+.line2{
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 20px;
+}
+
+.line3{
+    border-bottom: 1px solid #e0e0e0;
+    padding-top: 20px;
+    padding-bottom:40px;
 }

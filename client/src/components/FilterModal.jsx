@@ -2,7 +2,15 @@ import { useState, useEffect } from "react";
 import regionData from "../full_region_dict"; // 상대경로에 맞게 수정
 import "./FilterModal.css";
 
-const FilterModal = ({ onClose, filters, setFilters }) => {
+const FilterModal = ({
+  onClose,
+  filters,
+  setFilters,
+  sd,
+  ed,
+  sub_sd,
+  sub_ed,
+}) => {
   const [localFilters, setLocalFilters] = useState(filters);
 
   const [selectedProvince, setSelectedProvince] = useState(filters.si || "");
@@ -44,10 +52,9 @@ const FilterModal = ({ onClose, filters, setFilters }) => {
   return (
     <div className="modalContainer" onClick={onClose}>
       <div className="modalContent" onClick={handleContentClick}>
-        {/* 날짜 입력 필드들 */}
         <h1 style={{ fontWeight: "normal" }}>날짜 선택</h1>
         <div>
-          <label htmlFor="dateStart">시작 검색 날짜</label>
+          <label htmlFor="dateStart">글 등록 일 </label>
           <input
             id="dateStart"
             type="date"
@@ -60,8 +67,9 @@ const FilterModal = ({ onClose, filters, setFilters }) => {
             }
           />
         </div>
+
         <div style={{ marginTop: "10px" }}>
-          <label htmlFor="dateEnd">종료 검색 날짜</label>
+          <label htmlFor="dateEnd">글 종료 일 </label>
           <input
             id="dateEnd"
             type="date"
@@ -71,37 +79,39 @@ const FilterModal = ({ onClose, filters, setFilters }) => {
             }
           />
         </div>
+
         <div style={{ marginTop: "10px" }}>
-          <label htmlFor="lstYmdStart">분실 시작일</label>
+          <label htmlFor="lstYmdStart">{sd} </label>
           <input
-            id="lstYmdStart"
+            id={sub_sd}
             type="date"
-            value={localFilters.lstYmdStart || ""}
+            value={localFilters[sub_sd] || ""}
             onChange={(e) =>
               setLocalFilters((prev) => ({
                 ...prev,
-                lstYmdStart: e.target.value,
+                [sub_sd]: e.target.value,
               }))
             }
           />
         </div>
+
         <div style={{ marginTop: "10px" }}>
-          <label htmlFor="lstYmdEnd">분실 종료일</label>
+          <label htmlFor="lstYmdEnd">{ed} </label>
           <input
-            id="lstYmdEnd"
+            id={sub_ed}
             type="date"
-            value={localFilters.lstYmdEnd || ""}
+            value={localFilters[sub_ed] || ""}
             onChange={(e) =>
               setLocalFilters((prev) => ({
                 ...prev,
-                lstYmdEnd: e.target.value,
+                [sub_ed]: e.target.value,
               }))
             }
           />
         </div>
 
         <h1 style={{ fontWeight: "normal", marginTop: "20px" }}>지역 선택</h1>
-        <label>시/도</label>
+        <label>시/도 </label>
         <select value={selectedProvince} onChange={handleProvinceChange}>
           <option value="">선택</option>
           {Object.keys(regionData).map((prov) => (
@@ -113,7 +123,7 @@ const FilterModal = ({ onClose, filters, setFilters }) => {
 
         {selectedProvince && (
           <>
-            <label>시/군/구</label>
+            <label>시/군/구 </label>
             <select value={selectedCity} onChange={handleCityChange}>
               <option value="">선택</option>
               {Object.keys(regionData[selectedProvince]).map((city) => (
@@ -127,7 +137,7 @@ const FilterModal = ({ onClose, filters, setFilters }) => {
 
         {selectedProvince && selectedCity && (
           <>
-            <label>읍/면/동</label>
+            <label>읍/면/동 </label>
             <select value={selectedTown} onChange={handleTownChange}>
               <option value="">선택</option>
               {regionData[selectedProvince][selectedCity].map((town) => (
@@ -150,7 +160,7 @@ const FilterModal = ({ onClose, filters, setFilters }) => {
             }}
             onClick={handleApply}
           >
-            적용
+            저장
           </button>
         </div>
       </div>

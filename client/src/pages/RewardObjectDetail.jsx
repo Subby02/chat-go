@@ -166,6 +166,10 @@ const RewardObjectDetail = () => {
           <strong>특이사항:</strong> {post.post.uniq || "정보 없음"}
         </p>
 
+        <p>
+          <strong>사례금:</strong> {post.post.reward || "정보 없음"}
+        </p>
+
         <div>
           <RouterLink
             to={`/reward/object?page=${previousPage}`}

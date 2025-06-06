@@ -101,7 +101,7 @@ const ObjGetDetail = () => {
       <div className="post-detail-container" style={{ textAlign: "center" }}>
         <p>게시물 정보를 찾을 수 없습니다. (ID: {postId})</p>
         <RouterLink
-          to={`/object/lost?page=${previousPage}`}
+          to={`/object/get?page=${previousPage}`}
           className="back-to-list-link"
           style={{ marginTop: "20px" }}
         >

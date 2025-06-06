@@ -19,7 +19,11 @@ const AnimalGetListItem = ({ post, no, currentPage }) => {
         <img className="img" src={post.popfile1} alt="유기동물이미지" />
       </td>
       <td>{post.kindNm}</td>
-      <td>{post.careNm}</td>
+      <td>
+        {post.si}
+        {post.sgg}
+        {post.emd}
+      </td>
       <td>{new Date(post.date).toLocaleDateString()}</td>
     </tr>
   );
