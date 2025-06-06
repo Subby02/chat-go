@@ -253,6 +253,9 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
             happenDt,
             happenAddr,
             happenPlace,
+            si,
+            sgg,
+            emd,
             rfidCd,
             popfile,
             kindCd,
@@ -263,7 +266,7 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
         } = req.body;
 
         // 필수 항목 체크
-        if (!happenDt || !happenAddr || !kindCd || !sexCd || !age || !specialMark || !reward || !rfidCd) {
+        if (!happenDt || !happenAddr || !happenPlace || !si || !sgg || !emd || !kindCd || !sexCd || !age || !specialMark) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
 
