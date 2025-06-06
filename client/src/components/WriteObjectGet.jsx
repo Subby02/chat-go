@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
-const WriteObjectLost = () => {
+const WriteObjectGet = () => {
   const nav = useNavigate();
 
   const [form, setForm] = useState({
@@ -94,4 +94,4 @@ const WriteObjectLost = () => {
   )
 };
 
-export default WriteObjectLost;
+export default WriteObjectGet;

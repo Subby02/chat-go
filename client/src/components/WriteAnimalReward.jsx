@@ -114,7 +114,7 @@ const WriteAnimalReward = () => {
 
   return(
     <div className="WriteAnimalReward">
-      <div className="icon_section">
+      <div className="icon_section" onClick={()=>nav('/reward/animal')}>
         <img
           src={getIconImage(2)}
           style={{ width: "70px", height: "auto" }}
