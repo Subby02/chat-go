@@ -1,7 +1,6 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Object from "./pages/Object";
 import AnimalLost from "./pages/AnimalLost";
 import Notfound from "./pages/Notfound";
 import Login from "./pages/Login";
@@ -9,6 +8,8 @@ import Register from "./pages/Register";
 import FindPassWord from "./pages/FindPassword";
 import NewObjectLost from "./pages/NewObjectLost";
 import NewObjectGet from "./pages/NewObjectGet";
+import NewAnimalLost from "./pages/NewAnimalLost";
+import NewAnimalGet from "./pages/NewAnimalGet";
 import Inquiry from "./pages/Inquiry";
 import LostPage from "./pages/LostPage";
 import ObjLostDetail from "./pages/ObjLostDetail";
@@ -27,9 +28,10 @@ function App() {
     <div className="app-container">
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/object" element={<Object />} />
         <Route path="/object/lost/write" element={<NewObjectLost />} />
         <Route path="/object/get/write" element={<NewObjectGet />} />
+        <Route path="/animal/lost/write" element={<NewAnimalLost />} />
+        <Route path="/animal/get/write" element={<NewAnimalGet />} />
         <Route path="/animal/lost" element={<AnimalLost />} />
         <Route path="/animal/lost/:postId" element={<AnimalLostDetail />} />
         <Route path="/animal/get" element={<AnimalGet />} />

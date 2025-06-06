@@ -175,7 +175,7 @@ const AnimalLost = ({ type }) => {
           <button
             className="writeButton"
             onClick={() => {
-              if (auth) nav("/object/lost/write");
+              if (auth) nav("/animal/lost/write");
               else nav("/login");
             }}
           >
