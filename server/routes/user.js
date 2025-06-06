@@ -705,7 +705,7 @@ router.get('/user/info', (req, res) => {
  * /api/user/posts:
  *   get:
  *     summary: "내가 작성한 게시글 목록 조회 (페이지네이션)"
- *     description: "로그인한 사용자가 작성한 모든 게시글(습득물, 분실물, 동물 등)을 최신순으로 통합 조회합니다. 페이지네이션 지원."
+ *     description: "로그인한 사용자가 작성한 모든 게시글(습득물, 분실물, 동물 등)을 최신순(ObjectId 기준)으로 통합 조회합니다. 페이지네이션 지원."
  *     tags: [User]
  *     security:
  *       - session: []
@@ -744,7 +744,7 @@ router.get('/user/info', (req, res) => {
  *                     properties:
  *                       _id:
  *                         type: string
- *                         description: "게시글 ID"
+ *                         description: "게시글 ID(ObjectId)"
  *                         example: "665f1b2c3a4d5e6f7g8h9i0j"
  *                       type:
  *                         type: string
@@ -801,39 +801,39 @@ router.get('/user/posts', async (req, res) => {
     }
 
     const page = parseInt(req.query.page) || 1;
-    const userId = req.user._id; //req.user._id
-    const models = {
-        objectLost: ObjectLost,
-        objectGet: ObjectGet,
-        animalLost: AnimalLost,
-        animalGet: AnimalGet,
-        rewardAnimal: RewardAnimal,
-        rewardObject: RewardObject,
-    };
+    const userId = req.user._id;
+
+    // 모델들과 구분용 이름을 매핑
+    const modelMap = [
+        { model: ObjectLost, type: 'objectLost' },
+        { model: ObjectGet, type: 'objectGet' },
+        { model: AnimalLost, type: 'animalLost' },
+        { model: AnimalGet, type: 'animalGet' },
+        { model: RewardAnimal, type: 'rewardAnimal' },
+        { model: RewardObject, type: 'rewardObject' },
+    ];
 
     try {
         let allPosts = [];
 
-        // 모든 모델에서 사용자 글 불러오기
-        for (const [key, model] of Object.entries(models)) {
+        for (const { model, type } of modelMap) {
             const docs = await model.find({ user_id: userId });
 
             const posts = docs.map(doc => {
                 const obj = doc.toObject();
                 obj.date = obj.date ? new Date(obj.date).toISOString().slice(0, 10) : null;
-                obj.type = key; // 어떤 모델에서 왔는지 표시
+                obj.type = type; // 어떤 모델(스키마)에서 왔는지 식별자 추가
                 return obj;
             });
 
             allPosts = allPosts.concat(posts);
         }
 
-        // 전체 정렬 (_id 기준 내림차순, 또는 createdAt 사용 가능)
+        // 전체 통합 정렬 (날짜 또는 ObjectId 기준)
         allPosts.sort((a, b) => {
-            return new Date(b.date) - new Date(a.date);
+            return new Date(b._id.getTimestamp()) - new Date(a._id.getTimestamp());
         });
 
-        // 페이지네이션 적용
         const totalCount = allPosts.length;
         const totalPages = Math.ceil(totalCount / MYPAGE_MAX_POST);
         const startIdx = (page - 1) * MYPAGE_MAX_POST;
