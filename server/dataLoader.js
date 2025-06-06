@@ -1085,6 +1085,4 @@ async function searchKeyword(keyword) {
   }
 }
 
-update();
-
 module.exports = { update };
