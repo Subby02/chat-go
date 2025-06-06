@@ -9,7 +9,7 @@ const GetList = ({ posts, cnt, currentPage }) => {
         <tr className="lost-item-header-text">
           <th>NO</th>
           <th></th>
-          <th>분실물명</th>
+          <th>분실물</th>
           <th>지역</th>
           <th>작성 날짜</th>
         </tr>

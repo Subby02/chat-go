@@ -16,9 +16,9 @@ const GetListItem = ({ post, no, currentPage }) => {
     <tr className="lostItem" onClick={handleClick}>
       <td>{no}</td>
       <td>
-        <img className="img" src={post.lstFilePathImg} alt="분실물이미지" />
+        <img className="img" src={post.fdFilePathImg} alt="분실물이미지" />
       </td>
-      <td>{post.lstPrdtNm}</td>
+      <td>{post.fdPrdtNm}</td>
       <td>
         {post.si} {post.sgg} {post.emd}
       </td>

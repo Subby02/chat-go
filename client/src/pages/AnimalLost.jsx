@@ -84,7 +84,7 @@ const AnimalLost = ({ type }) => {
       if (activeFilters.lostDate)
         queryString.set("dateEnd", activeFilters.endDate);
       if (activeFilters.happenDtStart)
-        queryString.set("happendDtStart", activeFilters.happenDtStart);
+        queryString.set("happenDtStart", activeFilters.happenDtStart);
       if (activeFilters.happenDtEnd)
         queryString.set("happenDtEnd", activeFilters.happenDtEnd);
       if (activeFilters.si) queryString.set("si", activeFilters.si);

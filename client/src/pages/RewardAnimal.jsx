@@ -55,8 +55,8 @@ const RewardAnimal = ({ type }) => {
   const [activeFilters, setActiveFilters] = useState({
     startDate: "",
     endDate: "",
-    lstYmdStart: "",
-    lstYmdEnd: "",
+    happenDtStart: "",
+    happenDtEnd: "",
     si: "",
     sgg: "",
     emd: "",
@@ -83,9 +83,9 @@ const RewardAnimal = ({ type }) => {
       if (activeFilters.endDate)
         queryString.set("dateEnd", activeFilters.endDate);
       if (activeFilters.lstYmdStart)
-        queryString.set("lstYmdStart", activeFilters.lstYmdStart);
+        queryString.set("happenDtStart", activeFilters.lstYmdStart);
       if (activeFilters.lstYmdEnd)
-        queryString.set("lstYmdEnd", activeFilters.lstYmdEnd);
+        queryString.set("happenDtEnd", activeFilters.lstYmdEnd);
       if (activeFilters.si) queryString.set("si", activeFilters.si);
       if (activeFilters.sgg) queryString.set("sgg", activeFilters.sgg);
       if (activeFilters.emd) queryString.set("emd", activeFilters.emd);
@@ -165,8 +165,8 @@ const RewardAnimal = ({ type }) => {
           setFilters={setPendingFilters}
           sd="실종 시작일"
           ed="실종 종료일"
-          sub_sd="lstYmdStart"
-          sub_ed="lstYmdEnd"
+          sub_sd="happenDtStart"
+          sub_ed="happenDtEnd"
         />
 
         <div className="write">

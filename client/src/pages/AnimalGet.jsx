@@ -84,9 +84,9 @@ const AnimalGet = () => {
       if (activeFilters.endDate)
         queryString.set("dateEnd", activeFilters.endDate);
       if (activeFilters.happenDtStart)
-        queryString.set("happendDtStart", activeFilters.happendDtStart);
+        queryString.set("happenDtStart", activeFilters.happendDtStart);
       if (activeFilters.happenDtEnd)
-        queryString.set("happendDtEnd", activeFilters.happendDtEnd);
+        queryString.set("happenDtEnd", activeFilters.happendDtEnd);
       if (activeFilters.si) queryString.set("si", activeFilters.si);
       if (activeFilters.sgg) queryString.set("sgg", activeFilters.sgg);
       if (activeFilters.emd) queryString.set("emd", activeFilters.emd);
