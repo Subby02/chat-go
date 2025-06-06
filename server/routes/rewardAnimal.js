@@ -219,7 +219,7 @@ router.get('/detail/:id', async (req, res) => {
  *                 type: string
  *                 description: 특징
  *               reward:
- *                 type: string
+ *                 type: integer
  *                 description: 포상금 정보
  *     responses:
  *       201:
@@ -242,7 +242,7 @@ router.get('/detail/:id', async (req, res) => {
  *       500:
  *         description: 서버 오류
  */
-router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
+router.post('/write', upload.single('popfile'), async (req, res) => {
     try {
 
         if (!req.isAuthenticated()) {
@@ -254,7 +254,6 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
             happenAddr,
             happenPlace,
             rfidCd,
-            popfile,
             kindCd,
             sexCd,
             age,
@@ -266,6 +265,8 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
         if (!happenDt || !happenAddr || !kindCd || !sexCd || !age || !specialMark || !reward || !rfidCd) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
+
+        const popfile = req.file ? `/api/images/reward_aniaml/${req.file.filename}` : null;
 
         const newPost = new RewardAnimal({
             user_id: req.user._id,
