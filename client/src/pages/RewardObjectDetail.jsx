@@ -175,7 +175,6 @@ const RewardObjectDetail = () => {
               })
             : "정보 없음"}
         </p>
-
         <div>
           <RouterLink
             to={`/reward/object?page=${previousPage}`}

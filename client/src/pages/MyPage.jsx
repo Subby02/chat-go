@@ -59,7 +59,7 @@ const MyPage = () => {
         withCredentials: true,
       }
     );
-    setTotalItems(res.data.totlaCount);
+    setTotalItems(res.data.totalCount);
     setTotalPages(res.data.totalPages);
     setHistory(res.data.results);
   };
@@ -102,6 +102,14 @@ const MyPage = () => {
           <p>이름: {userInfo.name}</p>
           <p>전화번호: {userInfo.phone_number}</p>
 
+          <button
+            className="findPwd"
+            onClick={() => {
+              nav("/find-pwd");
+            }}
+          >
+            비밀 번호 변경 하기
+          </button>
           <h1 style={{ marginTop: "40px" }}>내가 작성한 글</h1>
         </div>
 

@@ -168,6 +168,7 @@ const RewardAnimalDetail = () => {
         <p>
           <strong>사례금:</strong>
           {post.post.reward ? `${post.post.reward}만원` : "정보 없음"}
+
         </p>
 
         <p>

@@ -20,9 +20,7 @@ const GetListItem = ({ post, no, currentPage }) => {
       </td>
       <td>{post.lstPrdtNm}</td>
       <td>
-        {post.si}
-        {post.sgg}
-        {post.emd}
+        {post.si} {post.sgg} {post.emd}
       </td>
       <td>{new Date(post.date).toLocaleDateString()}</td>
     </tr>

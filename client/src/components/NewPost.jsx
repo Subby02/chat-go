@@ -29,6 +29,7 @@ const NewPost = ({ auth }) => {
           className="objBtn"
           onClick={() => {
             if (auth) nav("/object/get/write");
+            else nav("/login");
           }}
         >
           <img
@@ -38,7 +39,13 @@ const NewPost = ({ auth }) => {
           <span>분실물 제보</span>
         </button>
 
-        <button className="animalBtn">
+        <button
+          className="animalBtn"
+          onClick={() => {
+            if (auth) nav("/animal/lost/write");
+            else nav("/login");
+          }}
+        >
           <img
             src={animal_lost}
             style={{ width: "60px", height: "60px", marginBottom: "20px" }}
@@ -46,7 +53,13 @@ const NewPost = ({ auth }) => {
           <span>유기동물 신고</span>
         </button>
 
-        <button className="animalBtn">
+        <button
+          className="animalBtn"
+          onClick={() => {
+            if (auth) nav("/animal/get/write");
+            else nav("/login");
+          }}
+        >
           <img
             src={animal_find}
             style={{ width: "60px", height: "60px", marginBottom: "20px" }}
@@ -54,7 +67,13 @@ const NewPost = ({ auth }) => {
           <span>유기동물 제보</span>
         </button>
 
-        <button className="rewardBtn">
+        <button
+          className="rewardBtn"
+          onClick={() => {
+            if (auth) nav("/reward/object/write");
+            else nav("/login");
+          }}
+        >
           <img
             src={reward}
             style={{ width: "60px", height: "60px", marginBottom: "20px" }}
@@ -62,7 +81,13 @@ const NewPost = ({ auth }) => {
           <span>사례금 물건</span>
         </button>
 
-        <button className="rewardBtn">
+        <button
+          className="rewardBtn"
+          onClick={() => {
+            if (auth) nav("/reward/animal/write");
+            else nav("/login");
+          }}
+        >
           <img
             src={reward}
             style={{ width: "60px", height: "60px", marginBottom: "20px" }}
