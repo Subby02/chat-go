@@ -268,8 +268,10 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
         if (!happenDt || !happenAddr || !happenPlace || !si || !sgg || !emd || !kindCd || !sexCd || !age || !specialMark) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
-
-        const popfile = req.file ? `/api/images/reward_aniaml/${req.file.filename}` : null;
+        
+        const popfile = req.file
+            ? `${req.protocol}://${req.get('host')}/api/images/reward_aniaml/${req.file.filename}`
+            : null;
 
         const newPost = new RewardAnimal({
             user_id: req.user._id,
@@ -287,6 +289,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
             sexCd,
             age,
             specialMark,
+            lstFilePathImg,
             reward,
             callTel: req.user.phone_number,
         });

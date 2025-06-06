@@ -316,7 +316,9 @@ router.post('/write', upload.single('fdFilePathImg'), async (req, res) => {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
 
-        const fdFilePathImg = req.file ? `/api/images/object_get/${req.file.filename}` : null;
+        const fdFilePathImg = req.file
+            ? `${req.protocol}://${req.get('host')}/api/images/object_get/${req.file.filename}`
+            : null;
 
         const newPost = new ObjectGet({
             user_id: req.user._id,

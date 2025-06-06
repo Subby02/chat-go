@@ -180,6 +180,7 @@ router.get('/detail/:id', async (req, res) => {
  *                 description: 물품명
  *               lstYmd:
  *                 type: string
+ *                 format: date
  *                 description: 분실 날짜
  *               lstHor:
  *                 type: string
@@ -281,7 +282,9 @@ router.post('/write', upload.single('lstFilePathImg'), async (req, res) => {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
 
-        const lstFilePathImg = req.file ? `/api/images/reward_object/${req.file.filename}` : null;
+        const lstFilePathImg = req.file
+            ? `${req.protocol}://${req.get('host')}/api/images/reward_object/${req.file.filename}`
+            : null;
 
         const newPost = new RewardObject({
             user_id: req.user._id,
