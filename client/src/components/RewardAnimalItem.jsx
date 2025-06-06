@@ -20,9 +20,7 @@ const RewardAnimalItem = ({ post, no, currentPage }) => {
       </td>
       <td>{post.kindCd}</td>
       <td>
-        {post.si}
-        {post.sgg}
-        {post.emd}
+        {post.si} {post.sgg} {post.emd}
       </td>
       <td>{new Date(post.date).toLocaleDateString()}</td>
     </tr>

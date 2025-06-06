@@ -4,19 +4,36 @@
     width: 1300px;
     margin: 0 auto;
     justify-content: center;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+  
 }
 
 .MyUserInfo{
     margin-left: 120px;
 }
 
+.MyUserInfo p {
+    font-size: 20px;
+    margin-left: 10px;
+}
 .MyPageTitle{
     margin-left: 120px;
     font-size: 40px;
 }
 
+.findPwd{
+    padding: 20px 10px;
+    font-size: 20px;
+    border:none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.3s ease;
+    margin-right: 20px;
+}
+
+.findPwd:hover {
+    background-color: #eee;
+}
 
 .objLosthistory{
     border: 2px solid #4a4949;
