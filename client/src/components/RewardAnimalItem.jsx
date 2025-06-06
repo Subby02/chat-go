@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 const RewardAnimalItem = ({ post, no, currentPage }) => {
   const navigate = useNavigate();
 
+  console.log(post.popfile);
   const handleClick = () => {
     if (post && post._id) {
       navigate(`/reward/animal/${post._id}?page=${currentPage}`);

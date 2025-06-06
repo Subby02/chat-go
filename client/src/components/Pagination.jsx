@@ -6,10 +6,6 @@ const Pagination = ({
   onPageChange,
   pageButtonLimit = 10, // 한 번에 보여줄 페이지 버튼의 최대 개수
 }) => {
-  if (totalPages === 0) {
-    return null;
-  }
-
   // 현재 페이지가 속한 블록(그룹) 계산
   // 예: pageButtonLimit이 10일 때, 1~10페이지는 1번 블록, 11~20페이지는 2번 블록
   const currentBlock = Math.ceil(currentPage / pageButtonLimit);

@@ -166,8 +166,8 @@ const ReportBoard = () => {
           setFilters={setPendingFilters}
           sd="습득 시작일"
           ed="습득 종료일"
-          sub_sd="lstYmdStart"
-          sub_ed="lstYmdEnd"
+          sub_sd="fdYmdStart"
+          sub_ed="fdYmdEnd"
         />
 
         <div className="write">
