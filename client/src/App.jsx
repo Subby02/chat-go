@@ -21,6 +21,7 @@ import AnimalGetDetail from "./pages/AnimalGetDetail";
 import AnimalLostDetail from "./pages/AnimalLostDetail";
 import RewardAnimalDetail from "./pages/RewardAnimalDetail";
 import RewardObjectDetail from "./pages/RewardObjectDetail";
+import MyPage from "./pages/MyPage";
 function App() {
   return (
     <div className="app-container">
@@ -46,6 +47,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/find-pwd" element={<FindPassWord />} />
         <Route path="/inquiry" element={<Inquiry />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </div>
   );

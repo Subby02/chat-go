@@ -22,6 +22,7 @@ const LostListItem = ({ post, no, currentPage }) => {
       <td>
         {post.si}
         {post.sgg}
+        {post.emd}
       </td>
       <td>{new Date(post.date).toLocaleDateString()}</td>
     </tr>

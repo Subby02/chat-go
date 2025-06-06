@@ -54,10 +54,12 @@ const RewardObject = ({ type }) => {
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     startDate: "",
-    lostDate: "",
-    province: "",
-    city: "",
-    town: "",
+    endDate: "",
+    lstYmdStart: "",
+    lstYmdEnd: "",
+    si: "",
+    sgg: "",
+    emd: "",
   });
   const [currentPage, setCurrentPage] = useState(getInitialPageFromQuery);
   const [totalPage, setTotalPage] = useState(0);
@@ -154,6 +156,10 @@ const RewardObject = ({ type }) => {
           setKeyword={setKeyword}
           filters={filters}
           setFilters={setFilters}
+          sd="분실 시작일"
+          ed="분실 종료일"
+          sub_sd="lstYmdStart"
+          sub_ed="lstYmdEnd"
         />
 
         <div className="write">

@@ -1,22 +1,27 @@
 import "./Body.css";
 import Introduce from "./Introduce";
 import PostSlider from "./PostSlider";
-const Body = () => {
+import NewPost from "./NewPost";
+const Body = ({ auth }) => {
   return (
     <section className="MainPost">
-      <h1 className="PostTitle">
+      <h1 className="PostTitle1">
         <div>사례금 게시판</div>
       </h1>
-      <PostSlider />
-      <h1 className="PostTitle">
-        <div>분실물 게시판</div>
+      <div className="line1">
+        <PostSlider />
+      </div>
+
+      <h1 className="PostTitle2">
+        <div>빠른 글 작성</div>
       </h1>
-      <PostSlider />
-      <h1 className="PostTitle">
-        <div>유기동물 게시판</div>
-      </h1>
-      <PostSlider />
-      <Introduce />
+      <div className="line2">
+        <NewPost auth={auth} />
+      </div>
+
+      <div className="line3">
+        <Introduce />
+      </div>
     </section>
   );
 };

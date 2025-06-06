@@ -1,0 +1,71 @@
+.writeBtnContainer{
+    display: flex;
+    flex-direction: column;
+    width: 1200px;
+    margin: 0 auto;
+
+}
+
+.writeBtnContainer span{
+    font-size: 25px;
+    color: #629bff;
+}
+.reportBtnContainer {
+    display: flex;
+    margin-bottom: 50px;
+    margin-top: 40px;
+    justify-content: center;
+    gap: 0 10px;
+}
+
+.tipBtnContainer{
+    display: flex;
+    justify-content: center;
+    gap: 0 120px;
+}
+
+.objBtn{
+    height: 150px;
+    width: 150px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: white;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.animalBtn{
+    width: 150px;
+    height: 150px;
+    border: none;
+    cursor: pointer;
+    background-color: white;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+    
+
+}
+
+.rewardBtn{
+    width: 150px;
+    height: 150px;
+    border: none;
+    cursor: pointer;
+    background-color: white;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+}
+
+.objBtn:hover, .animalBtn:hover, .rewardBtn:hover {
+    background-color: #f6f4f4;
+    outline: none;
+}

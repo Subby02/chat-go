@@ -9,7 +9,7 @@ const RewardAnimalList = ({ posts, cnt, currentPage }) => {
           <th>NO</th>
           <th></th>
           <th>품종</th>
-          <th>분실장소</th>
+          <th>지역</th>
           <th>작성 날짜</th>
         </tr>
       </thead>

@@ -5,14 +5,24 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { AiOutlineSearch } from "react-icons/ai";
 import FilterModal from "./FilterModal";
 
-const Searchbar = ({ onSearch, keyword, setKeyword, filters, setFilters }) => {
+const Searchbar = ({
+  onSearch,
+  keyword,
+  setKeyword,
+  filters,
+  setFilters,
+  sd,
+  ed,
+  sub_sd,
+  sub_ed,
+}) => {
   const [inputVal, setInputVal] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setKeyword(inputVal);
-    onSearch(); 
+    onSearch();
   };
 
   const handleModal = () => {
@@ -47,6 +57,10 @@ const Searchbar = ({ onSearch, keyword, setKeyword, filters, setFilters }) => {
           onClose={handleModal}
           filters={filters}
           setFilters={setFilters}
+          sd={sd}
+          ed={ed}
+          sub_sd={sub_sd}
+          sub_ed={sub_ed}
         />
       )}
     </>
