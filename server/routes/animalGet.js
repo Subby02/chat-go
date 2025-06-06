@@ -264,9 +264,10 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
         
-        const popfile = req.file
+        const popfile1 = req.file
             ? `${req.protocol}://${req.get('host')}/api/images/animal_get/${req.file.filename}`
             : null;
+
 
         const newPost = new AnimalGet({
             user_id: req.user._id,
@@ -283,7 +284,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
             colorCd,
             age,
             weight,
-            popfile,
+            popfile1,
             processState,
             sexCd,
             neuterYn,
