@@ -142,7 +142,7 @@ const RewardAnimalDetail = () => {
 
         <p>
           <strong>사례금:</strong>
-          {post.post.reward}
+          {post.post.reward}만원
         </p>
 
         <p>

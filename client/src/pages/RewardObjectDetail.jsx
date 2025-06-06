@@ -173,7 +173,7 @@ const RewardObjectDetail = () => {
         </p>
 
         <p>
-          <strong>사례금:</strong> {post.post.reward || "정보 없음"}
+          <strong>사례금:</strong> {post.post.reward || "정보 없음"}만원
         </p>
 
         <div>
