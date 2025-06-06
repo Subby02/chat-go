@@ -23,52 +23,43 @@
   flex-direction: column;
   width: 600px;
   gap: 10px;
-  margin-top: 10px;
-  
+  margin-top: 20px;
 }
 
-.title,
-.place_section,
-.etc_section,
-.img_URL,
-.org_section {
+.si_section {
   display: flex;
-  flex-direction: column;
-}
-
-.object_section,
-.time_section,
-.pls_section {
-  display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   gap: 10px;
+}
+
+.si_section select {
+  margin-top: 3px;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%; /* 부모 label 넓이 채우게 */
+  box-sizing: border-box;
+}
+
+.object_section label,
+.time_section label,
+.place_section label,
+.etc_section label,
+.img_section label
+{
+  width: 100%;
+  margin-top: 7px;
 }
 
 .WriteObjectLost label {
   display: flex;
   flex-direction: column;
-  font-size: 20px;
-}
-
-.title label,
-.place_section label,
-.etc_section label,
-.img_URL label,
-.org_section label 
-{
-  width: 100%;
-
-}
-
-.object_section label,
-.time_section label,
-.pls_section label {
-  width: 100%;
-
+  font-size: 18px;
 }
 
 .WriteObjectLost input {
-  margin-top: 5px;
+  margin-top: 3px;
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -86,8 +77,4 @@
   height: 100px; /* 고정 높이로도 가능 */
   box-sizing: border-box;
   width: 100%;
-}
-
-.input button {
-  margin-bottom: 50px;
 }

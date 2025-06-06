@@ -9,6 +9,8 @@ import axios from "axios";
 const WriteAnimalLost = () => {
   const nav = useNavigate();
 
+  const [imageFile, setImageFile] = useState(null);
+
   const [form, setForm] = useState({
     kindCd: "", // 동물 품종(필수)
     rfidCd: "", // RFID 코드
@@ -80,11 +82,24 @@ const WriteAnimalLost = () => {
     }
 
     try {
+      const formData = new FormData();
+
+      for(const key in form){
+        formData.append(key, form[key]);
+      }
+
+      if(imageFile) {
+        formData.append("popfile", imageFile);
+      }
+
       const res = await axios.post(
         "http://localhost:5000/api/animal/lost/write",
-        form,
+        formData,
         {
           withCredentials: true,
+          headers: {
+          "Content-Type": "multipart/form-data",
+          },
         }
       );
 
@@ -207,9 +222,20 @@ const WriteAnimalLost = () => {
 
         <div className='img_section'>
           <label>
-            동물 이미지 URL:{" "}
-            <input type='text' className='img' name='popfile' value={form.popfile} onChange={handleChange} />
-          </label>
+            동물 이미지 업로드:{" "}
+            <input type='file' accept='image/*' className='img' name='popfile' onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                // 안전한 파일명 생성
+                const ext = file.name.substring(file.name.lastIndexOf('.'));
+                const safeName = `${Date.now()}${ext}`;
+
+                const newFile = new File([file], safeName, { type: file.type });
+
+                setImageFile(newFile);
+              }}} 
+            />
+          </label>  
         </div>
 
         <Button type={"BLACK"} text={"작성하기"} className="submit" onClick={handleSubmit} />

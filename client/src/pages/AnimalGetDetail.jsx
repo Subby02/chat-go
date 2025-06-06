@@ -116,10 +116,10 @@ const AnimalGetDetail = () => {
 
       <div className="post-detail-container">
         <h1>{post.post.kindNm}</h1>
-        {post.post.popfile1 && (
+        {post.post.popfile && (
           <img
             className="detail-image"
-            src={post.post.popfile1}
+            src={post.post.popfile}
             alt={post.post.kindNm || "습득물 이미지"}
           />
         )}

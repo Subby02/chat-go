@@ -9,6 +9,8 @@ import axios from "axios";
 const WriteAnimalGet = () => {
   const nav = useNavigate();
 
+  const [imageFile, setImageFile] = useState(null);
+
   const [form, setForm] = useState({
     kindNm: "", // 동물 품종(필수)
     rfidCd: "", // RFID 코드
@@ -86,11 +88,24 @@ const WriteAnimalGet = () => {
     }
 
     try {
+      const formData = new FormData();
+
+      for (const key in form){
+        formData.append(key, form[key]);
+      }
+
+      if (imageFile) {
+        formData.append("popfile", imageFile);  // name 그대로
+      }
+
       const res = await axios.post(
         "http://localhost:5000/api/animal/get/write",
-        form,
+        formData,
         {
           withCredentials: true,
+          headers: {
+          "Content-Type": "multipart/form-data",
+          },
         }
       );
 
@@ -133,12 +148,12 @@ const WriteAnimalGet = () => {
 
           <div className='animal_2'>
             <label>
-              나이(필수):{" "}
+              동물 나이(필수):{" "}
               <input type='text' className='animal_age' name='age' value={form.age} onChange={handleChange} />
             </label>
 
             <label>
-              성별(필수):{" "}
+              동물 성별(필수):{" "}
               <select className='animal_sex' name='sexCd' value={form.sexCd} onChange={handleChange} >
                 <option value="">선택</option>
                 <option value="M">M(수컷)</option>
@@ -147,14 +162,14 @@ const WriteAnimalGet = () => {
             </label>
 
             <label>
-              체중(필수):{" "}
+              동물 체중(필수):{" "}
               <input className='animal_weight' name='weight' value={form.weight} onChange={handleChange} />
             </label>
           </div>
 
           <div className='animal_3'>
             <label>
-              색상(필수):{" "}
+              동물 색상(필수):{" "}
               <input className='animal_color' name='colorCd' value={form.colorCd} onChange={handleChange} />
             </label>
 
@@ -224,8 +239,19 @@ const WriteAnimalGet = () => {
 
         <div className='img_section'>
           <label>
-            이미지 URL:{" "}
-            <input type='text' className='img' name='popfile' value={form.popfile} onChange={handleChange} />
+            동물 이미지 업로드:{" "}
+            <input type='file' accept='image/*' className='img' name='popfile' onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                // 안전한 파일명 생성
+                const ext = file.name.substring(file.name.lastIndexOf('.'));
+                const safeName = `${Date.now()}${ext}`;
+
+                const newFile = new File([file], safeName, { type: file.type });
+
+                setImageFile(newFile);
+              }}}
+            />
           </label>
         </div>
 
