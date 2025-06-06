@@ -6,7 +6,7 @@ const Pagination = ({
   onPageChange,
   pageButtonLimit = 10, // 한 번에 보여줄 페이지 버튼의 최대 개수
 }) => {
-  if (totalPages <= 1) {
+  if (totalPages === 0) {
     return null;
   }
 

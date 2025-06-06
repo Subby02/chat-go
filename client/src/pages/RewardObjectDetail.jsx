@@ -127,16 +127,26 @@ const RewardObjectDetail = () => {
           <strong>물품 명:</strong> {post.post.lstPrdtNm || "정보 없음"}
         </p>
         <p>
-          <strong>물품 분류:</strong> {post.post.prdtClnm || "제목 없음"}
+          <strong>물품 분류:</strong> {post.post.prdtClNm || "제목 없음"}
         </p>
         <p>
-          <strong>분실 장소:</strong> {post.post.lstLctNm || "정보 없음"}
+          <strong>분실 장소:</strong>
           {post.post.lstPlace || "정보 없음"}
         </p>
 
         <p>
+          <strong>상세 지역명 {post.post.lstLctNm || "정보 없음"}</strong>
+        </p>
+
+        <p>
+          <strong>
+            지역: {post.post.si} {post.post.sgg} {post.post.emd}
+          </strong>
+        </p>
+
+        <p>
           <strong>분실 일:</strong>
-          {post.post.date
+          {post.post.lstYmd
             ? new Date(post.post.lstYmd).toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "long",
@@ -148,7 +158,7 @@ const RewardObjectDetail = () => {
 
         <p>
           <strong>등록 일:</strong>
-          {post.post.happenDt
+          {post.post.date
             ? new Date(post.post.date).toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "long",
@@ -159,11 +169,7 @@ const RewardObjectDetail = () => {
         </p>
 
         <p>
-          <strong>분실물 상태:</strong> {post.post.lstSteNm || "정보 없음"}
-        </p>
-
-        <p>
-          <strong>특이사항:</strong> {post.post.uniq || "정보 없음"}
+          <strong>특징:</strong> {post.post.uniq || "정보 없음"}
         </p>
 
         <p>
