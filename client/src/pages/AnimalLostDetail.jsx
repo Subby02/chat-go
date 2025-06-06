@@ -126,45 +126,53 @@ const AnimalLostDetail = () => {
         )}
 
         <p>
-          <strong>실종일:</strong> {post.post.happenDt || "정보 없음"}
+          <strong>동물 품종:</strong> {post.post.kindCd || "정보 없음"}
         </p>
 
         <p>
-          <strong>품종:</strong> {post.post.kindCd || "정보 없음"}
-        </p>
-        <p>
-          <strong>성별:</strong> {post.post.sexCd || "정보 없음"}
-        </p>
-        <p>
-          <strong>나이:</strong> {post.post.age}
+          <strong>RFID 코드:</strong>
+          {post.post.rfidCd || "RFID 코드 없음"}
         </p>
 
         <p>
-          <strong>특징:</strong> {post.post.specialMark}
+          <strong>동물 성별:</strong> {post.post.sexCd || "정보 없음"}
+        </p>
+        <p>
+          <strong>동물 나이:</strong> {post.post.age}
         </p>
 
         <p>
-          <strong>RFID번호:</strong>{" "}
-          {post.post.rfidCd ? post.post.rfidCd : "정보 없음"}
+          <strong>동물 특징:</strong> {post.post.specialMark}
         </p>
 
         <p>
-          <strong>접수일:</strong>
+          <strong>실종 일자:</strong>
           {post.post.happenDt
             ? new Date(post.post.happenDt).toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-                hour: "numeric",
               })
             : "정보 없음"}
         </p>
 
         <p>
-          <strong>분실 장소:</strong> {post.post.happenAddr || "정보 없음"}
+          <strong>실종 지역:</strong>
+           {post.post.si}   {post.post.sgg}   {post.post.emd}
         </p>
+
         <p>
-          <strong>분실 장소(상세):</strong>{" "}
+          <strong>실종 주소:</strong>
+          {post.post.happenAddr || "정보 없음"}
+        </p>
+
+        <p>
+          <strong>상세 주소:</strong>
+          {post.post.happenAddrDtl || "정보 없음"}
+        </p>
+
+        <p>
+          <strong>실종 장소:</strong>{" "}
           {post.post.happenPlace || "정보 없음"}
         </p>
 

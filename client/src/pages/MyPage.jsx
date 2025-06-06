@@ -18,7 +18,7 @@ const MyPage = () => {
 
   const [history, setHistory] = useState([]);
 
-  const [totlaItems, setTotalItems] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const location = useLocation();
 
@@ -54,7 +54,7 @@ const MyPage = () => {
 
   const fetchHistory = async (page = 1) => {
     const res = await axios.get(
-      `http://localhost:5000/api/user/posts?${page}`,
+      `http://localhost:5000/api/user/posts?page=${page}`,
       {
         withCredentials: true,
       }
@@ -105,9 +105,9 @@ const MyPage = () => {
           <h1 style={{ marginTop: "40px" }}>내가 작성한 글</h1>
         </div>
 
-        <MyPagexList
+        <MyPageList
           posts={history}
-          cnt={totlaItems}
+          cnt={totalItems}
           currentPage={currentPage}
         />
         <Pagination

@@ -124,8 +124,30 @@ const ObjGetDetail = () => {
           />
         )}
         <p>
-          <strong>습득득물 제목:</strong> {post.post.fdPrdtNm || "제목 없음"}
+          <strong>습득 물품명:</strong> {post.post.fdPrdtNm || "정보 없음"}
         </p>
+
+        <p>
+          <strong>물품 분류명:</strong>
+          {post.post.prdtClNm || "정보 없음"}
+        </p>
+
+        <p>
+          <strong>습득 일자:</strong>
+          {post.post.fdYmd
+            ? new Date(post.post.fdYmd).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            : "정보 없음"}
+        </p>
+
+        <p>
+          <strong>습득 지역:</strong>
+          {post.post.si}   {post.post.sgg}   {post.post.emd}
+        </p>
+
         <p>
           <strong>습득 장소:</strong> {post.post.fdPlace || "정보 없음"}
         </p>
@@ -135,20 +157,14 @@ const ObjGetDetail = () => {
             ? `${post.post.depPlace} (${post.post.tel || "연락처 없음"})`
             : "정보 없음"}
         </p>
+
         <p>
-          <strong>습득 일:</strong>
-          {post.post.fdYmd
-            ? new Date(post.post.fdYmd).toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-              })
-            : "정보 없음"}
+          <strong>특징:</strong>
+          {post.post.uniq || "정보 없음"}
         </p>
 
         <p>
-          <strong>등록 일:</strong>
+          <strong>제보 글 등록일:</strong>
           {post.post.date
             ? new Date(post.post.date).toLocaleDateString("ko-KR", {
                 year: "numeric",
@@ -157,13 +173,6 @@ const ObjGetDetail = () => {
                 hour: "numeric",
               })
             : "정보 없음"}
-        </p>
-
-        <p>
-          <strong>물품 분류:</strong> {post.post.prdtClNm || "정보 없음"}
-        </p>
-        <p>
-          <strong>상태:</strong> {post.post.csteSteNm || "정보 없음"}
         </p>
 
         <div>

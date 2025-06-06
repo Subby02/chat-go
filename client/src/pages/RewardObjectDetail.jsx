@@ -124,10 +124,36 @@ const RewardObjectDetail = () => {
           />
         )}
         <p>
-          <strong>물품 명:</strong> {post.post.lstPrdtNm || "정보 없음"}
+          <strong>물품명:</strong> {post.post.lstPrdtNm || "정보 없음"}
         </p>
         <p>
-          <strong>물품 분류:</strong> {post.post.prdtClNm || "제목 없음"}
+          <strong>물품 분류명:</strong> {post.post.prdtClNm || "제목 없음"}
+        </p>
+        <p>
+          <strong>특징:</strong>
+          {post.post.uniq || "특징 정보 없음"}
+        </p>
+        <p>
+          <strong>분실 일자:</strong>
+          {post.post.lstYmd
+            ? new Date(post.post.lstYmd).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            : "정보 없음"}
+        </p>
+        <p>
+          <strong>분실 시간:</strong>
+
+        </p>
+        <p>
+          <strong>분실 지역:</strong>
+          {post.post.si}   {post.post.sgg}   {post.post.emd}
+        </p>
+        <p>
+          <strong>상세 주소:</strong>
+          {post.post.lstLctNm || "상세 주소 없음"}
         </p>
         <p>
           <strong>분실 장소:</strong>
@@ -135,45 +161,19 @@ const RewardObjectDetail = () => {
         </p>
 
         <p>
-          <strong>상세 지역명 {post.post.lstLctNm || "정보 없음"}</strong>
+          <strong>사례금:</strong>
+          {post.post.reward ? `${post.post.reward}만원` : "정보 없음"}
         </p>
 
         <p>
-          <strong>
-            지역: {post.post.si} {post.post.sgg} {post.post.emd}
-          </strong>
-        </p>
-
-        <p>
-          <strong>분실 일:</strong>
-          {post.post.lstYmd
-            ? new Date(post.post.lstYmd).toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-              })
-            : "정보 없음"}
-        </p>
-
-        <p>
-          <strong>등록 일:</strong>
+          <strong>사례금 등록일:</strong>
           {post.post.date
             ? new Date(post.post.date).toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-                hour: "numeric",
               })
             : "정보 없음"}
-        </p>
-
-        <p>
-          <strong>특징:</strong> {post.post.uniq || "정보 없음"}
-        </p>
-
-        <p>
-          <strong>사례금:</strong> {post.post.reward || "정보 없음"}
         </p>
 
         <div>
