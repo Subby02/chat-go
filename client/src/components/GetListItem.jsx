@@ -6,7 +6,7 @@ const GetListItem = ({ post, no, currentPage }) => {
 
   const handleClick = () => {
     if (post && post._id) {
-      navigate(`/object/lost/${post._id}?page=${currentPage}`);
+      navigate(`/object/get/${post._id}?page=${currentPage}`);
     } else {
       console.error("게시물 ID가 없습니다: ", post);
     }

@@ -1,0 +1,86 @@
+.MyPageContainer {
+    display: flex;
+    flex-direction: column;
+    width: 1300px;
+    margin: 0 auto;
+    justify-content: center;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.MyUserInfo{
+    margin-left: 120px;
+}
+
+.MyPageTitle{
+    margin-left: 120px;
+    font-size: 40px;
+}
+
+
+.objLosthistory{
+    border: 2px solid #4a4949;
+    width: 500px;
+    height: 300px;
+    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
+    border-radius: 10px;
+
+}
+
+.objGethistory{
+    border: 2px solid #4a4949;
+    width: 500px;
+    height: 300px;
+    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
+    border-radius: 10px;
+
+}
+
+.animalLosthistory{
+    border: 2px solid #4a4949;
+    width: 500px;
+    height: 300px;
+    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
+    border-radius: 10px;
+
+}
+
+.animalGethistory{
+    border: 2px solid #4a4949;
+    width: 500px;
+    height: 300px;
+    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
+    border-radius: 10px;
+
+}
+
+.animalRewardhistory{
+    border: 2px solid #4a4949;
+    width: 500px;
+    height: 300px;
+    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
+    border-radius: 10px;
+
+
+}
+
+.objRewardhistory{
+    border: 2px solid #4a4949;
+    width: 500px;
+    height: 300px;
+    margin-bottom: 40px;
+    overflow-y: auto; 
+    border-radius: 10px;
+
+}
+
+.historyTitle{
+    display: flex;
+    gap: 400px;
+}
+
+.list{
+    display: flex;
+    gap: 20px;
+    cursor: pointer;
+}
