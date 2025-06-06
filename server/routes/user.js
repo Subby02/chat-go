@@ -704,36 +704,21 @@ router.get('/user/info', (req, res) => {
  * @swagger
  * /api/user/posts:
  *   get:
- *     summary: 사용자가 작성한 게시글 목록 조회
- *     description: 로그인한 사용자가 작성한 게시글 목록을 조회합니다.
+ *     summary: "내가 작성한 게시글 목록 조회 (페이지네이션)"
+ *     description: "로그인한 사용자가 작성한 모든 게시글(습득물, 분실물, 동물 등)을 최신순으로 통합 조회합니다. 페이지네이션 지원."
  *     tags: [User]
  *     security:
  *       - session: []
  *     parameters:
  *       - in: query
- *         name: type
- *         schema:
- *           type: integer
- *           enum: [0, 1, 2, 3, 4, 5]
- *           default: 0
- *         description: |
- *           게시판 타입
- *           - 0: 분실물
- *           - 1: 습득물
- *           - 2: 분실 동물
- *           - 3: 구조 동물 
- *           - 4: 사례금 동물
- *           - 5: 사례금 분실물
- *       - in: query
  *         name: page
  *         schema:
  *           type: integer
  *           default: 1
- *           minimum: 1
- *         description: 페이지 번호
+ *         description: "조회할 페이지 번호 (기본값 1)"
  *     responses:
  *       200:
- *         description: 게시글 목록 조회 성공
+ *         description: "게시글 목록 조회 성공"
  *         content:
  *           application/json:
  *             schema:
@@ -741,43 +726,56 @@ router.get('/user/info', (req, res) => {
  *               properties:
  *                 page:
  *                   type: integer
- *                   description: 현재 페이지 번호
+ *                   description: "현재 페이지 번호"
  *                   example: 1
  *                 totalPages:
  *                   type: integer
- *                   description: 전체 페이지 수
- *                   example: 5
+ *                   description: "전체 페이지 수"
+ *                   example: 3
  *                 totalCount:
  *                   type: integer
- *                   description: 전체 게시글 수
- *                   example: 42
+ *                   description: "전체 게시글 개수"
+ *                   example: 15
  *                 results:
  *                   type: array
- *                   description: 게시글 목록
+ *                   description: "게시글 목록 (최신순, 통합)"
  *                   items:
  *                     type: object
  *                     properties:
  *                       _id:
  *                         type: string
- *                         description: 게시글 ID
+ *                         description: "게시글 ID"
+ *                         example: "665f1b2c3a4d5e6f7g8h9i0j"
+ *                       type:
+ *                         type: string
+ *                         description: "게시글 카테고리 (objectLost, objectGet, animalLost, animalGet, rewardAnimal, rewardObject)"
+ *                         example: "objectLost"
  *                       date:
  *                         type: string
- *                         format: date
- *                         description: 작성일
- *                       user_id:
- *                         type: string
- *                         description: 작성자 ID
- *                       title:
- *                         type: string
- *                         description: 게시글 제목
- *                       content:
- *                         type: string
- *                         description: 게시글 내용
- *                       popfile:
- *                         type: string
- *                         description: 이미지 파일 경로
+ *                         description: "작성일 (YYYY-MM-DD)"
+ *                         example: "2024-06-01"
+ *                       기타:
+ *                         type: object
+ *                         description: "해당 카테고리별 게시글의 상세 필드들"
+ *         examples:
+ *           예시:
+ *             value:
+ *               page: 1
+ *               totalPages: 2
+ *               totalCount: 12
+ *               results:
+ *                 - _id: "665f1b2c3a4d5e6f7g8h9i0j"
+ *                   type: "objectLost"
+ *                   date: "2024-06-01"
+ *                   lstPrdtNm: "지갑"
+ *                   lstPlace: "서울역"
+ *                 - _id: "665f1b2c3a4d5e6f7g8h9i0k"
+ *                   type: "animalLost"
+ *                   date: "2024-05-30"
+ *                   kindCd: "강아지"
+ *                   happenPlace: "강남구"
  *       401:
- *         description: 인증되지 않은 사용자
+ *         description: "로그인하지 않은 경우"
  *         content:
  *           application/json:
  *             schema:
@@ -785,19 +783,9 @@ router.get('/user/info', (req, res) => {
  *               properties:
  *                 message:
  *                   type: string
- *                   example: 로그인이 필요합니다
- *       402:
- *         description: 잘못된 게시판 타입
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 유효하지 않은 게시판 타입입니다.
+ *                   example: "로그인이 필요합니다"
  *       501:
- *         description: 서버 오류
+ *         description: "서버 오류"
  *         content:
  *           application/json:
  *             schema:
@@ -805,60 +793,63 @@ router.get('/user/info', (req, res) => {
  *               properties:
  *                 message:
  *                   type: string
- *                   example: 서버 오류가 발생했습니다.
+ *                   example: "에러 메시지"
  */
 router.get('/user/posts', async (req, res) => {
-    if (req.isAuthenticated()) {
-        const {
-            type = 0,
-            page = 1,
-        } = req.query;
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: '로그인이 필요합니다' });
+    }
 
-        const modelMap = {
-            0: ObjectLost,
-            1: ObjectGet,
-            2: AnimalLost,
-            3: AnimalGet,
-            4: RewardAnimal,
-            5: RewardObject
-        };
+    const page = parseInt(req.query.page) || 1;
+    const userId = req.user._id; //req.user._id
+    const models = {
+        objectLost: ObjectLost,
+        objectGet: ObjectGet,
+        animalLost: AnimalLost,
+        animalGet: AnimalGet,
+        rewardAnimal: RewardAnimal,
+        rewardObject: RewardObject,
+    };
 
-        try {
-            const skip = (parseInt(page) - 1) * MYPAGE_MAX_POST;
-            const limit = MYPAGE_MAX_POST;
+    try {
+        let allPosts = [];
 
-            const Model = modelMap[type];
-            if (!Model) {
-                return res.status(402).json({ message: '유효하지 않은 게시판 타입입니다.' });
-            }
+        // 모든 모델에서 사용자 글 불러오기
+        for (const [key, model] of Object.entries(models)) {
+            const docs = await model.find({ user_id: userId });
 
-            const docs = await Model.find({ user_id: req.user._id })
-                .sort({ _id: -1 })
-                .skip(skip)
-                .limit(limit);
-
-            const totalCount = await Model.countDocuments({ user_id: req.user._id });
-
-            const results = docs.map(doc => {
+            const posts = docs.map(doc => {
                 const obj = doc.toObject();
                 obj.date = obj.date ? new Date(obj.date).toISOString().slice(0, 10) : null;
+                obj.type = key; // 어떤 모델에서 왔는지 표시
                 return obj;
             });
 
-            res.json({
-                page: parseInt(page),
-                totalPages: Math.ceil(totalCount / MYPAGE_MAX_POST),
-                totalCount,
-                results
-            });
-        } catch (err) {
-            console.error("Search Error:", err.message);
-            res.status(501).json({ message: err.message });
+            allPosts = allPosts.concat(posts);
         }
-    } else {
-        res.status(401).json({ message: '로그인이 필요합니다' });
+
+        // 전체 정렬 (_id 기준 내림차순, 또는 createdAt 사용 가능)
+        allPosts.sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+
+        // 페이지네이션 적용
+        const totalCount = allPosts.length;
+        const totalPages = Math.ceil(totalCount / MYPAGE_MAX_POST);
+        const startIdx = (page - 1) * MYPAGE_MAX_POST;
+        const pagedResults = allPosts.slice(startIdx, startIdx + MYPAGE_MAX_POST);
+
+        res.json({
+            page,
+            totalPages,
+            totalCount,
+            results: pagedResults,
+        });
+    } catch (err) {
+        console.error("Search Error:", err.message);
+        res.status(501).json({ message: err.message });
     }
-})
+});
 
 /**
  * @swagger
