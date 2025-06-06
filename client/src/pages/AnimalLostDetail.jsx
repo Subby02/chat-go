@@ -156,7 +156,7 @@ const AnimalLostDetail = () => {
         </p>
 
         <p>
-          <strong>분실 장소:</strong> {post.post.orgNm || "정보 없음"}
+          <strong>분실 장소:</strong> {post.post.happenAddr || "정보 없음"}
         </p>
         <p>
           <strong>분실 장소(상세):</strong>{" "}

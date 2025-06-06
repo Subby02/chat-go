@@ -161,7 +161,7 @@ const ReportBoard = ({ type }) => {
           <button
             className="writeButton"
             onClick={() => {
-              if (auth) nav("/object/lost/write");
+              if (auth) nav("/object/get/write");
               else nav("/login");
             }}
           >

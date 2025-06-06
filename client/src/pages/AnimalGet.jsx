@@ -160,7 +160,7 @@ const AnimalGet = ({ type }) => {
           <button
             className="writeButton"
             onClick={() => {
-              if (auth) nav("/object/lost/write");
+              if (auth) nav("/animal/get/write");
               else nav("/login");
             }}
           >

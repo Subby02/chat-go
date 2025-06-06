@@ -9,18 +9,18 @@ const WriteObjectLost = () => {
   const nav = useNavigate();
 
   const [form, setForm] = useState({
-    lstSbjt: "",
-    lstPrdtNm: "",
-    prdtClNm: "",
-    lstYmd: "",
-    lstHor: "",
-    lstPlace: "",
+    lstSbjt: "", // 게시글 제목
+    lstPrdtNm: "", // *물품명
+    prdtClNm: "", // 물품 분류명
+    lstYmd: "", // *분실 일자 
+    lstHor: "", // 분실 시간
+    lstPlace: "", // *분실 장소
     lstSteNm: "찾고에서 접수",
-    lstLctNm: "",
-    uniq: "",
+    lstLctNm: "", // 상세 지역명
+    uniq: "", // 특이사항
     orgNm: "",
-    tel: "",
-    lstFilePathImg: "",
+    tel: "", // 전화번호
+    lstFilePathImg: "", // 이미지 url
   });
 
   const handleChange = (e) => {
@@ -29,6 +29,20 @@ const WriteObjectLost = () => {
   };
 
   const handleSubmit = async () => {
+    // 필수 항목 체크
+    if (!form.lstPrdtNm.trim()) {
+      alert("물품명(필수)을 입력하세요.");
+      return;
+    }
+    if (!form.lstYmd.trim()) {
+      alert("분실일자(필수)를 입력하세요.");
+      return;
+    }
+    if (!form.lstPlace.trim()) {
+      alert("분실장소(필수)를 입력하세요.");
+      return;
+    }
+
     try {
       const res = await axios.post(
         "http://localhost:5000/api/object/lost/write",
@@ -50,7 +64,7 @@ const WriteObjectLost = () => {
 
   return (
     <div className="WriteObjectLost">
-      <div className="icon_section">
+      <div className="icon_section" onClick={()=>nav('/object/lost')}>
         <img
           src={getIconImage(1)}
           style={{ width: "70px", height: "auto" }}
@@ -119,6 +133,19 @@ const WriteObjectLost = () => {
           </label>
         </div>
 
+        <div className="pls_section">
+          <label>
+            상세 지역명:{" "}
+            <input
+              type="text"
+              className="place_nate"
+              name="lstLctNm"
+              value={form.lstLctNm}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
         <div className="place_section">
           <label>
             분실장소(필수):{" "}
@@ -127,19 +154,6 @@ const WriteObjectLost = () => {
               className="lost_place"
               name="lstPlace"
               value={form.lstPlace}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-
-        <div className="pls_section">
-          <label>
-            지역명:{" "}
-            <input
-              type="text"
-              className="place_nate"
-              name="lstLctNm"
-              value={form.lstLctNm}
               onChange={handleChange}
             />
           </label>
