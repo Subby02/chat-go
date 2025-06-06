@@ -116,10 +116,10 @@ const AnimalGetDetail = () => {
 
       <div className="post-detail-container">
         <h1>{post.post.kindNm}</h1>
-        {post.post.popfile && (
+        {post.post.popfile1 && (
           <img
             className="detail-image"
-            src={post.post.popfile}
+            src={post.post.popfile1}
             alt={post.post.kindNm || "습득물 이미지"}
           />
         )}
@@ -127,8 +127,47 @@ const AnimalGetDetail = () => {
           <strong>구조 번호:</strong> {post.post.rfidCd || "정보 없음"}
         </p>
         <p>
-          <strong>품종 명:</strong> {post.post.kindNm || "제목 없음"}
+          <strong>동물 품종:</strong> {post.post.kindNm || "제목 없음"}
         </p>
+
+        <p>
+          <strong>RFID 코드:</strong>
+          {post.post.rfidCd || "RFID 코드 없음"}
+        </p>
+
+        <p>
+          <strong>동물 나이:</strong> {post.post.age || "정보 없음"}
+        </p>
+        <p>
+          <strong>동물 성별:</strong> {post.post.sexCd || "정보 없음"}
+        </p>
+        <p>
+          <strong>중성화 여부:</strong>
+          {post.post.neuterYn || "정보 없음"}
+        </p>
+        <p>
+          <strong>동물 색상:</strong> {post.post.colorCd || "정보 없음"}
+        </p>
+        <p>
+          <strong>동물 특징:</strong> {post.post.specialMark || "정보 없음"}
+        </p>
+
+        <p>
+          <strong>발견 일자:</strong>
+          {post.post.happenDt
+            ? new Date(post.post.happenDt).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            : "정보 없음"}
+        </p>
+
+        <p>
+          <strong>발견 지역:</strong>
+          {post.post.si}   {post.post.sgg}   {post.post.emd}
+        </p>
+
         <p>
           <strong>발견 장소:</strong> {post.post.happenPlace || "정보 없음"}
         </p>
@@ -139,25 +178,12 @@ const AnimalGetDetail = () => {
             : "정보 없음"}
         </p>
         <p>
-          <strong>글 작성일:</strong>
+          <strong>제보 글 작성일:</strong>
           {post.post.date
             ? new Date(post.post.date).toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-                hour: "numeric",
-              })
-            : "정보 없음"}
-        </p>
-
-        <p>
-          <strong>접수 일:</strong>
-          {post.post.happenDt
-            ? new Date(post.post.happenDt).toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
               })
             : "정보 없음"}
         </p>
@@ -180,18 +206,6 @@ const AnimalGetDetail = () => {
                 post.post.noticeEdt.slice(4, 6)
               )}월 ${parseInt(post.post.noticeEdt.slice(6, 8))}일`
             : "정보 없음"}
-        </p>
-        <p>
-          <strong>색상:</strong> {post.post.colorCd || "정보 없음"}
-        </p>
-        <p>
-          <strong>나이:</strong> {post.post.age || "정보 없음"}
-        </p>
-        <p>
-          <strong>성별:</strong> {post.post.sexCd || "정보 없음"}
-        </p>
-        <p>
-          <strong>특징:</strong> {post.post.specialMark || "정보 없음"}
         </p>
 
         <div>

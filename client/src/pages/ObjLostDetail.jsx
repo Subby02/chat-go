@@ -126,35 +126,52 @@ const ObjectLostDetail = () => {
           />
         )}
         <p>
-          <strong>분실물 제목:</strong> {post.post.lstSbjt || "제목 없음"}
+          <strong>분실 물품명:</strong> {post.post.lstPrdtNm || "제목 없음"}
         </p>
         <p>
-          <strong>분실 장소 (분류):</strong>{" "}
-          {post.post.lstPlaceSeNm || "정보 없음"}
+          <strong>물품 분류명:</strong> {post.post.prdtClnm || "정보 없음"}
         </p>
         <p>
-          <strong>분실 장소 (상세):</strong> {post.post.lstPlace || "정보 없음"}
-        </p>
-        <p>
-          <strong>보관 장소:</strong>
-          {post.post.orgNm
-            ? `${post.post.orgNm} (${post.post.tel || "연락처 없음"})`
-            : "정보 없음"}
-        </p>
-        <p>
-          <strong>분실 일:</strong>
+          <strong>분실 일자:</strong>
           {post.post.lstYmd
             ? new Date(post.post.lstYmd).toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-                hour: "numeric",
               })
             : "정보 없음"}
         </p>
+        <p>
+          <strong>분실 시간:</strong>
+          {post.post.lstHor
+            ? `${post.post.lstHor.split(":")[0]}시 ${post.post.lstHor.split(":")[1]}분`
+            : "정보 없음"
+          }
+        </p>
 
         <p>
-          <strong>등록 일:</strong>
+          <strong>분실 지역:</strong>
+          {post.post.si}   {post.post.sgg}   {post.post.emd}
+        </p>
+
+        <p>
+          <strong>분실 지역(상세):</strong>
+          {post.post.lstLctNm || "정보 없음"}
+        </p>
+
+
+        <p>
+          <strong>분실 장소:</strong>{" "}
+          {post.post.lstPlace || "정보 없음"}
+        </p>
+
+        <p>
+          <strong>특징:</strong>
+          {post.post.uniq || "정보 없음"}
+        </p>
+
+        <p>
+          <strong>신고 글 등록일:</strong>
           {post.post.date
             ? new Date(post.post.date).toLocaleDateString("ko-KR", {
                 year: "numeric",
@@ -163,13 +180,6 @@ const ObjectLostDetail = () => {
                 hour: "numeric",
               })
             : "정보 없음"}
-        </p>
-
-        <p>
-          <strong>물품 분류:</strong> {post.post.prdtClnm || "정보 없음"}
-        </p>
-        <p>
-          <strong>상태:</strong> {post.post.lstSteNm || "정보 없음"}
         </p>
 
         <div>
