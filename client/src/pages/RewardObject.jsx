@@ -166,7 +166,7 @@ const RewardObject = ({ type }) => {
           <button
             className="writeButton"
             onClick={() => {
-              if (auth) nav("/object/lost/write");
+              if (auth) nav("/reward/object/write");
               else nav("/login");
             }}
           >

@@ -8,8 +8,10 @@ import Register from "./pages/Register";
 import FindPassWord from "./pages/FindPassword";
 import NewObjectLost from "./pages/NewObjectLost";
 import NewObjectGet from "./pages/NewObjectGet";
+import NewObjectReward from "./pages/NewObjectReward";
 import NewAnimalLost from "./pages/NewAnimalLost";
 import NewAnimalGet from "./pages/NewAnimalGet";
+import NewAnimalReward from "./pages/NewAnimalReward";
 import Inquiry from "./pages/Inquiry";
 import LostPage from "./pages/LostPage";
 import ObjLostDetail from "./pages/ObjLostDetail";
@@ -38,8 +40,10 @@ function App() {
         <Route path="/animal/get/:postId" element={<AnimalGetDetail />} />
         <Route path="/reward/animal" element={<RewardAnimal />} />
         <Route path="/reward/animal/:postId" element={<RewardAnimalDetail />} />
+        <Route path="/reward/animal/write" element={<NewAnimalReward />} />
         <Route path="/reward/object" element={<RewardObject />} />
         <Route path="/reward/object/:postId" element={<RewardObjectDetail />} />
+        <Route path="/reward/object/write" element={<NewObjectReward />} />
         <Route path="/object/lost" element={<LostPage />} />
         <Route path="/object/lost/:postId" element={<ObjLostDetail />} />
         <Route path="/object/get" element={<ReportBoard />} />
