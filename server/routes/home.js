@@ -72,12 +72,16 @@ router.get('/slider-posts', async (req, res) => {
         const latestObjects = await RewardObject.find().sort({ date: -1 }).limit(6);
         const latestAnimals = await RewardAnimal.find().sort({ date: -1 }).limit(6);
 
+        const formatDate = (rawDate) => {
+            return new Date(rawDate).toISOString().slice(0, 10); // "2025-06-03"
+        };
+
         // 공통 포맷으로 변환
         const formattedObjects = latestObjects.map(obj => ({
             type: 'object',
             id: obj._id.toString(), //몽고디비 아이디
             kind: obj.prdtClNm, // 물품명
-            date: obj.lstYmd, // 분실 날짜
+            date: formatDate(obj.lstYmd), // 분실 날짜
             location: obj.si, // 광역시
             image: obj.lstFilePathImg, //이미지
             reward: obj.reward //현상금금
@@ -87,7 +91,7 @@ router.get('/slider-posts', async (req, res) => {
             type: 'animal',
             id: animal._id.toString(), //몽고디비 아이디
             kind: animal.kindCd, // 품종
-            date: animal.happenDt, //분실 날짜
+            date: formatDate(animal.happenDt), //분실 날짜
             location: animal.si, // 광역역시
             image: animal.popfile, //이미지
             reward: animal.reward //현상금
