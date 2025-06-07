@@ -9,72 +9,78 @@ import Pagination from "../components/Pagination";
 
 const MyPage = () => {
   const nav = useNavigate();
+  const location = useLocation();
   const [auth, setAuth] = useState(false);
-  const [userInfo, setInfo] = useState({
+  const [userInfo, setUserInfo] = useState({
     email: "",
     name: "",
     phone_number: "",
   });
-
   const [history, setHistory] = useState([]);
-
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const location = useLocation();
 
   const getInitialPageFromQuery = () => {
     const params = new URLSearchParams(location.search);
     const pageFromQuery = params.get("page");
-    const pageNumber = parseInt(pageFromQuery, 10); // 숫자로 변환
-    return !isNaN(pageNumber) && pageNumber > 0 ? pageNumber : 1; // 유효한 숫자면 사용, 아니면 1
+    const pageNumber = parseInt(pageFromQuery, 10);
+    return !isNaN(pageNumber) && pageNumber > 0 ? pageNumber : 1;
   };
 
   const [currentPage, setCurrentPage] = useState(getInitialPageFromQuery);
 
-  const fetchStatus = async () => {
-    const response = await axios.get("http://localhost:5000/api/status", {
-      withCredentials: true,
-    });
-
-    console.log(response);
-    setAuth(response.data.authenticated);
-  };
-
-  useEffect(() => {
-    fetchStatus();
-  }, []);
-
-  const fetchUserInfo = async () => {
-    const response = await axios.get("http://localhost:5000/api/user/info", {
-      withCredentials: true,
-    });
-    console.log(response);
-    setInfo(response.data);
-  };
-
-  const fetchHistory = async (page = 1) => {
-    const res = await axios.get(
-      `http://localhost:5000/api/user/posts?page=${page}`,
-      {
+  const fetchUserData = async () => {
+    try {
+      const statusRes = await axios.get("http://localhost:5000/api/status", {
         withCredentials: true,
+      });
+      setAuth(statusRes.data.authenticated);
+
+      if (statusRes.data.authenticated) {
+        const infoRes = await axios.get("http://localhost:5000/api/user/info", {
+          withCredentials: true,
+        });
+        setUserInfo(infoRes.data);
       }
-    );
-    setTotalItems(res.data.totalCount);
-    setTotalPages(res.data.totalPages);
-    setHistory(res.data.results);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      setAuth(false);
+    }
   };
 
-  const handlePageChange = (PageNumber) => {
-    setCurrentPage(PageNumber);
+  const fetchHistory = async (page) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/user/posts?page=${page}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setTotalItems(res.data.totalCount);
+      setTotalPages(res.data.totalPages);
+      setHistory(res.data.results);
+    } catch (error) {
+      console.error("Failed to fetch user posts:", error);
+    }
   };
 
   useEffect(() => {
-    fetchHistory(currentPage);
-  }, [currentPage]);
-
-  useEffect(() => {
-    fetchUserInfo();
+    fetchUserData();
   }, []);
+
+  useEffect(() => {
+    if (auth) {
+      fetchHistory(currentPage);
+      const newSearch = `?page=${currentPage}`;
+      if (location.search !== newSearch) {
+        nav(`/mypage${newSearch}`, { replace: true });
+      }
+    }
+  }, [currentPage, auth, nav, location.search]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleLogout = async () => {
     try {
@@ -94,37 +100,49 @@ const MyPage = () => {
     <>
       <Header authState={auth} handleLogout={handleLogout} />
       <div className="MyPageContainer">
-        <p className="MyPageTitle">마이 페이지</p>
-
-        <div className="MyUserInfo">
-          <h1>사용자 정보</h1>
-          <p>이메일: {userInfo.email}</p>
-          <p>이름: {userInfo.name}</p>
-          <p>전화번호: {userInfo.phone_number}</p>
-
-          <button
-            className="findPwd"
-            onClick={() => {
-              nav("/find-pwd");
-            }}
-          >
-            비밀 번호 변경 하기
-          </button>
-          <h1 style={{ marginTop: "40px" }}>내가 작성한 글</h1>
+        <h1 className="MyPageTitle">마이페이지</h1>
+        <div className="mypage-layout">
+          <aside className="mypage-sidebar">
+            <div className="profile-card">
+              <div className="profile-header">
+                <h3>{userInfo.name || "사용자"}님</h3>
+                <p>환영합니다!</p>
+              </div>
+              <div className="profile-details">
+                <p>
+                  <strong>이메일:</strong> {userInfo.email}
+                </p>
+                <p>
+                  <strong>연락처:</strong> {userInfo.phone_number}
+                </p>
+              </div>
+              <button
+                className="password-change-btn"
+                onClick={() => nav("/find-pwd")}
+              >
+                비밀번호 변경
+              </button>
+            </div>
+          </aside>
+          <main className="mypage-content">
+            <div className="content-header">
+              <h2>내가 작성한 글</h2>
+            </div>
+            <MyPageList
+              posts={history}
+              cnt={totalItems}
+              currentPage={currentPage}
+            />
+            <div className="pagination-container">
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </main>
         </div>
-
-        <MyPageList
-          posts={history}
-          cnt={totalItems}
-          currentPage={currentPage}
-        />
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
       </div>
-
       <Footer />
     </>
   );

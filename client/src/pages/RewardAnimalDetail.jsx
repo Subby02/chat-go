@@ -151,7 +151,7 @@ const RewardAnimalDetail = () => {
 
         <div>
           <RouterLink
-            to={`/reward/animal?page=${previousPage}`}
+            to={`/reward/animal${location.search}`}
             className="back-to-list-link"
           >
             목록으로 돌아가기
