@@ -1,12 +1,12 @@
 import "./LostListItem.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const AnimalLostItem = ({ post, no, currentPage }) => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const handleClick = () => {
     if (post && post._id) {
-      navigate(`/animal/lost/${post._id}?page=${currentPage}`);
+      navigate(`/animal/lost/${post._id}${location.search}`);
     } else {
       console.error("게시물 ID가 없습니다: ", post);
     }

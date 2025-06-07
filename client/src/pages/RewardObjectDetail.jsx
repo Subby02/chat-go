@@ -177,7 +177,7 @@ const RewardObjectDetail = () => {
         </p>
         <div>
           <RouterLink
-            to={`/reward/object?page=${previousPage}`}
+            to={`/reward/object${location.search}`}
             className="back-to-list-link"
           >
             목록으로 돌아가기

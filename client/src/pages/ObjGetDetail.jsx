@@ -20,9 +20,6 @@ const ObjGetDetail = () => {
 
   const nav = useNavigate();
 
-  const queryParams = new URLSearchParams(location.search);
-  const previousPage = queryParams.get("page") || 1;
-
   const fetchStatus = async () => {
     const response = await axios.get("http://localhost:5000/api/status", {
       withCredentials: true,
@@ -88,7 +85,7 @@ const ObjGetDetail = () => {
           (ID: {postId})
         </p>
         <RouterLink
-          to={`/object/get?page=${previousPage}`}
+          to={`/object/get${location.search}`}
           className="back-to-list-link"
           style={{ marginTop: "20px" }}
         >
@@ -101,7 +98,7 @@ const ObjGetDetail = () => {
       <div className="post-detail-container" style={{ textAlign: "center" }}>
         <p>게시물 정보를 찾을 수 없습니다. (ID: {postId})</p>
         <RouterLink
-          to={`/object/get?page=${previousPage}`}
+          to={`/object/get${location.search}`}
           className="back-to-list-link"
           style={{ marginTop: "20px" }}
         >
@@ -177,7 +174,7 @@ const ObjGetDetail = () => {
 
         <div>
           <RouterLink
-            to={`/object/get?page=${previousPage}`}
+            to={`/object/get${location.search}`}
             className="back-to-list-link"
           >
             목록으로 돌아가기

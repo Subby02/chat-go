@@ -8,8 +8,7 @@ import {
 import axios from "axios";
 import "./ObjLostDetail.css";
 import Header from "../components/Header";
-import { getIconImage } from "../util/get-img-icon";
-import Button from "../components/Button";
+
 import Footer from "../components/Footer";
 
 const ObjectLostDetail = () => {
@@ -21,9 +20,6 @@ const ObjectLostDetail = () => {
   const [auth, setAuth] = useState(false);
 
   const nav = useNavigate();
-
-  const queryParams = new URLSearchParams(location.search);
-  const previousPage = queryParams.get("page") || 1;
 
   const fetchStatus = async () => {
     const response = await axios.get("http://localhost:5000/api/status", {
@@ -90,7 +86,7 @@ const ObjectLostDetail = () => {
           (ID: {postId})
         </p>
         <RouterLink
-          to={`/object/lost?page=${previousPage}`}
+          to={`/object/lost${location.search}`}
           className="back-to-list-link"
           style={{ marginTop: "20px" }}
         >
@@ -103,7 +99,7 @@ const ObjectLostDetail = () => {
       <div className="post-detail-container" style={{ textAlign: "center" }}>
         <p>게시물 정보를 찾을 수 없습니다. (ID: {postId})</p>
         <RouterLink
-          to={`/object/lost?page=${previousPage}`}
+          to={`/object/lost${location.search}`}
           className="back-to-list-link"
           style={{ marginTop: "20px" }}
         >
@@ -184,7 +180,7 @@ const ObjectLostDetail = () => {
 
         <div>
           <RouterLink
-            to={`/object/lost?page=${previousPage}`}
+            to={`/object/lost${location.search}`}
             className="back-to-list-link"
           >
             목록으로 돌아가기

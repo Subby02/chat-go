@@ -182,7 +182,7 @@ const AnimalLostDetail = () => {
 
         <div>
           <RouterLink
-            to={`/animal/lost?page=${previousPage}`}
+            to={`/animal/lost${location.search}`}
             className="back-to-list-link"
           >
             목록으로 돌아가기

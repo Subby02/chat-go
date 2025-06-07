@@ -1,103 +1,109 @@
+
 .MyPageContainer {
-    display: flex;
-    flex-direction: column;
-    width: 1300px;
-    margin: 0 auto;
-    justify-content: center;
-  
+  width: 1300px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
-.MyUserInfo{
-    margin-left: 120px;
+.MyPageTitle {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #2c3e50;
+  text-align: left;
 }
 
-.MyUserInfo p {
-    font-size: 20px;
-    margin-left: 10px;
-}
-.MyPageTitle{
-    margin-left: 120px;
-    font-size: 40px;
+.mypage-layout {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
 }
 
-.findPwd{
-    padding: 20px 10px;
-    font-size: 20px;
-    border:none;
-    border-radius: 10px;
-    cursor: pointer;
-    background-color: white;
-    transition: background-color 0.3s ease;
-    margin-right: 20px;
+.mypage-sidebar {
+  flex: 0 0 320px; 
 }
 
-.findPwd:hover {
-    background-color: #eee;
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  text-align: left;
 }
 
-.objLosthistory{
-    border: 2px solid #4a4949;
-    width: 500px;
-    height: 300px;
-    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
-    border-radius: 10px;
-
+.profile-header {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.objGethistory{
-    border: 2px solid #4a4949;
-    width: 500px;
-    height: 300px;
-    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
-    border-radius: 10px;
-
+.profile-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #34495e;
 }
 
-.animalLosthistory{
-    border: 2px solid #4a4949;
-    width: 500px;
-    height: 300px;
-    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
-    border-radius: 10px;
-
+.profile-header p {
+  margin: 5px 0 0;
+  font-size: 16px;
+  color: #7f8c8d;
 }
 
-.animalGethistory{
-    border: 2px solid #4a4949;
-    width: 500px;
-    height: 300px;
-    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
-    border-radius: 10px;
-
+.profile-details p {
+  font-size: 16px;
+  color: #555;
+  margin: 15px 0;
+  word-break: break-all;
 }
 
-.animalRewardhistory{
-    border: 2px solid #4a4949;
-    width: 500px;
-    height: 300px;
-    overflow-y: auto; /* 👈 수직 스크롤바 자동 생성 */
-    border-radius: 10px;
-
-
+.profile-details strong {
+  color: #333;
+  margin-right: 8px;
+  font-weight: 600;
 }
 
-.objRewardhistory{
-    border: 2px solid #4a4949;
-    width: 500px;
-    height: 300px;
-    margin-bottom: 40px;
-    overflow-y: auto; 
-    border-radius: 10px;
-
+.password-change-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #3498db;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
 }
 
-.historyTitle{
-    display: flex;
-    gap: 400px;
+.password-change-btn:hover {
+  background-color: #2980b9;
 }
 
-.list{
-    display: flex;
-    gap: 20px;
-    cursor: pointer;
+.mypage-content {
+  flex: 1; 
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+}
+
+.content-header {
+  padding-bottom: 15px;
+  border-bottom: 2px solid #34495e;
+  margin-bottom: 25px;
+}
+
+.content-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #34495e;
+  margin: 0;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
 }

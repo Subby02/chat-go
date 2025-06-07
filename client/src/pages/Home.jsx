@@ -4,9 +4,7 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import PostSlider from "../components/PostSlider";
-import Introduce from "../components/Introduce";
-import NewPost from "../components/NewPost";
+
 const Home = () => {
   const nav = useNavigate();
   const [auth, setAuth] = useState(false);

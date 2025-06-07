@@ -9,8 +9,42 @@ import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 
+const getInitialStateFromQuery = (location) => {
+  const params = new URLSearchParams(location.search);
+  const page = parseInt(params.get("page"), 10);
+
+  return {
+    page: !isNaN(page) && page > 0 ? page : 1,
+    keyword: params.get("search") || "",
+    filters: {
+      startDate: params.get("dateStart") || "",
+      endDate: params.get("dateEnd") || "",
+      lstYmdStart: params.get("lstYmdStart") || "",
+      lstYmdEnd: params.get("lstYmdEnd") || "",
+      si: params.get("si") || "",
+      sgg: params.get("sgg") || "",
+      emd: params.get("emd") || "",
+    },
+  };
+};
+
 const RewardObject = ({ type }) => {
   const [auth, setAuth] = useState(false);
+  const location = useLocation();
+  const nav = useNavigate();
+
+  const initialState = getInitialStateFromQuery(location);
+
+  const [keyword, setKeyword] = useState(initialState.keyword);
+  const [activeFilters, setActiveFilters] = useState(initialState.filters);
+  const [pendingFilters, setPendingFilters] = useState(initialState.filters);
+  const [currentPage, setCurrentPage] = useState(initialState.page);
+
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalPage, setTotalPage] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
   const handleLogout = async () => {
     try {
@@ -27,56 +61,27 @@ const RewardObject = ({ type }) => {
   };
 
   const fetchStatus = async () => {
-    const response = await axios.get("http://localhost:5000/api/status", {
-      withCredentials: true,
-    });
-
-    console.log(response);
-    setAuth(response.data.authenticated);
+    try {
+      const response = await axios.get("http://localhost:5000/api/status", {
+        withCredentials: true,
+      });
+      setAuth(response.data.authenticated);
+    } catch (err) {
+      setAuth(false);
+      console.error("Status fetch failed:", err);
+    }
   };
 
   useEffect(() => {
     fetchStatus();
   }, []);
 
-  const location = useLocation();
-
-  const getInitialPageFromQuery = () => {
-    const params = new URLSearchParams(location.search);
-    const pageFromQuery = params.get("page");
-    const pageNumber = parseInt(pageFromQuery, 10); // 숫자로 변환
-    return !isNaN(pageNumber) && pageNumber > 0 ? pageNumber : 1; // 유효한 숫자면 사용, 아니면 1
-  };
-
-  const [keyword, setKeyword] = useState("");
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [activeFilters, setActiveFilters] = useState({
-    startDate: "",
-    endDate: "",
-    lstYmdStart: "",
-    lstYmdEnd: "",
-    si: "",
-    sgg: "",
-    emd: "",
-  });
-  const [pendingFilters, setPendingFilters] = useState(activeFilters);
-  const [currentPage, setCurrentPage] = useState(getInitialPageFromQuery);
-  const [totalPage, setTotalPage] = useState(0);
-
-  const [totalItems, setTotalItems] = useState(0);
-
-  const nav = useNavigate();
-
   const fetchPosts = useCallback(
-    async (pageToFetch = 1) => {
-      console.log(pageToFetch);
+    async (pageToFetch) => {
       setLoading(true);
       setError(null);
 
       const queryString = new URLSearchParams();
-
       if (keyword) queryString.set("search", keyword);
       if (activeFilters.startDate)
         queryString.set("dateStart", activeFilters.startDate);
@@ -91,27 +96,13 @@ const RewardObject = ({ type }) => {
       if (activeFilters.emd) queryString.set("emd", activeFilters.emd);
       queryString.set("page", pageToFetch);
 
-      let apiUrl = "http://localhost:5000/api/reward/object/search";
-      if (queryString) {
-        apiUrl += `?${queryString}`;
-      }
       try {
-        const response = await axios.get(apiUrl);
-
-        console.log(queryString.toString());
-        console.log(response.data);
-        const fetchedPosts = response.data.results;
-
-        const totalPageCount = response.data.totalPages;
-        console.log(totalPageCount);
-
-        const totalItem = response.data.totalCount;
-
-        console.log(totalItem);
-
-        setFilteredPosts(fetchedPosts);
-        setTotalPage(totalPageCount);
-        setTotalItems(totalItem);
+        const response = await axios.get(
+          `http://localhost:5000/api/reward/object/search?${queryString}`
+        );
+        setFilteredPosts(response.data.results);
+        setTotalPage(response.data.totalPages);
+        setTotalItems(response.data.totalCount);
       } catch (err) {
         setError(err);
         console.error("데이터를 불러오는데 실패했습니다.", err);
@@ -125,19 +116,34 @@ const RewardObject = ({ type }) => {
   useEffect(() => {
     fetchPosts(currentPage);
 
-    const params = new URLSearchParams(location.search);
-    const pageFromQuery = parseInt(params.get("page"), 10);
-    if (pageFromQuery !== currentPage) {
-      nav(`/reward/object?page=${currentPage}`, { replace: true });
+    const params = new URLSearchParams();
+    params.set("page", currentPage.toString());
+    if (keyword) params.set("search", keyword);
+    if (activeFilters.startDate)
+      params.set("dateStart", activeFilters.startDate);
+    if (activeFilters.endDate) params.set("dateEnd", activeFilters.endDate);
+    if (activeFilters.lstYmdStart)
+      params.set("lstYmdStart", activeFilters.lstYmdStart);
+    if (activeFilters.lstYmdEnd)
+      params.set("lstYmdEnd", activeFilters.lstYmdEnd);
+    if (activeFilters.si) params.set("si", activeFilters.si);
+    if (activeFilters.sgg) params.set("sgg", activeFilters.sgg);
+    if (activeFilters.emd) params.set("emd", activeFilters.emd);
+
+    const newSearch = `?${params.toString()}`;
+
+    if (location.search !== newSearch) {
+      nav(`/reward/object${newSearch}`, { replace: true });
     }
-  }, [currentPage, fetchPosts, nav, location.search]);
+  }, [currentPage, keyword, activeFilters, nav, location.search, fetchPosts]);
 
   const handleSearch = () => {
+    setActiveFilters(pendingFilters);
     setCurrentPage(1);
   };
 
-  const handlePageChange = (PageNumber) => {
-    setCurrentPage(PageNumber);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
@@ -146,7 +152,6 @@ const RewardObject = ({ type }) => {
   return (
     <>
       <Header authState={auth} handleLogout={handleLogout} />
-
       <div className="lost-page-container">
         <h1
           style={{
@@ -163,7 +168,7 @@ const RewardObject = ({ type }) => {
           setKeyword={setKeyword}
           filters={pendingFilters}
           setFilters={setPendingFilters}
-          sd="분실 시작일"
+          sd="분실 기간"
           ed="분실 종료일"
           sub_sd="lstYmdStart"
           sub_ed="lstYmdEnd"
@@ -178,7 +183,6 @@ const RewardObject = ({ type }) => {
             }}
           >
             <span style={{ fontSize: "20px" }}>글쓰기</span>
-
             <HiOutlinePencilAlt
               style={{ fontSize: "20px", marginBottom: "3px" }}
             />

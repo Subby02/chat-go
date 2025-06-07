@@ -1,12 +1,13 @@
 import "./LostListItem.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const GetListItem = ({ post, no, currentPage }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClick = () => {
     if (post && post._id) {
-      navigate(`/object/get/${post._id}?page=${currentPage}`);
+      navigate(`/object/get/${post._id}${location.search}`);
     } else {
       console.error("게시물 ID가 없습니다: ", post);
     }

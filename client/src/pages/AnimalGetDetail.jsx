@@ -210,7 +210,7 @@ const AnimalGetDetail = () => {
 
         <div>
           <RouterLink
-            to={`/animal/get?page=${previousPage}`}
+            to={`/animal/get${location.search}`}
             className="back-to-list-link"
           >
             목록으로 돌아가기
