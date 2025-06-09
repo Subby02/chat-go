@@ -63,7 +63,7 @@ const PostSlider = () => {
               <p>물품 명: {el.kind}</p>
               <p>분실 날짜: {new Date(el.date).toLocaleDateString()}</p>
               <p>지역: {el.location}</p>
-              <p>사례금: {el.reward}</p>
+              <p>사례금: {el.reward}만원</p>
             </div>
           ) : (
             <div
@@ -77,7 +77,7 @@ const PostSlider = () => {
               <p>품종: {el.kind}</p>
               <p>분실 날짜: {new Date(el.date).toLocaleDateString()}</p>
               <p>지역: {el.location}</p>
-              <p>사례금: {el.reward}</p>
+              <p>사례금: {el.reward}만원</p>
             </div>
           )
         )}
