@@ -182,6 +182,7 @@ const RewardAnimalDetail = () => {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
+                hour: "numeric",
               })
             : "정보 없음"}
         </p>

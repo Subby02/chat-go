@@ -9,7 +9,7 @@ const methodOverride = require('method-override');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cron = require('node-cron');
-const { update } = require('./dataLoader.js');
+// const { update } = require('./dataLoader.js');
 require('dotenv').config()
 const app = express();
 const PORT = process.env.PORT;

@@ -179,6 +179,17 @@ const AnimalLostDetail = () => {
         <p>
           <strong>신고자 연락처:</strong> {post.post.callTel || "정보 없음"}
         </p>
+        <p>
+          <strong>제보 글 작성일:</strong>
+          {post.post.date
+            ? new Date(post.post.date).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+              })
+            : "정보 없음"}
+        </p>
 
         <div>
           <RouterLink

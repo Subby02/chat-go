@@ -18,6 +18,22 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function parseDateFromYYYYMMDD(dateStr) {
+  // 문자열이 아닌 숫자라면 문자열로 변환
+  const str = dateStr.toString();
+
+  // 길이 체크
+  if (!/^\d{8}$/.test(str)) {
+    throw new Error('Invalid date format. Expected YYYYMMDD.');
+  }
+
+  const year = parseInt(str.slice(0, 4), 10);
+  const month = parseInt(str.slice(4, 6), 10) - 1; // JS에서 month는 0부터 시작
+  const day = parseInt(str.slice(6, 8), 10);
+
+  return new Date(year, month, day);
+}
+
 async function connectDB() {
     try {
         await mongoose.connect(process.env.DB_URL);
@@ -164,7 +180,7 @@ function getSavedAnimalDocument(item, si, sgg, emd){
         user_id: '구조동물',
         desertionNo: item.desertionNo,
         rfidCd: item.rfidCd,
-        happenDt: item.happenDt,
+        happenDt: parseDateFromYYYYMMDD(item.happenDt),
         happenPlace: item.happenPlace,
         si: si,
         sgg: sgg,
@@ -933,9 +949,9 @@ function getYesterdayDateStrings() {
 
 async function deleteAll() {
     await AnimalLost.deleteMany({});
-    // await AnimalGet.deleteMany({});
+    await AnimalGet.deleteMany({});
     await ObjectLost.deleteMany({});
-    // await ObjectGet.deleteMany({});
+    await ObjectGet.deleteMany({});
     console.log('모든 데이터 삭제 완료');
 }
 
@@ -1084,5 +1100,7 @@ async function searchKeyword(keyword) {
     console.error('에러 발생:', error.response?.data || error.message);
   }
 }
+
+update();
 
 module.exports = { update };

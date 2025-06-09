@@ -124,9 +124,6 @@ const AnimalGetDetail = () => {
           />
         )}
         <p>
-          <strong>구조 번호:</strong> {post.post.rfidCd || "정보 없음"}
-        </p>
-        <p>
           <strong>동물 품종:</strong> {post.post.kindNm || "제목 없음"}
         </p>
 
@@ -177,16 +174,6 @@ const AnimalGetDetail = () => {
             ? `${post.post.careNm} (${post.post.careRegNo || "연락처 없음"})`
             : "정보 없음"}
         </p>
-        <p>
-          <strong>제보 글 작성일:</strong>
-          {post.post.date
-            ? new Date(post.post.date).toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })
-            : "정보 없음"}
-        </p>
 
         <p>
           <strong>공고 번호:</strong> {post.post.noticeNo || "정보 없음"}
@@ -205,6 +192,18 @@ const AnimalGetDetail = () => {
             ? `${post.post.noticeEdt.slice(0, 4)}년 ${parseInt(
                 post.post.noticeEdt.slice(4, 6)
               )}월 ${parseInt(post.post.noticeEdt.slice(6, 8))}일`
+            : "정보 없음"}
+        </p>
+
+        <p>
+          <strong>제보 글 작성일:</strong>
+          {post.post.date
+            ? new Date(post.post.date).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+              })
             : "정보 없음"}
         </p>
 
