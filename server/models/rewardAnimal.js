@@ -6,7 +6,7 @@ const reward_animal_schema = mongoose.Schema({
     callName: { type: String }, // 보호자 이름
     callTel: { type: String }, // 보호자 연락처
     rfidCd: { type: String }, // 칩
-    happenDt: { type: String }, // 유기 날짜
+    happenDt: { type: Date }, // 유기 날짜
     happenAddr: { type: String }, // 유기 주소
     happenPlace: { type: String },  //주위 건물
     si: { type: String }, // 광역시
