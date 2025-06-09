@@ -5,7 +5,7 @@ const reward_object_schema = mongoose.Schema({
     user_id: { type: String }, //유저 아이디
     date: { type: Date }, // 게시날짜
     lstPrdtNm: { type: String }, //물품명
-    lstYmd: { type: String }, //분실 일시
+    lstYmd: { type: Date }, //분실 일시
     lstHor: { type: String }, //분실 시간
     lstPlace: { type: String }, // 분실 장소
     si: { type: String }, // 지역
