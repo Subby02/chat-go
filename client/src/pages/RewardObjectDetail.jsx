@@ -145,7 +145,10 @@ const RewardObjectDetail = () => {
         </p>
         <p>
           <strong>분실 시간:</strong>
-
+          {post.post.lstHor
+            ? `${post.post.lstHor.split(':')[0]}시`
+            : "정보 없음"
+          }
         </p>
         <p>
           <strong>분실 지역:</strong>
@@ -172,6 +175,7 @@ const RewardObjectDetail = () => {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
+                hour: "numeric",
               })
             : "정보 없음"}
         </p>

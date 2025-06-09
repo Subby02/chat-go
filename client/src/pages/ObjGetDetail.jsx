@@ -145,9 +145,9 @@ const ObjGetDetail = () => {
           {post.post.si}   {post.post.sgg}   {post.post.emd}
         </p>
 
-        <p>
+        {/* <p>
           <strong>습득 장소:</strong> {post.post.fdPlace || "정보 없음"}
-        </p>
+        </p> */}
         <p>
           <strong>보관 장소:</strong>
           {post.post.depPlace
@@ -155,10 +155,10 @@ const ObjGetDetail = () => {
             : "정보 없음"}
         </p>
 
-        <p>
+        {/* <p>
           <strong>특징:</strong>
           {post.post.uniq || "정보 없음"}
-        </p>
+        </p> */}
 
         <p>
           <strong>제보 글 등록일:</strong>

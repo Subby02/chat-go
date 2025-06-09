@@ -125,7 +125,7 @@ const ObjectLostDetail = () => {
           <strong>분실 물품명:</strong> {post.post.lstPrdtNm || "제목 없음"}
         </p>
         <p>
-          <strong>물품 분류명:</strong> {post.post.prdtClnm || "정보 없음"}
+          <strong>물품 분류명:</strong> {post.post.prdtClNm || "정보 없음"}
         </p>
         <p>
           <strong>분실 일자:</strong>
@@ -140,7 +140,7 @@ const ObjectLostDetail = () => {
         <p>
           <strong>분실 시간:</strong>
           {post.post.lstHor
-            ? `${post.post.lstHor.split(":")[0]}시 ${post.post.lstHor.split(":")[1]}분`
+            ? `${post.post.lstHor}시`
             : "정보 없음"
           }
         </p>
