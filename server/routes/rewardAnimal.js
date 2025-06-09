@@ -270,7 +270,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
         }
         
         const popfile = req.file
-            ? `${req.protocol}://${req.get('host')}/api/images/reward_aniaml/${req.file.filename}`
+            ? `${req.protocol}://${req.get('host')}/api/images/reward_animal/${req.file.filename}`
             : null;
 
         const newPost = new RewardAnimal({
