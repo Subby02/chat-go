@@ -289,7 +289,6 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
             sexCd,
             age,
             specialMark,
-            lstFilePathImg,
             reward,
             callTel: req.user.phone_number,
         });
