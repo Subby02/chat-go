@@ -241,7 +241,7 @@ router.post('/login', (req, res, next) => {
             if (!user) return res.status(401).json(info)
             req.logIn(user, (err) => {
                 if (err) return next(err)
-                res.redirect('/')
+                return res.status(200).json({ message: '로그인 성공' });
             })
         })(req, res, next)
     }
@@ -552,11 +552,11 @@ router.post('/logout', (req, res, next) => {
                 if (err) return next(err);
 
                 res.clearCookie('connect.sid');
-                res.redirect('/');
+                return res.status(200).json({ message: '로그 아웃' });
             });
         });
     } else {
-        res.redirect('/');
+        res.status(401).json({ message: '로그인이 필요합니다' });
     }
 })
 
@@ -641,7 +641,7 @@ router.post('/reset-password', async (req, res) => {
             }
 
             res.clearCookie('connect.sid');  // 세션 쿠키 삭제
-            return res.redirect('/login'); // 로그인 페이지로 리디렉션
+            return res.status(200).json({ message: '비밀번호 변경 완료' });
         });
     } catch (err) {
         console.error(err);
@@ -903,7 +903,7 @@ router.delete('/user/delete', async (req, res) => {
                     if (err) return next(err);
     
                     res.clearCookie('connect.sid');
-                    res.redirect('/');
+                    return res.status(200).json({ message: '탈퇴 완료' });
                 });
             });
         } catch (err) {
