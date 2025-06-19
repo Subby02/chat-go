@@ -10,7 +10,10 @@ const path = require('path');
 const { RewardAnimal } = require('../models/rewardAnimal');
 const multer = require('multer');
 const fs = require('fs');
+const coolsms = require('coolsms-node-sdk').default
 
+const mongoose = require('mongoose');
+const User = mongoose.models.User || require('../models/user');
 //한 페이지당 보여줄 게시글 수
 const show_list = 10;
 
@@ -20,6 +23,9 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 const upload = multer({ storage });
+
+//SMS 알리기 API
+const messageService = new coolsms(process.env.SMS_API_KEY, process.env.SMS_API_SECRET);
 
 //해당하는글 들어가기
 /**
@@ -268,7 +274,7 @@ router.post('/write', upload.single('popfile'), async (req, res) => {
         if (!happenDt || !happenAddr || !happenPlace || !si || !sgg || !emd || !kindCd || !sexCd || !age || !specialMark) {
             return res.status(400).json({ error: '필수 항목이 누락되었습니다.' });
         }
-        
+
         const popfile = req.file
             ? `${req.protocol}://${req.get('host')}/api/images/reward_animal/${req.file.filename}`
             : null;
@@ -504,5 +510,102 @@ router.get('/search', async (req, res) => {
         res.status(500).json({ error: '서버 오류' });
     }
 });
+
+/**
+ * @swagger
+* /api/reward/animal/notify/{id}:
+ *   post:
+ *     summary: 게시글 작성자에게 로그인한 사용자의 연락처 전송
+ *     description: 게시글 상세 페이지에서 '알리기' 버튼 클릭 시, 해당 게시글 작성자에게 로그인한 사용자의 전화번호를 SMS로 전송합니다.
+ *     tags:
+ *       - RewardAnimal
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: 알리기를 수행할 게시글의 MongoDB ObjectId
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: SMS가 성공적으로 전송된 경우
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 작성자에게 알림이 전송되었습니다.
+ *                 result:
+ *                   type: object
+ *                   description: Coolsms API의 응답 객체
+ *       401:
+ *         description: 로그인되지 않은 사용자가 접근한 경우
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 로그인이 필요합니다.
+ *       404:
+ *         description: 게시글 또는 사용자 정보를 찾을 수 없는 경우
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 게시글을 찾을 수 없습니다.
+ *       500:
+ *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 문자 전송 중 오류가 발생했습니다.
+ */
+// routes/RewardAnimal.js 내부에 추가
+router.post('/notify/:id', async (req, res) => {
+    try {
+        if (!req.isAuthenticated()) {
+            return res.status(401).json({ error: '로그인이 필요합니다.' });
+        }
+
+        const post = await RewardAnimal.findById(req.params.id);
+        if (!post) return res.status(404).json({ error: '게시글을 찾을 수 없습니다.' });
+
+        const writer = await User.findById(post.user_id);
+        const sender = await User.findById(req.user._id);
+
+        if (!writer || !writer.phone_number) {
+            return res.status(404).json({ error: '작성자 정보를 찾을 수 없습니다.' });
+        }
+
+        if (!sender || !sender.phone_number) {
+            return res.status(400).json({ error: '전화번호가 등록되지 않은 사용자입니다.' });
+        }
+
+        const message = {
+            to: writer.phone_number,
+            from: process.env.SMS_FROM,
+            text: `[알림] ${sender.name}님이 본인의 연락처(${sender.phone_number})를 공유했습니다.`,
+        };
+
+        const response = await messageService.sendOne(message); // 실제 coolsms SDK 사용법에 따라 수정 필요
+
+        res.json({ message: '작성자에게 알림이 전송되었습니다.', result: response });
+    } catch (error) {
+        console.error('SMS 전송 오류:', error);
+        res.status(500).json({ error: '문자 전송 중 오류가 발생했습니다.' });
+    }
+});
+
 
 module.exports = router
