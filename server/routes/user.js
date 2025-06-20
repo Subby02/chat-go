@@ -12,6 +12,7 @@ const { AnimalLost } = require('../models/animalLost');
 const { AnimalGet } = require('../models/animalGet');
 const { RewardAnimal } = require('../models/rewardAnimal');
 const { RewardObject } = require('../models/rewardObject');
+const { Inquiry } = require('../models/inquiry');
 
 function generateAuthCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -748,7 +749,7 @@ router.get('/user/info', (req, res) => {
  *                         example: "665f1b2c3a4d5e6f7g8h9i0j"
  *                       type:
  *                         type: string
- *                         description: "게시글 카테고리 (objectLost, objectGet, animalLost, animalGet, rewardAnimal, rewardObject)"
+ *                         description: "게시글 카테고리 (objectLost, objectGet, animalLost, animalGet, rewardAnimal, rewardObject, inquiry)"
  *                         example: "objectLost"
  *                       date:
  *                         type: string
@@ -811,6 +812,7 @@ router.get('/user/posts', async (req, res) => {
         { model: AnimalGet, type: 'animalGet' },
         { model: RewardAnimal, type: 'rewardAnimal' },
         { model: RewardObject, type: 'rewardObject' },
+        { model: Inquiry, type: 'inquiry' },
     ];
 
     try {
