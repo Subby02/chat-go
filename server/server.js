@@ -67,6 +67,7 @@ app.use('/api/object/lost', require('./routes/objectLost.js'))
 app.use('/api/reward/animal', require('./routes/rewardAnimal.js'))
 app.use('/api/reward/object', require('./routes/rewardObject.js'))
 app.use('/api/images', express.static(path.join(__dirname, './images')));
+app.use('/api/inquiry', require('./routes/inquiry.js'));
 
 app.get('/', (req, res) => {
   res.send("Hello World");
