@@ -1,16 +1,7 @@
 //시작
 const router = require('express').Router()
-const session = require('express-session')
-const passport = require('passport')
-const LocalStrategy = require('passport-local')
-const bcrypt = require('bcrypt')
-const { MongoClient, ObjectId } = require('mongodb')
-const MongoStore = require('connect-mongo')
-const path = require('path');
 const { RewardAnimal } = require('../models/rewardAnimal');
 const { RewardObject } = require('../models/rewardObject');
-const multer = require('multer');
-const fs = require('fs');
 
 /**
  * @swagger
