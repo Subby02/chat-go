@@ -12,6 +12,7 @@ import NewObjectReward from "./pages/NewObjectReward";
 import NewAnimalLost from "./pages/NewAnimalLost";
 import NewAnimalGet from "./pages/NewAnimalGet";
 import NewAnimalReward from "./pages/NewAnimalReward";
+import NewInquiry from "./pages/NewInquiry";
 import Inquiry from "./pages/Inquiry";
 import LostPage from "./pages/LostPage";
 import ObjLostDetail from "./pages/ObjLostDetail";
@@ -24,6 +25,7 @@ import AnimalGetDetail from "./pages/AnimalGetDetail";
 import AnimalLostDetail from "./pages/AnimalLostDetail";
 import RewardAnimalDetail from "./pages/RewardAnimalDetail";
 import RewardObjectDetail from "./pages/RewardObjectDetail";
+import InquiryDetail from "./pages/InquiryDetail";
 import MyPage from "./pages/MyPage";
 import FAQ from "./pages/FAQ";
 
@@ -54,7 +56,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/find-pwd" element={<FindPassWord />} />
-        <Route path="/inquiry" element={<Inquiry />} />
+        <Route path="/support/qna" element={<Inquiry />} />
+        <Route path="/support/qna/write" element={<NewInquiry />} />
+        <Route path="/support/qna/detail/:id" element={<InquiryDetail />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/support/faq" element={<FAQ />} />
       </Routes>
