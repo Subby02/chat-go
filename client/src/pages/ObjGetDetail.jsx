@@ -73,6 +73,47 @@ const ObjGetDetail = () => {
     fetchPostDetail();
   }, [fetchPostDetail]);
 
+  const handleNotifyClick = async () => {
+    if (!auth) {
+      alert("로그인이 필요합니다. 먼저 로그인해주세요.");
+      return;
+    }
+
+    if (!postId) {
+      alert("게시물 ID를 찾을 수 없습니다.");
+      return;
+    }
+
+    if (!window.confirm("게시물 작성자에게 알림을 보내시겠습니까?")) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/object/get/notify/${postId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        alert("알림이 성공적으로 전송되었습니다!");
+        console.log("Notify API response:", response.data);
+      } else {
+        alert(`알림 전송 실패: ${response.data.message || "알 수 없는 오류"}`);
+        console.error("Notify API error response:", response);
+      }
+    } catch (err) {
+      console.error("Failed to send notification:", err);
+      const errorMessage =
+        err.response && err.response.data && err.response.data.message
+          ? err.response.data.message
+          : "오류가 발생했습니다.";
+      alert(errorMessage);
+    }
+  };
+
   if (loading) return <p>상세 정보를 불러오는 중입니다...</p>;
   if (error)
     return (
@@ -112,7 +153,12 @@ const ObjGetDetail = () => {
       <Header authState={auth} handleLogout={handleLogout} />
 
       <div className="post-detail-container">
-        <h1>{post.post.fdPrdtNm}</h1>
+        <div className="header-with-button">
+          <h1>{post.post.fdPrdtNm}</h1>
+          <button className="notify-button" onClick={handleNotifyClick}>
+            알리기
+          </button>
+        </div>
         {post.post.fdFilePathImg && (
           <img
             className="detail-image"
@@ -142,7 +188,7 @@ const ObjGetDetail = () => {
 
         <p>
           <strong>습득 지역:</strong>
-          {post.post.si}   {post.post.sgg}   {post.post.emd}
+          {post.post.si} {post.post.sgg} {post.post.emd}
         </p>
 
         {/* <p>

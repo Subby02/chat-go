@@ -50,6 +50,47 @@ const RewardAnimalDetail = () => {
     }
   };
 
+  const handleNotifyClick = async () => {
+    if (!auth) {
+      alert("로그인이 필요합니다. 먼저 로그인해주세요.");
+      return;
+    }
+
+    if (!postId) {
+      alert("게시물 ID를 찾을 수 없습니다.");
+      return;
+    }
+
+    if (!window.confirm("게시물 작성자에게 알림을 보내시겠습니까?")) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/reward/animal/notify/${postId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        alert("알림이 성공적으로 전송되었습니다!");
+        console.log("Notify API response:", response.data);
+      } else {
+        alert(`알림 전송 실패: ${response.data.message || "알 수 없는 오류"}`);
+        console.error("Notify API error response:", response);
+      }
+    } catch (err) {
+      console.error("Failed to send notification:", err);
+      const errorMessage =
+        err.response && err.response.data && err.response.data.message
+          ? err.response.data.message
+          : "오류가 발생했습니다.";
+      alert(errorMessage);
+    }
+  };
+
   const fetchPostDetail = useCallback(async () => {
     if (!postId) return;
 
@@ -115,7 +156,12 @@ const RewardAnimalDetail = () => {
       <Header authState={auth} handleLogout={handleLogout} />
 
       <div className="post-detail-container">
-        <h1>{post.post.kindCd}</h1>
+        <div className="header-with-button">
+          <h1>{post.post.kindCd}</h1>
+          <button className="notify-button" onClick={handleNotifyClick}>
+            알리기
+          </button>
+        </div>
         {post.post.popfile && (
           <img
             className="detail-image"
@@ -128,7 +174,7 @@ const RewardAnimalDetail = () => {
         </p>
         <p>
           <strong>RFID 코드:</strong>
-          {post.post.rfidCd  || "RFID 코드 없음"}
+          {post.post.rfidCd || "RFID 코드 없음"}
         </p>
         <p>
           <strong>동물 성별:</strong> {post.post.sexCd || "정보 없음"}
@@ -152,7 +198,7 @@ const RewardAnimalDetail = () => {
         </p>
         <p>
           <strong>실종 지역:</strong>
-          {post.post.si}   {post.post.sgg}   {post.post.emd}
+          {post.post.si} {post.post.sgg} {post.post.emd}
         </p>
 
         <p>
@@ -168,11 +214,6 @@ const RewardAnimalDetail = () => {
         <p>
           <strong>사례금:</strong>
           {post.post.reward ? `${post.post.reward}만원` : "정보 없음"}
-
-        </p>
-
-        <p>
-          <strong>신고자 연락처:</strong> {post.post.callTel || "정보 없음"}
         </p>
 
         <p>
