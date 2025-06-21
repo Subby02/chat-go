@@ -16,7 +16,7 @@ const InquiryListItem = ({ post, no, currentPage }) => {
   return (
     <tr className="inquiryItem" onClick={handleClick}>
       <td>{no}</td>
-      <td>{post.answered ? "✔️" : "❌"}</td>
+      <td>{post.status === "답변완료" ? "✔️" : "❌"}</td>
       <td>{post.title}</td>
       <td>{post.writer || "작성자 미상"}</td>
       <td>{new Date(post.date).toLocaleDateString()}</td>

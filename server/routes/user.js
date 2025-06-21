@@ -518,7 +518,7 @@ router.post('/verify-code', async (req, res) => {
  */
 router.get('/status', (req, res) => {
     if (req.isAuthenticated()) {
-        res.json({ authenticated: true, name: req.user.name });
+        res.json({ authenticated: true, name: req.user.name, user: req.user });
     } else {
         res.json({ authenticated: false });
     }

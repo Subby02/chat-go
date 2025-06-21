@@ -33,6 +33,7 @@ const InquiryDetail = () => {
       });
 
       setPost(res.data.inquiry);
+
     } catch (err) {
       setError(err);
     } finally {
@@ -128,8 +129,7 @@ const InquiryDetail = () => {
           <>
             <div className="detail-info-item">
               <span className="detail-info-label">관리자 답변:</span>
-            </div>
-            <p
+              <p
               style={{
                 whiteSpace: "pre-line",
                 paddingLeft: "10px",
@@ -139,10 +139,12 @@ const InquiryDetail = () => {
             >
               {post.answer}
             </p>
+            </div>
+            
           </>
         )}
 
-        {isAdmin && !post.answer && (
+        {isAdmin && (
           <div className="admin-answer-section" style={{ marginTop: "20px" }}>
             <div className="detail-info-item">
               <span className="detail-info-label">답변 입력:</span>
