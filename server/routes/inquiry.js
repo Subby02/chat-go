@@ -12,6 +12,7 @@ const { ObjectId } = require('mongodb');
 
 // 관리자 체크 미들웨어
 const isAdmin = (req, res, next) => {
+  console.log("user in Admin", req.user);
   if (!req.isAuthenticated() || req.user.role !== 1) {
     return res.status(403).json({ error: '관리자만 접근 가능합니다.' });
   }
