@@ -68,10 +68,7 @@ const InquiryDetail = () => {
     return (
       <div className="post-detail-container" style={{ textAlign: "center" }}>
         <p>
-          에러 발생:{" "}
-          {error.response
-            ? `${error.response.status} - ${error.response.statusText}`
-            : error.message}
+          비공개 질문글은 작성자만 열람 가능합니다.
         </p>
         <RouterLink to={`/support/qna${location.search}`} className="back-to-list-link">
           목록으로 돌아가기
