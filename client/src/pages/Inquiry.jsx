@@ -52,49 +52,52 @@ const Inquiry = () => {
   }, []);
 
   const fetchPosts = useCallback(
-    async(pageTofetch) => {
+    async (pageTofetch) => {
       setLoading(true);
       setError(null);
 
-      try{
+      try {
         let res;
-        if(keyword.trim()){
+        if (keyword.trim()) {
           const queryString = new URLSearchParams();
           queryString.set("q", keyword);
           queryString.set("type", "tc");
           queryString.set("page", pageTofetch);
-          res = await axios.get(`http://localhost:5000/api/inquiry/search?${queryString}`);
-        }
-        else{
+          res = await axios.get(
+            `http://localhost:5000/api/inquiry/search?${queryString}`
+          );
+        } else {
           const queryString = new URLSearchParams();
           queryString.set("page", pageTofetch);
-          res = await axios.get(`http://localhost:5000/api/inquiry/list?${queryString}`);
+          res = await axios.get(
+            `http://localhost:5000/api/inquiry/list?${queryString}`
+          );
         }
 
         setPosts(res.data.results);
         setTotalPages(res.data.totalPages || 1);
         setTotalItems(res.data.totalItems || res.data.results.length);
-      } catch(err){
+      } catch (err) {
         setError(err);
       } finally {
         setLoading(false);
       }
-    }, [keyword]
+    },
+    [keyword]
   );
 
-  useEffect(()=> {
+  useEffect(() => {
     fetchPosts(currentPage);
 
     const params = new URLSearchParams();
     params.set("page", currentPage);
-    if(keyword) params.set("q", keyword);
+    if (keyword) params.set("q", keyword);
 
     const newSearch = `?${params.toString()}`;
-    if(location.search !== newSearch)
-    {
-      nav(`/support/qna${newSearch}`, {replace: true});
+    if (location.search !== newSearch) {
+      nav(`/support/qna${newSearch}`, { replace: true });
     }
-  },  [currentPage, keyword, nav, location.search, fetchPosts]);
+  }, [currentPage, keyword, nav, location.search, fetchPosts]);
 
   const handleSearch = () => {
     setCurrentPage(1);
@@ -107,7 +110,7 @@ const Inquiry = () => {
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
   if (error) return <p>에러가 발생했습니다: {error.message}</p>;
 
-  return(
+  return (
     <>
       <Header authState={auth} handleLogout={handleLogout} />
 
@@ -122,7 +125,14 @@ const Inquiry = () => {
           1:1 질문 게시판
         </h1>
 
-        <Searchbar onSearch={() => setCurrentPage(1)} keyword={keyword} setKeyword={setKeyword} filters={{}} setFilters={{}} />
+        <Searchbar
+          onSearch={() => setCurrentPage(1)}
+          keyword={keyword}
+          setKeyword={setKeyword}
+          filters={{}}
+          setFilters={{}}
+          type={"inquiry"}
+        />
 
         <div className="write">
           <button
@@ -141,13 +151,16 @@ const Inquiry = () => {
 
         <InquiryList posts={posts} cnt={totalItems} currentPage={currentPage} />
 
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       <Footer />
-
     </>
-  )
-}
+  );
+};
 
 export default Inquiry;
