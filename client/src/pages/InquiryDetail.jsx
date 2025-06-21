@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation, Link as RouterLink } from "react-router-dom";
+import {
+  useParams,
+  useLocation,
+  Link as RouterLink,
+  useNavigate,
+} from "react-router-dom";
 import axios from "axios";
 import "./ObjLostDetail.css";
 import Header from "../components/Header";
@@ -8,7 +13,7 @@ import Footer from "../components/Footer";
 const InquiryDetail = () => {
   const { id } = useParams();
   const location = useLocation();
-
+  const nav = useNavigate();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,12 +33,14 @@ const InquiryDetail = () => {
       setCurrentUserId(user?._id);
       setIsAdmin(user?.role === 1);
 
-      const res = await axios.get(`http://localhost:5000/api/inquiry/detail/${id}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `http://localhost:5000/api/inquiry/detail/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
 
       setPost(res.data.inquiry);
-
     } catch (err) {
       setError(err);
     } finally {
@@ -44,6 +51,20 @@ const InquiryDetail = () => {
   useEffect(() => {
     fetchPost();
   }, [id]);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/logout",
+        {},
+        { withCredentials: true }
+      );
+      setAuth(false);
+      nav("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const handleAnswerSubmit = async () => {
     try {
@@ -62,15 +83,21 @@ const InquiryDetail = () => {
     }
   };
 
-  if (loading) return <p style={{ textAlign: "center", fontWeight: "bold" }}>문의글을 불러오는 중입니다...</p>;
+  if (loading)
+    return (
+      <p style={{ textAlign: "center", fontWeight: "bold" }}>
+        문의글을 불러오는 중입니다...
+      </p>
+    );
 
   if (error)
     return (
       <div className="post-detail-container" style={{ textAlign: "center" }}>
-        <p>
-          비공개 질문글은 작성자만 열람 가능합니다.
-        </p>
-        <RouterLink to={`/support/qna${location.search}`} className="back-to-list-link">
+        <p>비공개 질문글은 작성자만 열람 가능합니다.</p>
+        <RouterLink
+          to={`/support/qna${location.search}`}
+          className="back-to-list-link"
+        >
           목록으로 돌아가기
         </RouterLink>
       </div>
@@ -80,23 +107,29 @@ const InquiryDetail = () => {
     return (
       <div className="post-detail-container" style={{ textAlign: "center" }}>
         <p>문의글 정보를 찾을 수 없습니다. (ID: {id})</p>
-        <RouterLink to={`/support/qna${location.search}`} className="back-to-list-link">
+        <RouterLink
+          to={`/support/qna${location.search}`}
+          className="back-to-list-link"
+        >
           목록으로 돌아가기
         </RouterLink>
       </div>
     );
 
-  const canViewWriter = post.isPublic || currentUserId === post.user_id || isAdmin;
+  const canViewWriter =
+    post.isPublic || currentUserId === post.user_id || isAdmin;
 
   return (
     <>
-      <Header authState={auth} />
+      <Header authState={auth} handleLogout={handleLogout} />
       <div className="post-detail-container">
         <h1>{post.title}</h1>
 
         <div className="detail-info-item">
           <span className="detail-info-label">작성자:</span>
-          <span className="detail-info-value">{canViewWriter ? post.writer : "비공개"}</span>
+          <span className="detail-info-value">
+            {canViewWriter ? post.writer : "비공개"}
+          </span>
         </div>
 
         <div className="detail-info-item">
@@ -112,12 +145,21 @@ const InquiryDetail = () => {
 
         <div className="detail-info-item">
           <span className="detail-info-label">공개 여부:</span>
-          <span className="detail-info-value">{post.isPublic ? "공개" : "비공개"}</span>
+          <span className="detail-info-value">
+            {post.isPublic ? "공개" : "비공개"}
+          </span>
         </div>
 
         <div className="detail-info-item">
           <span className="detail-info-label">문의 내용:</span>
-          <p style={{ whiteSpace: "pre-line", paddingLeft: "10px", fontSize: "1vw", color: "#444" }}>
+          <p
+            style={{
+              whiteSpace: "pre-line",
+              paddingLeft: "10px",
+              fontSize: "1vw",
+              color: "#444",
+            }}
+          >
             {post.content}
           </p>
         </div>
@@ -127,17 +169,16 @@ const InquiryDetail = () => {
             <div className="detail-info-item">
               <span className="detail-info-label">관리자 답변:</span>
               <p
-              style={{
-                whiteSpace: "pre-line",
-                paddingLeft: "10px",
-                fontSize: "1vw",
-                color: "#007acc",
-              }}
-            >
-              {post.answer}
-            </p>
+                style={{
+                  whiteSpace: "pre-line",
+                  paddingLeft: "10px",
+                  fontSize: "1vw",
+                  color: "#007acc",
+                }}
+              >
+                {post.answer}
+              </p>
             </div>
-            
           </>
         )}
 
@@ -150,7 +191,12 @@ const InquiryDetail = () => {
               rows={5}
               value={answerInput}
               onChange={(e) => setAnswerInput(e.target.value)}
-              style={{ width: "100%", fontSize: "1vw", padding: "8px", marginBottom: "10px" }}
+              style={{
+                width: "100%",
+                fontSize: "1vw",
+                padding: "8px",
+                marginBottom: "10px",
+              }}
             />
             <button
               onClick={handleAnswerSubmit}
@@ -168,7 +214,10 @@ const InquiryDetail = () => {
           </div>
         )}
 
-        <RouterLink to={`/support/qna${location.search}`} className="back-to-list-link">
+        <RouterLink
+          to={`/support/qna${location.search}`}
+          className="back-to-list-link"
+        >
           목록으로 돌아가기
         </RouterLink>
       </div>
