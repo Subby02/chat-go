@@ -18,6 +18,8 @@ const MyPageListItem = ({ post, no, currentPage }) => {
         navigate(`/reward/animal/${post._id}`);
       } else if (post.type === "rewardObject") {
         navigate(`/reward/object/${post._id}`);
+      } else if (post.type == "inquiry") {
+        navigate(`/inquiry${post._id}`);
       }
     } else {
       console.error("게시물 ID가 없습니다: ", post);
@@ -40,6 +42,8 @@ const MyPageListItem = ({ post, no, currentPage }) => {
           ? "사례금 동물 게시판"
           : post.type === "rewardObject"
           ? "사례금 물건 게시판"
+          : post.type === "inquiry"
+          ? "1:1 질문 게시판"
           : "정보 없음"}
       </td>
       <td>
@@ -56,6 +60,8 @@ const MyPageListItem = ({ post, no, currentPage }) => {
           ? post.kindCd
           : post.type === "rewardObject"
           ? post.lstPrdtNm
+          : post.type === "inquiry"
+          ? post.title
           : "정보 없음"}
       </td>
       <td>{new Date(post.date).toLocaleDateString()}</td>
