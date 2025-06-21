@@ -95,7 +95,7 @@ router.get('/detail/:id', async (req, res) => {
     const inquiry = await Inquiry.findById(req.params.id);
     if (!inquiry) return res.status(404).json({ error: '문의글이 존재하지 않습니다.' });
 
-    if (!inquiry.isPublic && (!req.isAuthenticated() || req.user._id.toString() !== inquiry.user_id)) {
+    if (!inquiry.isPublic && req.user.role != 1 && (!req.isAuthenticated() || req.user._id.toString() !== inquiry.user_id)) {
       return res.status(403).json({ error: '비공개 글은 작성자만 조회할 수 있습니다.' });
     }
 
