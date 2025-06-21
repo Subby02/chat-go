@@ -19,7 +19,7 @@ const MyPageListItem = ({ post, no, currentPage }) => {
       } else if (post.type === "rewardObject") {
         navigate(`/reward/object/${post._id}`);
       } else if (post.type == "inquiry") {
-        navigate(`/inquiry${post._id}`);
+        navigate(`/support/qna/detail/${post._id}`);
       }
     } else {
       console.error("게시물 ID가 없습니다: ", post);

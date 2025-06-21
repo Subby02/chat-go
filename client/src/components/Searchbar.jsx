@@ -15,6 +15,7 @@ const Searchbar = ({
   ed,
   sub_sd,
   sub_ed,
+  type,
 }) => {
   const [inputVal, setInputVal] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
@@ -42,10 +43,16 @@ const Searchbar = ({
         ></input>
 
         <div className="button-area">
-          <button type="button" className="filter-button" onClick={handleModal}>
-            상세 검색
-            <AiFillCaretDown style={{ fontSize: "25px" }} />
-          </button>
+          {type !== "inquiry" && (
+            <button
+              type="button"
+              className="filter-button"
+              onClick={handleModal}
+            >
+              상세 검색
+              <AiFillCaretDown style={{ fontSize: "25px" }} />
+            </button>
+          )}
 
           <button className="search-button" type="submit">
             <AiOutlineSearch style={{ fontSize: "25px" }} />
