@@ -158,9 +158,13 @@ const AnimalGetDetail = () => {
       <div className="post-detail-container">
         <div className="header-with-button">
           <h1>{post.post.kindNm}</h1>
-          <button className="notify-button" onClick={handleNotifyClick}>
-            알리기
-          </button>
+          {post.post.user_id === "구조동물" ? (
+            <p style={{ fontWeight: "bold" }}>연락처: {post.post.careTel || "정보 없음"}</p>
+          ) : (
+            <button className="notify-button" onClick={handleNotifyClick}>
+              알리기
+            </button>
+          )}
         </div>
         {post.post.popfile1 && (
           <img
