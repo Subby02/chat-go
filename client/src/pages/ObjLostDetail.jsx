@@ -157,9 +157,13 @@ const ObjectLostDetail = () => {
         <div className="header-with-button">
           <h1>{post.post.lstPrdtNm}</h1>
 
-          <button className="notify-button" onClick={handleNotifyClick}>
-            알리기
-          </button>
+          {post.post.user_id === "경찰청" ? (
+            <p style={{ fontWeight: "bold" }}>연락처: {post.post.tel || "정보 없음"}</p>
+          ) : (
+            <button className="notify-button" onClick={handleNotifyClick}>
+              알리기
+            </button>
+          )}
         </div>
         {post.post.lstFilePathImg && (
           <img

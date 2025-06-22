@@ -155,9 +155,13 @@ const ObjGetDetail = () => {
       <div className="post-detail-container">
         <div className="header-with-button">
           <h1>{post.post.fdPrdtNm}</h1>
-          <button className="notify-button" onClick={handleNotifyClick}>
-            알리기
-          </button>
+          {post.post.user_id === "경찰청" || post.post.user_id === "포털기관" ? (
+            <p style={{ fontWeight: "bold" }}></p>
+          ) : (
+            <button className="notify-button" onClick={handleNotifyClick}>
+              알리기
+            </button>
+          )}
         </div>
         {post.post.fdFilePathImg && (
           <img
