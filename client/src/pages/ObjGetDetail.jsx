@@ -201,7 +201,7 @@ const ObjGetDetail = () => {
         <p>
           <strong>보관 장소:</strong>
           {post.post.depPlace
-            ? `${post.post.depPlace} (${post.post.tel || "연락처 없음"})`
+            ? `${post.post.depPlace}`
             : "정보 없음"}
         </p>
 
