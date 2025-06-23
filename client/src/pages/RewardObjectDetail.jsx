@@ -191,9 +191,17 @@ const RewardObjectDetail = () => {
         </p>
         <p>
           <strong>분실 시간:</strong>
-          {post.post.lstHor
-            ? `${post.post.lstHor.split(":")[0]}시`
-            : "정보 없음"}
+          {post.post.lstHor ? (() => {
+            const timeParts = post.post.lstHor.split(':');
+            if (timeParts.length === 2) {
+              const [hour, minute] = timeParts;
+              return minute === '00' ? `${hour}시` : `${hour}시 ${minute}분`;
+            } else if (timeParts.length === 1) {
+              return `${timeParts[0]}시`;
+            } else {
+              return post.post.lstHor; // 예외적인 형식은 그대로 표시
+            }
+          })() : "정보 없음"}
         </p>
         <p>
           <strong>분실 지역:</strong>
